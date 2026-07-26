@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Costellada - Panell de Jugador</title>
+
+  <!-- Tailwind CSS per CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      background-color: #f7f6f2;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-12">
+
+  <!-- HEADER SUPERIOR -->
+  <header class="w-full bg-white border-b border-neutral-200/60 py-3 px-4 sm:px-8 mb-6 sticky top-0 z-10 shadow-sm">
+    <div class="max-w-xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span id="headerUserName" class="font-bold text-neutral-800 text-sm sm:text-base">Carregant...</span>
+        <span id="headerTeamBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-neutral-800 bg-neutral-100">
+          <span id="headerTeamDot" class="w-2.5 h-2.5 rounded-full bg-neutral-400"></span>
+          <span id="headerTeamName">Equip...</span>
+        </span>
+      </div>
+      <button onclick="logout()" class="text-xs font-semibold text-neutral-400 hover:text-red-500 transition-colors flex items-center gap-1">
+        <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+        <span>Sortir</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENIDOR PRINCIPAL -->
+  <main class="max-w-xl mx-auto px-4 space-y-8">
+
+    <!-- SECCIÓ 1: EL SOPAR -->
+    <section class="space-y-3">
+      <div class="space-y-0.5">
+        <h2 class="text-xl font-bold text-neutral-900 flex items-center gap-2">
+          <i data-lucide="utensils-crossed" class="w-5 h-5 text-neutral-500"></i>
+          El sopar
+        </h2>
+        <p class="text-xs text-neutral-400 font-medium">Tot el que necessites saber</p>
+      </div>
+
+      <div class="space-y-2.5">
+        <!-- Targeta 1 -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-neutral-100 flex items-center gap-3.5">
+          <div class="p-2 rounded-xl bg-orange-50 text-orange-500 shrink-0">
+            <i data-lucide="map-pin" class="w-5 h-5 stroke-[2]"></i>
+          </div>
+          <p class="text-sm text-neutral-700 font-medium leading-relaxed">
+            Ens trobem a casa dels Masdevall i Esparch a l'Escala, 42°06'46.9"N 3°09'04.4"E
+          </p>
+        </div>
+
+        <!-- Targeta 2 -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-neutral-100 flex items-center gap-3.5">
+          <div class="p-2 rounded-xl bg-orange-50 text-orange-500 shrink-0">
+            <i data-lucide="clock" class="w-5 h-5 stroke-[2]"></i>
+          </div>
+          <p class="text-sm text-neutral-700 font-medium leading-relaxed">
+            Es pot començar a arribar a partir de les set de la tarda del 8 d'agost de l'any 2026.
+          </p>
+        </div>
+
+        <!-- Targeta 3 -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-neutral-100 flex items-center gap-3.5">
+          <div class="p-2 rounded-xl bg-orange-50 text-orange-500 shrink-0">
+            <i data-lucide="car" class="w-5 h-5 stroke-[2]"></i>
+          </div>
+          <p class="text-sm text-neutral-700 font-medium leading-relaxed">
+            Aparcar per la zona és complicat, venir a peu és una bona opció.
+          </p>
+        </div>
+
+        <!-- Targeta 4 -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-neutral-100 flex items-center gap-3.5">
+          <div class="p-2 rounded-xl bg-orange-50 text-orange-500 shrink-0">
+            <i data-lucide="swords" class="w-5 h-5 stroke-[2]"></i>
+          </div>
+          <p class="text-sm text-neutral-700 font-medium leading-relaxed">
+            La vetllada no s'acaba amb les postres, després ens espera una nit de jocs i mojitos.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓ 2: EL TEU EQUIP -->
+    <section class="space-y-3">
+      <div class="space-y-0.5">
+        <h2 class="text-xl font-bold text-neutral-900 flex items-center gap-2">
+          <i data-lucide="shirt" class="w-5 h-5 text-neutral-500"></i>
+          El teu equip
+        </h2>
+      </div>
+
+      <!-- Banner d'Equip (S'estila dinàmicament via JS) -->
+      <div id="teamBannerCard" class="rounded-3xl p-5 border-2 flex items-center gap-4 transition-all relative">
+        <div id="teamColorCircle" class="w-16 h-16 rounded-full shrink-0 shadow-inner"></div>
+        <div class="space-y-1">
+          <h3 id="teamBannerName" class="text-2xl font-black">Equip...</h3>
+          <p class="text-xs sm:text-sm font-medium leading-snug text-neutral-700">
+            Porta roba <strong id="teamColorText">...</strong> - cos sencer o almenys la part de dalt!
+          </p>
+        </div>
+      </div>
+      <p class="text-[11px] text-neutral-400 italic font-medium px-1">* Nom provisional fins a la votació final.</p>
+    </section>
+
+    <!-- SECCIÓ 3: NOM D'EQUIP -->
+    <section class="space-y-3">
+      <div class="space-y-0.5">
+        <h2 class="text-xl font-bold text-neutral-900 flex items-center gap-2">
+          <i data-lucide="pen-tool" class="w-5 h-5 text-neutral-500"></i>
+          Nom de l'equip
+        </h2>
+        <p class="text-xs text-neutral-400 font-medium">Proposa un nom i vota els que t'agradin</p>
+      </div>
+
+      <!-- AVÍS DATA LÍMIT -->
+      <div class="bg-orange-50 border border-orange-200/60 rounded-2xl p-3.5 flex items-center gap-3">
+        <i data-lucide="calendar-clock" class="w-5 h-5 text-orange-500 shrink-0"></i>
+        <p class="text-xs text-orange-900 font-medium">
+          Les propostes i votacions estaran obertes fins al <strong>7 d'agost a les 23:59 h</strong> (el dia abans del sopar).
+        </p>
+      </div>
+
+      <!-- FORMULARI DE PROPOSTA -->
+      <div class="bg-white rounded-3xl p-5 shadow-sm border border-neutral-100 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-neutral-700">Les teves propostes</span>
+          <span id="proposalsCounter" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">0/2</span>
+        </div>
+
+        <form onsubmit="handleAddSuggestion(event)" class="flex items-center gap-2">
+          <input 
+            type="text" 
+            id="suggestionInput" 
+            placeholder="Nom d'equip..."
+            class="flex-1 bg-neutral-100/80 text-neutral-800 placeholder-neutral-400 px-4 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500/50 transition-all text-sm font-medium border border-transparent focus:border-orange-200"
+          />
+          <button 
+            type="submit" 
+            id="addBtn"
+            class="w-11 h-11 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white rounded-2xl flex items-center justify-center shrink-0 transition-all shadow-md shadow-orange-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <i data-lucide="plus" class="w-5 h-5 stroke-[2.5]"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- LLISTAT I VOTACIONS -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs text-neutral-400 font-medium">Pots votar fins al 50% de les opcions</span>
+          <span id="votesCounter" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-orange-600">0 vots disponibles</span>
+        </div>
+
+        <!-- Contenidor de llista de propostes -->
+        <div id="suggestionsList" class="space-y-2">
+          <!-- Es carregarà dinàmicament -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- LÒGICA JS I CONNEXIÓ SUPABASE -->
+  <script>
+    const SUPABASE_URL = 'https://bhgvnkhewhdvltpsajqm.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_qgX6u8s01wg0hYngVq5kJw_37ep4SNj';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let currentPlayer = null;
+    let playerTeam = null;
+    let mySuggestions = [];
+    let allTeamSuggestions = [];
+    let myVotes = [];
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+      
+      const savedUser = localStorage.getItem('player_session');
+      if (!savedUser) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      currentPlayer = JSON.parse(savedUser);
+      await loadDashboardData();
+    });
+
+    async function loadDashboardData() {
+      try {
+        const { data: playerData, error: pError } = await db
+          .from('players')
+          .select('*, teams(*)')
+          .eq('id', currentPlayer.id)
+          .single();
+
+        if (pError) throw pError;
+        currentPlayer = playerData;
+        playerTeam = playerData.teams;
+
+        renderHeader();
+        renderTeamBanner();
+        await loadSuggestionsAndVotes();
+
+      } catch (err) {
+        console.error('Error carregant dades:', err);
+      }
+    }
+
+    function renderHeader() {
+      document.getElementById('headerUserName').textContent = currentPlayer.name;
+      
+      if (playerTeam) {
+        document.getElementById('headerTeamName').textContent = `Equip "${playerTeam.color}"`;
+        const dot = document.getElementById('headerTeamDot');
+        const badge = document.getElementById('headerTeamBadge');
+        
+        const colors = getTeamColorStyles(playerTeam.color);
+        dot.style.backgroundColor = colors.dotColor;
+        badge.style.backgroundColor = colors.badgeBg;
+      }
+    }
+
+    function renderTeamBanner() {
+      if (!playerTeam) return;
+
+      const card = document.getElementById('teamBannerCard');
+      const circle = document.getElementById('teamColorCircle');
+      const name = document.getElementById('teamBannerName');
+      const colorText = document.getElementById('teamColorText');
+
+      const styles = getTeamColorStyles(playerTeam.color);
+
+      card.style.backgroundColor = styles.bannerBg;
+      card.style.borderColor = styles.bannerBorder;
+      circle.style.backgroundColor = styles.dotColor;
+      
+      name.textContent = `Equip "${playerTeam.color}"*`;
+      name.style.color = styles.textColor;
+      
+      // Adaptació de concordància de gènere del color (blau -> blava, etc.)
+      let formattedColor = playerTeam.color.toLowerCase();
+      if (formattedColor === 'groc') formattedColor = 'groga';
+      if (formattedColor === 'blau') formattedColor = 'blava';
+      if (formattedColor === 'verd') formattedColor = 'verda';
+
+      colorText.textContent = formattedColor;
+    }
+
+    function getTeamColorStyles(colorName) {
+      switch (colorName.toLowerCase()) {
+        case 'groc':
+          return {
+            bannerBg: '#fefce8',
+            bannerBorder: '#fef08a',
+            dotColor: '#eab308',
+            badgeBg: '#fef9c3',
+            textColor: '#854d0e'
+          };
+        case 'blau':
+          return {
+            bannerBg: '#eff6ff',
+            bannerBorder: '#bfdbfe',
+            dotColor: '#3b82f6',
+            badgeBg: '#dbeafe',
+            textColor: '#1e40af'
+          };
+        case 'rosa':
+          return {
+            bannerBg: '#fdf2f8',
+            bannerBorder: '#fbcfe8',
+            dotColor: '#ec4899',
+            badgeBg: '#fce7f3',
+            textColor: '#9d174d'
+          };
+        case 'verd':
+          return {
+            bannerBg: '#f0fdf4',
+            bannerBorder: '#bbf7d0',
+            dotColor: '#22c55e',
+            badgeBg: '#dcfce7',
+            textColor: '#166534'
+          };
+        default:
+          return {
+            bannerBg: '#f5f5f5',
+            bannerBorder: '#e5e5e5',
+            dotColor: '#a3a3a3',
+            badgeBg: '#f5f5f5',
+            textColor: '#171717'
+          };
+      }
+    }
+
+    async function loadSuggestionsAndVotes() {
+      if (!playerTeam) return;
+
+      const { data: suggestions, error: sError } = await db
+        .from('team_suggestions')
+        .select('*, players(name, player_number), team_votes(player_id)')
+        .eq('team_id', playerTeam.id)
+        .order('created_at', { ascending: true });
+
+      if (sError) {
+        console.error('Error carregant propostes:', sError);
+        return;
+      }
+
+      allTeamSuggestions = suggestions || [];
+      mySuggestions = allTeamSuggestions.filter(s => s.suggested_by === currentPlayer.id);
+
+      const counterEl = document.getElementById('proposalsCounter');
+      counterEl.textContent = `${mySuggestions.length}/2`;
+      
+      const input = document.getElementById('suggestionInput');
+      const addBtn = document.getElementById('addBtn');
+      
+      if (mySuggestions.length >= 2) {
+        input.disabled = true;
+        input.placeholder = "Ja has fet el màxim de 2 propostes";
+        addBtn.disabled = true;
+      } else {
+        input.disabled = false;
+        input.placeholder = "Nom d'equip...";
+        addBtn.disabled = false;
+      }
+
+      const { data: votes, error: vError } = await db
+        .from('team_votes')
+        .select('*')
+        .eq('player_id', currentPlayer.id);
+
+      if (!vError) {
+        myVotes = votes || [];
+      }
+
+      renderSuggestionsList();
+    }
+
+    function renderSuggestionsList() {
+      const container = document.getElementById('suggestionsList');
+      container.innerHTML = '';
+
+      const totalOptions = allTeamSuggestions.length;
+      const maxVotes = totalOptions > 0 ? Math.max(1, Math.ceil(totalOptions * 0.5)) : 0;
+      const votesLeft = Math.max(0, maxVotes - myVotes.length);
+
+      document.getElementById('votesCounter').textContent = `${votesLeft} ${votesLeft === 1 ? 'vot disponible' : 'vots disponibles'}`;
+
+      if (totalOptions === 0) {
+        container.innerHTML = `
+          <div class="text-center py-6 text-neutral-400 text-xs font-medium bg-white rounded-2xl border border-dashed border-neutral-200">
+            Encara no hi ha cap nom proposat. Sigues el primer!
+          </div>
+        `;
+        return;
+      }
+
+      allTeamSuggestions.forEach(item => {
+        const votesCount = item.team_votes ? item.team_votes.length : 0;
+        const hasVoted = myVotes.some(v => v.suggestion_id === item.id);
+        const authorNum = item.players && item.players.player_number ? item.players.player_number : '?';
+
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-2xl p-4 shadow-sm border border-neutral-100 flex items-center justify-between";
+
+        card.innerHTML = `
+          <div>
+            <h4 class="font-bold text-neutral-800 text-base">${escapeHtml(item.suggested_name)}</h4>
+            <p class="text-xs text-neutral-400">proposat per Jugador ${authorNum}</p>
+          </div>
+          <button 
+            onclick="toggleVote('${item.id}', ${hasVoted}, ${votesLeft})"
+            class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+              hasVoted 
+                ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/20' 
+                : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200 active:scale-95'
+            }"
+          >
+            <i data-lucide="thumbs-up" class="w-3.5 h-3.5 stroke-[2.5]"></i>
+            <span>${votesCount}</span>
+          </button>
+        `;
+
+        container.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+    async function handleAddSuggestion(e) {
+      e.preventDefault();
+      const input = document.getElementById('suggestionInput');
+      const name = input.value.trim();
+
+      if (!name) return;
+      if (mySuggestions.length >= 2) return;
+
+      try {
+        const { error } = await db
+          .from('team_suggestions')
+          .insert({
+            suggested_name: name,
+            team_id: playerTeam.id,
+            suggested_by: currentPlayer.id
+          });
+
+        if (error) throw error;
+
+        input.value = '';
+        await loadSuggestionsAndVotes();
+
+      } catch (err) {
+        console.error('Error afegint proposta:', err);
+        alert('No s\'ha pogut afegir la proposta.');
+      }
+    }
+
+    async function toggleVote(suggestionId, hasVoted, votesLeft) {
+      try {
+        if (hasVoted) {
+          const { error } = await db
+            .from('team_votes')
+            .delete()
+            .eq('player_id', currentPlayer.id)
+            .eq('suggestion_id', suggestionId);
+
+          if (error) throw error;
+        } else {
+          if (votesLeft <= 0) {
+            alert('Has esgotat els teus vots disponibles!');
+            return;
+          }
+
+          const { error } = await db
+            .from('team_votes')
+            .insert({
+              player_id: currentPlayer.id,
+              suggestion_id: suggestionId
+            });
+
+          if (error) throw error;
+        }
+
+        await loadSuggestionsAndVotes();
+
+      } catch (err) {
+        console.error('Error votant:', err);
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('player_session');
+      window.location.href = 'index.html';
+    }
+
+    function escapeHtml(string) {
+      return String(string).replace(/[&<>"']/g, function(s) {
+        return {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        }[s];
+      });
+    }
+  </script>
+</body>
+</html>

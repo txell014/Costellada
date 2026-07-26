@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Costellada</title>
+
+  <!-- Tailwind CSS per CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Font i detalls de fons */
+    body {
+      background-color: #f7f6f2;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+  <!-- CONTENIDOR PRINCIPAL (Mobile-first) -->
+  <div class="w-full max-w-sm flex flex-col items-center">
+    
+    <!-- TITOL I HEADER -->
+    <div class="text-center mb-6 space-y-1">
+      <div class="flex items-center justify-center gap-2">
+        <i data-lucide="beef" class="w-8 h-8 text-orange-500 stroke-[2.2]"></i>
+        <h1 class="text-3xl font-extrabold text-neutral-900 tracking-tight">
+          La Costellada
+        </h1>
+      </div>
+      <p class="text-sm text-neutral-500 pt-1">
+        Escriu el teu nom i el codi per entrar
+      </p>
+    </div>
+
+    <!-- TARGETA DEL FORMULARI -->
+    <div class="w-full bg-white rounded-3xl p-6 shadow-sm border border-neutral-100/80">
+      <!-- 'novalidate' desactiva els avisos per defecte del navegador -->
+      <form id="loginForm" class="space-y-4" novalidate onsubmit="handleLogin(event)">
+        
+        <!-- CAMP: NOM -->
+        <div>
+          <label for="name" class="block text-xs font-bold text-neutral-500 tracking-wider mb-2 uppercase">
+            Nom i primer cognom
+          </label>
+          <input 
+            type="text" 
+            id="name" 
+            placeholder="Mariona Comellas" 
+            class="w-full bg-neutral-100/80 text-neutral-800 placeholder-neutral-400 px-4 py-3.5 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500/50 transition-all text-base"
+          />
+        </div>
+
+        <!-- CAMP: CODI (4 NÚMEROS) -->
+        <div>
+          <label for="code" class="flex items-center gap-1.5 text-xs font-bold text-neutral-500 tracking-wider mb-2 uppercase">
+            <i data-lucide="lock" class="w-3.5 h-3.5 stroke-[2.5]"></i>
+            Codi (4 números)
+          </label>
+          <input 
+            type="password" 
+            id="code" 
+            maxlength="4"
+            inputmode="numeric"
+            placeholder="· · · ·" 
+            class="w-full bg-neutral-100/80 text-neutral-800 placeholder-neutral-400 px-4 py-3.5 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500/50 transition-all text-base tracking-widest text-center font-bold"
+          />
+        </div>
+
+        <!-- MISSATGE D'ERROR PERSONALITZAT EN CATALÀ -->
+        <div id="errorMessage" class="hidden text-red-500 text-xs font-semibold text-center pt-1"></div>
+
+        <!-- BOTÓ ENTRAR -->
+        <button 
+          type="submit" 
+          id="submitBtn"
+          class="w-full bg-orange-500 hover:bg-orange-600 active:scale-[0.98] text-white font-bold py-3.5 px-4 rounded-2xl transition-all shadow-md shadow-orange-500/20 text-base mt-2 flex justify-center items-center gap-2"
+        >
+          <span>Entrar!</span>
+        </button>
+
+      </form>
+    </div>
+
+  </div>
+
+  <!-- LÒGICA JS I CONNEXIÓ SUPABASE -->
+  <script>
+    // 1. CONFIGURACIÓ SUPABASE
+    const SUPABASE_URL = 'https://bhgvnkhewhdvltpsajqm.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_qgX6u8s01wg0hYngVq5kJw_37ep4SNj';
+    
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Inicialitza les icones de Lucide
+    lucide.createIcons();
+
+    // Auto-login si ja s'havia autenticat anteriorment
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedUser = localStorage.getItem('player_session');
+      if (savedUser) {
+        const user = JSON.parse(savedUser);
+        redirectUser(user);
+      }
+    });
+
+    // 2. FUNCIÓ D'AUTENTICACIÓ
+    async function handleLogin(e) {
+      e.preventDefault();
+      
+      const nameInput = document.getElementById('name').value.trim();
+      const codeInput = document.getElementById('code').value.trim();
+      const errorDiv = document.getElementById('errorMessage');
+      const submitBtn = document.getElementById('submitBtn');
+
+      errorDiv.classList.add('hidden');
+
+      // VALIDACIÓ MANUAL I AVISOS EN CATALÀ (sense alertes nates de Chrome)
+      if (!nameInput) {
+        showError('Si us plau, escriu el teu nom.');
+        return;
+      }
+
+      if (!codeInput) {
+        showError('Si us plau, escriu el teu codi de 4 números.');
+        return;
+      }
+
+      if (!/^\d{4}$/.test(codeInput)) {
+        showError('El codi ha de ser de 4 números exactes.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '0.7';
+
+      try {
+        // Cerca el jugador a Supabase
+        const { data: player, error } = await db
+          .from('players')
+          .select('*, teams(*)')
+          .ilike('name', nameInput)
+          .eq('password', codeInput)
+          .maybeSingle();
+
+        if (error) throw error;
+
+        if (!player) {
+          showError('Nom o codi incorrecte. Revisa les dades!');
+          return;
+        }
+
+        // Marca que ha entrat per primer cop
+        if (!player.has_logged_in) {
+          await db
+            .from('players')
+            .update({ has_logged_in: true })
+            .eq('id', player.id);
+        }
+
+        // Guarda sessió a LocalStorage
+        localStorage.setItem('player_session', JSON.stringify(player));
+
+        // Redirigeix el jugador
+        redirectUser(player);
+
+      } catch (err) {
+        console.error('Error de login:', err);
+        showError('Hi ha hagut un error de connexió. Torna-ho a provar.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+      }
+    }
+
+    function showError(msg) {
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.textContent = msg;
+      errorDiv.classList.remove('hidden');
+    }
+
+    function redirectUser(player) {
+        if (player.is_admin) {
+            window.location.href = 'admin.html';
+        } else {
+            window.location.href = 'dashboard.html';
+        }
+        }
+  </script>
+</body>
+</html>
