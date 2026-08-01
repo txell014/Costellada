@@ -174,6 +174,35 @@
       </div>
     </section>
 
+    <!-- MODAL DE CONFIRMACIÓ PER ELIMINAR PROPOSTA -->
+    <div id="deleteModal" class="fixed inset-0 bg-neutral-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+      <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-xl space-y-4 border border-neutral-100 text-center animate-in fade-in zoom-in duration-150">
+        <div class="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center mx-auto">
+          <i data-lucide="trash-2" class="w-6 h-6 stroke-[2]"></i>
+        </div>
+        
+        <div class="space-y-1">
+          <h3 class="font-bold text-lg text-neutral-800">Eliminar proposta?</h3>
+          <p class="text-xs text-neutral-500">Aquesta acció no es pot desfer i la proposta perdrà tots els vots rebuts.</p>
+        </div>
+
+        <div class="flex items-center gap-2 pt-2">
+          <button 
+            onclick="closeDeleteModal()" 
+            class="flex-1 py-3 px-4 rounded-2xl bg-neutral-100 text-neutral-700 font-bold text-xs hover:bg-neutral-200 transition-all active:scale-95"
+          >
+            Cancelar
+          </button>
+          <button 
+            id="confirmDeleteBtn" 
+            class="flex-1 py-3 px-4 rounded-2xl bg-red-500 text-white font-bold text-xs hover:bg-red-600 transition-all shadow-md shadow-red-500/20 active:scale-95"
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <!-- LÒGICA JS I CONNEXIÓ SUPABASE -->
@@ -375,26 +404,38 @@
         const votesCount = item.team_votes ? item.team_votes.length : 0;
         const hasVoted = myVotes.some(v => v.suggestion_id === item.id);
         const authorNum = item.players && item.players.player_number ? item.players.player_number : '?';
+        const isMySuggestion = item.suggested_by === currentPlayer.id;
 
         const card = document.createElement('div');
-        card.className = "bg-white rounded-2xl p-4 shadow-sm border border-neutral-100 flex items-center justify-between";
+        card.className = "bg-white rounded-2xl p-4 shadow-sm border border-neutral-100 flex items-center justify-between gap-3";
 
         card.innerHTML = `
-          <div>
-            <h4 class="font-bold text-neutral-800 text-base">${escapeHtml(item.suggested_name)}</h4>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-neutral-800 text-base truncate">${escapeHtml(item.suggested_name)}</h4>
             <p class="text-xs text-neutral-400">proposat per Jugador ${authorNum}</p>
           </div>
-          <button 
-            onclick="toggleVote('${item.id}', ${hasVoted}, ${votesLeft})"
-            class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-              hasVoted 
-                ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/20' 
-                : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200 active:scale-95'
-            }"
-          >
-            <i data-lucide="thumbs-up" class="w-3.5 h-3.5 stroke-[2.5]"></i>
-            <span>${votesCount}</span>
-          </button>
+          <div class="flex items-center gap-2 shrink-0">
+            ${isMySuggestion ? `
+              <button 
+                onclick="deleteSuggestion('${item.id}')"
+                title="Eliminar proposta"
+                class="p-2 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 active:scale-95 transition-all"
+              >
+                <i data-lucide="trash-2" class="w-4 h-4 stroke-[2]"></i>
+              </button>
+            ` : ''}
+            <button 
+              onclick="toggleVote('${item.id}', ${hasVoted}, ${votesLeft})"
+              class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                hasVoted 
+                  ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/20' 
+                  : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200 active:scale-95'
+              }"
+            >
+              <i data-lucide="thumbs-up" class="w-3.5 h-3.5 stroke-[2.5]"></i>
+              <span>${votesCount}</span>
+            </button>
+          </div>
         `;
 
         container.appendChild(card);
@@ -461,6 +502,48 @@
 
       } catch (err) {
         console.error('Error votant:', err);
+      }
+    }
+
+    let suggestionToDeleteId = null;
+
+    function deleteSuggestion(suggestionId) {
+      suggestionToDeleteId = suggestionId;
+      const modal = document.getElementById('deleteModal');
+      const confirmBtn = document.getElementById('confirmDeleteBtn');
+
+      // Assignem l'acció al botó d'eliminar del modal
+      confirmBtn.onclick = async () => {
+        await executeDeleteSuggestion();
+      };
+
+      modal.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeDeleteModal() {
+      const modal = document.getElementById('deleteModal');
+      modal.classList.add('hidden');
+      suggestionToDeleteId = null;
+    }
+
+    async function executeDeleteSuggestion() {
+      if (!suggestionToDeleteId) return;
+
+      try {
+        const { error } = await db
+          .from('team_suggestions')
+          .delete()
+          .eq('id', suggestionToDeleteId)
+          .eq('suggested_by', currentPlayer.id);
+
+        if (error) throw error;
+
+        closeDeleteModal();
+        await loadSuggestionsAndVotes();
+      } catch (err) {
+        console.error('Error eliminant proposta:', err);
+        alert('No s\'ha pogut eliminar la proposta.');
       }
     }
 
