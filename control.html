@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Costellada - Panell de Control</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { background-color: #f7f6f2; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    .slide-btn-active { border-color: #f97316 !important; border-width: 2px !important; background-color: #fff7ed !important; }
+  </style>
+</head>
+<body class="min-h-screen pb-16">
+
+  <!-- HEADER AMB STATUS DE PROJECTOR -->
+  <header class="w-full bg-white border-b border-neutral-200/60 sticky top-0 z-20 shadow-sm">
+    <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <a href="admin.html" class="p-1.5 rounded-xl bg-neutral-100 text-neutral-500 hover:bg-neutral-200">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        </a>
+        <h1 class="font-extrabold text-neutral-800 text-base">Panell de Control</h1>
+      </div>
+      <a href="tv.html" target="_blank" class="text-xs font-bold text-orange-500 hover:text-orange-600 flex items-center gap-1 bg-orange-50 px-3 py-1.5 rounded-full">
+        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        <span>Obrir TV</span>
+      </a>
+    </div>
+
+    <!-- BANNER: Què s'està mostrant actualment -->
+    <div class="bg-orange-50 border-t border-orange-100 px-4 py-2 text-xs font-semibold text-orange-900 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+      <span>Ara a la pantalla: <strong id="currentSlideLabel" class="text-orange-600">Benvinguda</strong></span>
+    </div>
+
+    <!-- NAVEGACIÓ PESTANYES -->
+    <div class="flex border-t border-neutral-100 bg-white text-xs font-bold text-neutral-400">
+      <button id="tabProjeccioBtn" onclick="switchTab('projeccio')" class="flex-1 py-3 text-center border-b-2 border-orange-500 text-orange-500 flex items-center justify-center gap-2 transition-all">
+        <i data-lucide="tv" class="w-4 h-4"></i><span>Projecció</span>
+      </button>
+      <button id="tabPuntuacionsBtn" onclick="switchTab('puntuacions')" class="flex-1 py-3 text-center border-b-2 border-transparent hover:text-neutral-600 flex items-center justify-center gap-2 transition-all">
+        <i data-lucide="trophy" class="w-4 h-4"></i><span>Puntuacions</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENIDOR PRINCIPAL -->
+  <main class="max-w-xl mx-auto px-4 pt-6">
+
+    <!-- PESTANYA 1: PROJECCIÓ -->
+    <div id="tabProjeccio" class="space-y-4">
+      <p class="text-xs text-neutral-400 font-medium text-center">Toca una diapositiva per projectar-la a la pantalla gran</p>
+
+      <button onclick="setSlide('benvinguda')" id="slideBtn_benvinguda" class="slide-btn w-full bg-white border border-neutral-200 rounded-3xl p-4 shadow-sm text-left flex items-center justify-between gap-3 transition-all">
+        <div class="flex items-center gap-3.5">
+          <div class="p-2.5 rounded-2xl bg-orange-50 text-orange-500 shrink-0"><i data-lucide="party-popper" class="w-6 h-6"></i></div>
+          <div><h3 class="font-extrabold text-neutral-800 text-base">Benvinguda</h3><p class="text-xs text-neutral-400 font-medium">Pantalla inicial amb els equips</p></div>
+        </div>
+        <span class="active-dot w-3 h-3 rounded-full bg-orange-500 shrink-0 hidden"></span>
+      </button>
+
+      <button onclick="setSlide('puntuacio_equips')" id="slideBtn_puntuacio_equips" class="slide-btn w-full bg-white border border-neutral-200 rounded-3xl p-4 shadow-sm text-left flex items-center justify-between gap-3 transition-all">
+        <div class="flex items-center gap-3.5">
+          <div class="p-2.5 rounded-2xl bg-amber-50 text-amber-500 shrink-0"><i data-lucide="award" class="w-6 h-6"></i></div>
+          <div><h3 class="font-extrabold text-neutral-800 text-base">Puntuació equips</h3><p class="text-xs text-neutral-400 font-medium">Marcador general per equips</p></div>
+        </div>
+        <span class="active-dot w-3 h-3 rounded-full bg-orange-500 shrink-0 hidden"></span>
+      </button>
+
+      <div class="bg-white border border-neutral-200 rounded-3xl p-4 shadow-sm space-y-3">
+        <div class="flex items-center gap-3.5">
+          <div class="p-2.5 rounded-2xl bg-purple-50 text-purple-500 shrink-0"><i data-lucide="mic" class="w-6 h-6"></i></div>
+          <div><h3 class="font-extrabold text-neutral-800 text-base">Ronda actual</h3><p class="text-xs text-neutral-400 font-medium">Selecciona el joc que vols projectar</p></div>
+        </div>
+        <div id="gamesSublist" class="space-y-2 pt-2 border-t border-neutral-100"></div>
+      </div>
+
+      <button onclick="setSlide('classificacio')" id="slideBtn_classificacio" class="slide-btn w-full bg-white border border-neutral-200 rounded-3xl p-4 shadow-sm text-left flex items-center justify-between gap-3 transition-all">
+        <div class="flex items-center gap-3.5">
+          <div class="p-2.5 rounded-2xl bg-yellow-50 text-yellow-600 shrink-0"><i data-lucide="trophy" class="w-6 h-6"></i></div>
+          <div><h3 class="font-extrabold text-neutral-800 text-base">Classificació final</h3><p class="text-xs text-neutral-400 font-medium">Podium final de la vetllada</p></div>
+        </div>
+        <span class="active-dot w-3 h-3 rounded-full bg-orange-500 shrink-0 hidden"></span>
+      </button>
+    </div>
+
+    <!-- PESTANYA 2: PUNTUACIONS -->
+    <div id="tabPuntuacions" class="space-y-6 hidden">
+      <div class="bg-white p-4 rounded-3xl border border-neutral-100 shadow-sm space-y-2">
+        <label class="block text-xs font-bold text-neutral-400 uppercase tracking-wider">Selecciona Joc per Puntuació</label>
+        <select id="scoreGameSelect" onchange="loadGameScoreControls()" class="w-full bg-neutral-100/80 text-neutral-800 font-bold px-4 py-3 rounded-2xl outline-none text-sm">
+        </select>
+      </div>
+
+      <div id="scoreControlsContainer" class="space-y-4"></div>
+    </div>
+
+  </main>
+
+  <script>
+    const SUPABASE_URL = 'https://bhgvnkhewhdvltpsajqm.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_qgX6u8s01wg0hYngVq5kJw_37ep4SNj';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let allGames = [];
+    let allTeams = [];
+    let currentState = { active_slide: 'benvinguda', active_game_id: null };
+    let selectedMimicaRound = 'Ronda 1: Els tres porquets';
+
+    const mimicaRondes = [
+      'Ronda 1: Els tres porquets',
+      'Ronda 2: Els tres mosqueters',
+      'Ronda 3: Les tres bessones',
+      'Ronda 4: Teletubbies',
+      'Ronda 5: Àngels de Charlie',
+      'Ronda 6: Mamma Mia!'
+    ];
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+      await loadInitialData();
+    });
+
+    async function loadInitialData() {
+      try {
+        const { data: games } = await db.from('games').select('*').order('order_num');
+        allGames = games || [];
+
+        const { data: teams } = await db.from('teams').select('*').order('name');
+        allTeams = teams || [];
+
+        const { data: state } = await db.from('game_state').select('*').eq('id', 1).maybeSingle();
+        if (state) {
+          currentState = state;
+        }
+
+        renderGamesSublist();
+        renderGameSelect();
+        updateSlideUI(currentState.active_slide || 'benvinguda', currentState.active_game_id);
+
+      } catch (err) {
+        console.error('Error inicialitzant control:', err);
+      }
+    }
+
+    function switchTab(tab) {
+      const tabProj = document.getElementById('tabProjeccio');
+      const tabPunt = document.getElementById('tabPuntuacions');
+      const btnProj = document.getElementById('tabProjeccioBtn');
+      const btnPunt = document.getElementById('tabPuntuacionsBtn');
+
+      if (tab === 'projeccio') {
+        tabProj.classList.remove('hidden');
+        tabPunt.classList.add('hidden');
+        btnProj.className = "flex-1 py-3 text-center border-b-2 border-orange-500 text-orange-500 flex items-center justify-center gap-2 transition-all font-bold";
+        btnPunt.className = "flex-1 py-3 text-center border-b-2 border-transparent hover:text-neutral-600 flex items-center justify-center gap-2 transition-all font-bold";
+      } else {
+        tabProj.classList.add('hidden');
+        tabPunt.classList.remove('hidden');
+        btnPunt.className = "flex-1 py-3 text-center border-b-2 border-orange-500 text-orange-500 flex items-center justify-center gap-2 transition-all font-bold";
+        btnProj.className = "flex-1 py-3 text-center border-b-2 border-transparent hover:text-neutral-600 flex items-center justify-center gap-2 transition-all font-bold";
+        loadGameScoreControls();
+      }
+    }
+
+    async function setSlide(slideName, gameId = null) {
+      try {
+        const updateData = { active_slide: slideName, updated_at: new Date() };
+        if (gameId) updateData.active_game_id = gameId;
+
+        const { error } = await db.from('game_state').update(updateData).eq('id', 1);
+        if (error) throw error;
+
+        currentState.active_slide = slideName;
+        if (gameId) currentState.active_game_id = gameId;
+
+        updateSlideUI(slideName, gameId);
+
+      } catch (err) {
+        console.error('Error canviant diapositiva:', err);
+      }
+    }
+
+    function updateSlideUI(slideName, gameId = null) {
+      document.querySelectorAll('.slide-btn').forEach(btn => {
+        btn.classList.remove('slide-btn-active');
+        const dot = btn.querySelector('.active-dot');
+        if (dot) dot.classList.add('hidden');
+      });
+
+      document.querySelectorAll('.game-sub-btn').forEach(btn => {
+        btn.classList.remove('bg-orange-500', 'text-white', 'shadow-md');
+        btn.classList.add('bg-neutral-50', 'text-neutral-700');
+      });
+
+      if (slideName === 'ronda_actual' && gameId) {
+        const subBtn = document.getElementById(`gameSubBtn_${gameId}`);
+        if (subBtn) {
+          subBtn.classList.remove('bg-neutral-50', 'text-neutral-700');
+          subBtn.classList.add('bg-orange-500', 'text-white', 'shadow-md');
+        }
+      } else {
+        const activeBtn = document.getElementById(`slideBtn_${slideName}`);
+        if (activeBtn) {
+          activeBtn.classList.add('slide-btn-active');
+          const dot = activeBtn.querySelector('.active-dot');
+          if (dot) dot.classList.remove('hidden');
+        }
+      }
+
+      const labels = {
+        'benvinguda': 'Benvinguda',
+        'puntuacio_equips': 'Puntuació equips',
+        'ronda_actual': 'Ronda actual',
+        'classificacio': 'Classificació'
+      };
+      
+      let labelText = labels[slideName] || slideName;
+      if (slideName === 'ronda_actual' && gameId) {
+        const g = allGames.find(x => x.id === gameId);
+        if (g) labelText += `: ${g.title}`;
+      }
+      document.getElementById('currentSlideLabel').textContent = labelText;
+    }
+
+    function renderGamesSublist() {
+      const container = document.getElementById('gamesSublist');
+      container.innerHTML = allGames.map(g => `
+        <button 
+          id="gameSubBtn_${g.id}"
+          onclick="setSlide('ronda_actual', '${g.id}')"
+          class="game-sub-btn w-full text-left p-3.5 rounded-2xl bg-neutral-50 transition-all text-xs font-bold flex items-center justify-between active:scale-[0.99]"
+        >
+          <span>Joc ${g.order_num}: ${escapeHtml(g.title)}</span>
+          <i data-lucide="play" class="w-3.5 h-3.5"></i>
+        </button>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function renderGameSelect() {
+      const select = document.getElementById('scoreGameSelect');
+      select.innerHTML = allGames.map(g => `
+        <option value="${g.id}">Joc ${g.order_num}: ${escapeHtml(g.title)}</option>
+      `).join('');
+    }
+
+    async function loadGameScoreControls() {
+      const gameId = document.getElementById('scoreGameSelect').value;
+      const container = document.getElementById('scoreControlsContainer');
+      const game = allGames.find(g => g.id === gameId);
+
+      if (!game) return;
+
+      const { data: existingScores } = await db.from('scores').select('*').eq('game_id', gameId).order('updated_at', { ascending: false });
+
+      let html = `
+        <div class="bg-orange-50 border border-orange-200/60 p-4 rounded-3xl space-y-2">
+          <h4 class="font-bold text-orange-900 text-sm">${escapeHtml(game.title)}</h4>
+          <p class="text-xs text-orange-700 font-medium">${escapeHtml(game.description || '')}</p>
+        </div>
+      `;
+
+      // Si és el joc 1 (Mímica), afegim el selector de ronda de Mímica
+      if (game.order_num === 1) {
+        html += `
+          <div class="bg-white p-4 rounded-3xl border border-neutral-100 shadow-sm space-y-2">
+            <label class="block text-xs font-bold text-purple-600 uppercase tracking-wider">Ronda de Mímica Actual:</label>
+            <select id="mimicaRoundSelect" onchange="selectedMimicaRound = this.value; loadGameScoreControls();" class="w-full bg-purple-50 text-purple-900 font-bold px-4 py-2.5 rounded-2xl outline-none text-xs">
+              ${mimicaRondes.map(r => `<option value="${r}" ${selectedMimicaRound === r ? 'selected' : ''}>${r}</option>`).join('')}
+            </select>
+          </div>
+        `;
+      }
+
+      allTeams.forEach(team => {
+        const styles = getTeamStyles(team.color);
+        const teamScoresList = (existingScores || []).filter(s => s.team_id === team.id);
+        const teamTotal = teamScoresList.reduce((acc, curr) => acc + (curr.points || 0), 0);
+
+        html += `
+          <div class="bg-white p-4 rounded-3xl border border-neutral-100 shadow-sm space-y-3">
+            <div class="flex items-center justify-between border-b border-neutral-50 pb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-3.5 h-3.5 rounded-full" style="background-color: ${styles.dotColor}"></span>
+                <span class="font-extrabold text-neutral-800 text-sm">Equip "${team.color}"</span>
+              </div>
+              <span class="text-xs font-black bg-neutral-100 px-3 py-1 rounded-full text-neutral-700">Total Joc: ${teamTotal} pts</span>
+            </div>
+
+            <div class="space-y-1">
+              <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block">Afegir lloc per ronda:</span>
+              <div class="flex flex-wrap gap-1.5">
+                ${getGameButtons(game.order_num, game.id, team.id)}
+              </div>
+            </div>
+
+            ${teamScoresList.length > 0 ? `
+              <div class="pt-2 border-t border-neutral-100 space-y-1.5">
+                <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block">Historial (clica 🗑️ per esborrar un error):</span>
+                <div class="space-y-1">
+                  ${teamScoresList.map(s => `
+                    <div class="flex items-center justify-between text-xs bg-neutral-50 px-3 py-1.5 rounded-xl">
+                      <span class="text-neutral-700 font-medium">${escapeHtml(s.round_name)}: <strong>+${s.points} pts</strong></span>
+                      <button onclick="removeScore('${s.id}')" class="text-red-400 hover:text-red-600 p-1">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function getGameButtons(gameNum, gameId, teamId) {
+      if (gameNum === 1) { // Mímica amb rondes dinàmiques
+        const round = selectedMimicaRound;
+        return `
+          <button onclick="addPoints('${gameId}', '${teamId}', '${round}', 5)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+5)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', '${round}', 4)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+4)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', '${round}', 3)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+3)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', '${round}', 2)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+2)</button>
+        `;
+      } else if (gameNum === 2) { // Globus
+        return `
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Globus', 10)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+10)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Globus', 6)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+6)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Globus', 3)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+3)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Globus', 1)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+1)</button>
+        `;
+      } else if (gameNum === 3) { // Taral·larejar
+        return `
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Nom o Artista', 4)" class="btn-score bg-purple-50 text-purple-700 hover:bg-purple-100">Nom/Artista (+4)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Nom i Artista', 7)" class="btn-score bg-orange-50 text-orange-700 hover:bg-orange-100">Nom i Artista (+7)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Posició 1r', 3)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+3)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Posició 2n', 2)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+2)</button>
+        `;
+      } else if (gameNum === 4) { // Acrosport
+        return `
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Acrosport Fàcil 1r', 3)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r Fàcil (+3)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Acrosport Fàcil 2n', 1)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">2n Fàcil (+1)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Acrosport Difícil 1r', 5)" class="btn-score bg-purple-50 text-purple-700 hover:bg-purple-100">1r Difícil (+5)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Acrosport Difícil 2n', 3)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n Difícil (+3)</button>
+        `;
+      } else { // Llengua fora
+        return `
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Llengua fora', 5)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+5)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Llengua fora', 4)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+4)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Llengua fora', 3)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+3)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Llengua fora', 2)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+2)</button>
+        `;
+      }
+    }
+
+    async function addPoints(gameId, teamId, roundName, points) {
+      try {
+        const { error } = await db.from('scores').insert({
+          game_id: gameId,
+          team_id: teamId,
+          round_name: roundName,
+          points: points
+        });
+
+        if (error) throw error;
+        await loadGameScoreControls();
+
+      } catch (err) {
+        console.error('Error afegint punts:', err);
+      }
+    }
+
+    async function removeScore(scoreId) {
+      try {
+        const { error } = await db.from('scores').delete().eq('id', scoreId);
+        if (error) throw error;
+        await loadGameScoreControls();
+      } catch (err) {
+        console.error('Error eliminant puntuació:', err);
+      }
+    }
+
+    function getTeamStyles(colorName) {
+      switch (colorName.toLowerCase()) {
+        case 'groc': return { dotColor: '#eab308' };
+        case 'blau': return { dotColor: '#3b82f6' };
+        case 'rosa': return { dotColor: '#ec4899' };
+        case 'verd': return { dotColor: '#22c55e' };
+        default: return { dotColor: '#a3a3a3' };
+      }
+    }
+
+    function escapeHtml(string) {
+      return String(string).replace(/[&<>"']/g, function(s) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[s];
+      });
+    }
+  </script>
+
+  <style>
+    .btn-score { font-size: 11px; font-weight: 700; padding: 6px 12px; border-radius: 12px; transition: all 0.15s ease; }
+    .btn-score:active { transform: scale(0.95); }
+  </style>
+</body>
+</html>

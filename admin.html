@@ -41,6 +41,37 @@
 
   <!-- CONTENIDOR PRINCIPAL -->
   <main class="max-w-3xl mx-auto px-4 space-y-6">
+    <!-- BOTONS SUPERIORS D'ACCÉS RÀPID -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+  <!-- Botó 1: Pantalla de projecció -->
+  <a 
+    href="tv.html" 
+    target="_blank" 
+    class="bg-white hover:bg-neutral-50 p-4 rounded-3xl border border-neutral-100 shadow-sm flex items-center gap-3.5 transition-all group active:scale-[0.98]"
+  >
+    <div class="p-3 rounded-2xl bg-neutral-100 text-neutral-600 group-hover:bg-neutral-200 transition-colors shrink-0">
+      <i data-lucide="tv" class="w-6 h-6 stroke-[2]"></i>
+    </div>
+    <div>
+      <h3 class="font-extrabold text-neutral-800 text-base">Pantalla de projecció</h3>
+      <p class="text-xs text-neutral-400 font-medium">Obre la pantalla gran</p>
+    </div>
+  </a>
+
+  <!-- Botó 2: Panell de control -->
+  <a 
+    href="control.html" 
+    class="bg-orange-50 border border-orange-200/80 p-4 rounded-3xl shadow-sm flex items-center gap-3.5 transition-all group active:scale-[0.98]"
+  >
+    <div class="p-3 rounded-2xl bg-orange-500 text-white shadow-md shadow-orange-500/20 shrink-0">
+      <i data-lucide="sliders" class="w-6 h-6 stroke-[2]"></i>
+    </div>
+    <div>
+      <h3 class="font-extrabold text-neutral-900 text-base">Panell de control</h3>
+      <p class="text-xs text-orange-900/60 font-medium">Puntuacions i diapositives</p>
+    </div>
+  </a>
+</div>
 
     <!-- RESUM GLOBAL -->
     <div class="grid grid-cols-2 gap-3 sm:gap-4">

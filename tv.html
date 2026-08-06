@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Costellada - Projector TV</title>
+
+  <!-- Tailwind CSS per CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      background-color: #f7f6f2;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden; /* Evitem scrollbars a la TV */
+    }
+  </style>
+</head>
+<body class="h-screen w-screen flex flex-col justify-between p-8 sm:p-12 select-none">
+
+  <!-- ================= VIEWS / SLIDES ================= -->
+
+  <!-- 1. SLIDE: BENVINGUDA -->
+  <div id="slide_benvinguda" class="slide-view h-full flex flex-col items-center justify-center text-center space-y-12">
+    <div class="space-y-4">
+      <div class="flex items-center justify-center gap-4">
+        <i data-lucide="beef" class="w-16 h-16 text-orange-500 stroke-[2]"></i>
+        <i data-lucide="trophy" class="w-16 h-16 text-amber-500 stroke-[2]"></i>
+      </div>
+      <h1 class="text-6xl sm:text-7xl font-black text-neutral-900 tracking-tight">
+        La Costellada
+      </h1>
+    </div>
+
+    <!-- TARGETES D'EQUIPS -->
+    <div id="welcomeTeamsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full max-w-5xl">
+      <!-- Carregat dinàmicament -->
+    </div>
+  </div>
+
+
+  <!-- 2. SLIDE: RONDA ACTUAL (PANTALLA DE JOC AMB MARCADOR DRETA DALT) -->
+  <div id="slide_ronda_actual" class="slide-view h-full flex flex-col justify-between hidden space-y-6">
+    
+    <!-- HEADER DEL JOC -->
+    <div class="flex items-center justify-between border-b border-neutral-200 pb-4">
+      <div class="flex items-center gap-4">
+        <div id="gameIconBox" class="p-4 rounded-3xl bg-orange-50 text-orange-500">
+          <i data-lucide="gamepad-2" class="w-10 h-10 stroke-[2]"></i>
+        </div>
+        <div>
+          <span id="gameOrderBadge" class="text-xs font-black uppercase tracking-wider text-orange-500 bg-orange-100 px-3 py-1 rounded-full">Joc 1</span>
+          <h2 id="gameTitle" class="text-4xl font-black text-neutral-900 mt-1">Carregant Joc...</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- COS PRINCIPAL: MATERIAL A L'ESQUERRA + MARCADOR A LA DRETA SUPERIOR -->
+    <div class="grid grid-cols-12 gap-8 flex-1 items-start">
+      
+      <!-- ESQUERRA (COL 8): CONTENGUT I MATERIAL DEL JOC -->
+      <div id="gameContentBox" class="col-span-8 bg-white rounded-3xl p-8 shadow-sm border border-neutral-100 h-full flex flex-col justify-center space-y-6">
+        <!-- Es carrega dinàmicament segons el joc actiu -->
+      </div>
+
+      <!-- DRETA (COL 4): MARCADOR TOTAL ORDENAT (DALT MEITAT) -->
+      <div class="col-span-4 bg-white rounded-3xl p-6 shadow-sm border border-neutral-100 space-y-4">
+        <div class="flex items-center justify-between border-b border-neutral-100 pb-3">
+          <h3 class="text-base font-extrabold text-neutral-800 flex items-center gap-2">
+            <i data-lucide="trophy" class="w-5 h-5 text-amber-500"></i>
+            Classificació
+          </h3>
+          <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">Total</span>
+        </div>
+
+        <!-- Llista d'Equips Ordenats de Més a Menys Punts -->
+        <div id="liveSidebarScores" class="space-y-3">
+          <!-- Carregat dinàmicament -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- 3. SLIDE: PUNTUACIÓ EQUIPS (MARCADOR A PANTALLA COMPLETA) -->
+  <div id="slide_puntuacio_equips" class="slide-view h-full flex flex-col items-center justify-center text-center space-y-10 hidden">
+    <div class="space-y-2">
+      <h2 class="text-5xl font-black text-neutral-900">Marcador General</h2>
+      <p class="text-lg text-neutral-400 font-medium">Puntuació acumulada de la nit</p>
+    </div>
+
+    <div id="fullScoreboardGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full max-w-6xl">
+      <!-- Carregat dinàmicament -->
+    </div>
+  </div>
+
+
+  <!-- 4. SLIDE: CLASSIFICACIÓ FINAL -->
+  <div id="slide_classificacio" class="slide-view h-full flex flex-col items-center justify-center text-center space-y-8 hidden">
+    <div class="space-y-2">
+      <i data-lucide="crown" class="w-16 h-16 text-amber-500 mx-auto stroke-[2]"></i>
+      <h2 class="text-6xl font-black text-neutral-900">Podium Final</h2>
+      <p class="text-xl text-orange-500 font-bold">Guanyadors de La Costellada 2026!</p>
+    </div>
+
+    <div id="podiumContainer" class="flex items-end justify-center gap-6 w-full max-w-4xl h-72 pt-8">
+      <!-- Carregat dinàmicament -->
+    </div>
+  </div>
+
+  <!-- FOOTER DISCRET -->
+  <footer class="flex items-center justify-between text-xs text-neutral-400 font-semibold border-t border-neutral-200/50 pt-4 mt-auto">
+    <span>La Costellada 2026</span>
+    <span class="flex items-center gap-1.5">
+      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      En directe
+    </span>
+  </footer>
+
+
+  <!-- LÒGICA JS I SUPABASE REALTIME -->
+  <script>
+    const SUPABASE_URL = 'https://bhgvnkhewhdvltpsajqm.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_qgX6u8s01wg0hYngVq5kJw_37ep4SNj';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let allTeams = [];
+    let allGames = [];
+    let allScores = [];
+    let currentState = { active_slide: 'benvinguda', active_game_id: null };
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+      await loadTVData();
+      setupRealtimeSubscriptions();
+    });
+
+    async function loadTVData() {
+      try {
+        // Carregar Equips
+        const { data: teams } = await db.from('teams').select('*').order('name');
+        allTeams = teams || [];
+
+        // Carregar Jocs
+        const { data: games } = await db.from('games').select('*').order('order_num');
+        allGames = games || [];
+
+        // Carregar Puntuacions
+        const { data: scores } = await db.from('scores').select('*');
+        allScores = scores || [];
+
+        // Carregar Estat Inicial
+        const { data: state } = await db.from('game_state').select('*').eq('id', 1).maybeSingle();
+        if (state) {
+          currentState = state;
+        }
+
+        renderAll();
+
+      } catch (err) {
+        console.error('Error carregant dades TV:', err);
+      }
+    }
+
+    // SUBSCROPCIÓ EN TEMPS REAL
+    function setupRealtimeSubscriptions() {
+      // 1. Canal Realtime via WebSockets
+      db.channel('tv_realtime')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'game_state' }, payload => {
+          if (payload.new) {
+            currentState = payload.new;
+            renderSlide(currentState.active_slide, currentState.active_game_id);
+          }
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'scores' }, async () => {
+          const { data: scores } = await db.from('scores').select('*');
+          allScores = scores || [];
+          renderScores();
+        })
+        .subscribe();
+
+      // 2. Sistema de seguretat (Polling): comprova l'estat cada 1 segon per si falla el WebSocket
+      setInterval(async () => {
+        const { data: state } = await db.from('game_state').select('*').eq('id', 1).maybeSingle();
+        if (state) {
+          const hasSlideChanged = state.active_slide !== currentState.active_slide;
+          const hasGameChanged = state.active_game_id !== currentState.active_game_id;
+
+          if (hasSlideChanged || hasGameChanged) {
+            currentState = state;
+            renderSlide(currentState.active_slide, currentState.active_game_id);
+          }
+        }
+
+        // Refrescar puntuacions en segon pla
+        const { data: scores } = await db.from('scores').select('*');
+        if (scores && scores.length !== allScores.length) {
+          allScores = scores;
+          renderScores();
+        }
+      }, 1000);
+    }
+
+    function renderAll() {
+      renderWelcomeTeams();
+      renderScores();
+      renderSlide(currentState.active_slide, currentState.active_game_id);
+    }
+
+    // CALCULAR TOTALS PER EQUIP
+    function getRankedTeams() {
+      return allTeams.map(team => {
+        const teamTotal = allScores
+          .filter(s => s.team_id === team.id)
+          .reduce((acc, curr) => acc + (curr.points || 0), 0);
+        
+        return { ...team, totalPoints: teamTotal };
+      }).sort((a, b) => b.totalPoints - a.totalPoints);
+    }
+
+    // RENDERITZAR CANVI DE SLIDE
+    function renderSlide(slideName, gameId) {
+  // 1. Amagar totes les vistes sense excepció
+  document.querySelectorAll('.slide-view').forEach(s => {
+    s.classList.add('hidden');
+  });
+
+  // 2. Mostrar la vista seleccionada
+  const targetSlide = document.getElementById(`slide_${slideName}`);
+  if (targetSlide) {
+    targetSlide.classList.remove('hidden');
+  }
+
+  // 3. Executar la lògica segons la vista
+  if (slideName === 'ronda_actual' && gameId) {
+    renderActiveGameContent(gameId);
+  } else if (slideName === 'classificacio') {
+    renderPodium();
+  } else if (slideName === 'puntuacio_equips') {
+    renderScores();
+  }
+
+  lucide.createIcons();
+}
+
+    // RENDERITZAR BENVINGUDA
+    function renderWelcomeTeams() {
+      const grid = document.getElementById('welcomeTeamsGrid');
+      grid.innerHTML = allTeams.map(team => {
+        const styles = getTeamStyles(team.color);
+        return `
+          <div class="bg-white rounded-3xl p-6 border-2 shadow-sm flex flex-col items-center space-y-3" style="background-color: ${styles.bannerBg}; border-color: ${styles.bannerBorder}">
+            <div class="w-12 h-12 rounded-full shadow-inner" style="background-color: ${styles.dotColor}"></div>
+            <h3 class="font-extrabold text-xl" style="color: ${styles.textColor}">Equip "${team.color}"</h3>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // RENDERITZAR MARCADORS
+    function renderScores() {
+      const ranked = getRankedTeams();
+
+      // 1. Sidebar dreta a la pantalla de Joc
+      const sidebar = document.getElementById('liveSidebarScores');
+      sidebar.innerHTML = ranked.map((team, index) => {
+        const styles = getTeamStyles(team.color);
+        return `
+          <div class="flex items-center justify-between p-3.5 rounded-2xl border transition-all" style="background-color: ${styles.bannerBg}; border-color: ${styles.bannerBorder}">
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-black text-neutral-400 w-4">${index + 1}º</span>
+              <span class="w-3.5 h-3.5 rounded-full" style="background-color: ${styles.dotColor}"></span>
+              <span class="font-bold text-sm" style="color: ${styles.textColor}">Equip "${team.color}"</span>
+            </div>
+            <span class="font-black text-base text-neutral-800">${team.totalPoints} <span class="text-[10px] font-normal text-neutral-400">pts</span></span>
+          </div>
+        `;
+      }).join('');
+
+      // 2. Grid pantalla completa
+      const fullGrid = document.getElementById('fullScoreboardGrid');
+      fullGrid.innerHTML = ranked.map(team => {
+        const styles = getTeamStyles(team.color);
+        return `
+          <div class="bg-white rounded-3xl p-8 border-2 shadow-sm flex flex-col items-center space-y-4" style="background-color: ${styles.bannerBg}; border-color: ${styles.bannerBorder}">
+            <div class="w-16 h-16 rounded-full shadow-inner" style="background-color: ${styles.dotColor}"></div>
+            <h3 class="font-black text-2xl" style="color: ${styles.textColor}">Equip "${team.color}"</h3>
+            <div class="text-5xl font-black text-neutral-800">${team.totalPoints}</div>
+            <span class="text-xs font-bold text-neutral-400 uppercase tracking-widest">Punts</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // CONTINGUT DEL JOC ACTIU
+    function renderActiveGameContent(gameId) {
+      const game = allGames.find(g => g.id === gameId);
+      if (!game) return;
+
+      document.getElementById('gameOrderBadge').textContent = `Joc ${game.order_num}`;
+      document.getElementById('gameTitle').textContent = game.title;
+
+      const contentBox = document.getElementById('gameContentBox');
+
+      // Generem la vista visual segons el joc
+      if (game.order_num === 1) { // Mímica
+        contentBox.innerHTML = `
+          <div class="space-y-6">
+            <p class="text-lg font-medium text-neutral-600">${game.description}</p>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="p-4 bg-neutral-50 rounded-2xl border border-neutral-100 font-bold text-neutral-800">1. Els tres porquets i el llop</div>
+              <div class="p-4 bg-neutral-50 rounded-2xl border border-neutral-100 font-bold text-neutral-800">2. Els tres mosqueters i d'Artagnan</div>
+              <div class="p-4 bg-neutral-50 rounded-2xl border border-neutral-100 font-bold text-neutral-800">3. Les tres bessones i la bruixa</div>
+              <div class="p-4 bg-neutral-50 rounded-2xl border border-neutral-100 font-bold text-neutral-800">4. Els Teletubbies</div>
+              <div class="p-4 bg-neutral-50 rounded-2xl border border-neutral-100 font-bold text-neutral-800">5. Els àngels de Charlie</div>
+              <div class="p-4 bg-neutral-50 rounded-2xl border border-neutral-100 font-bold text-neutral-800">6. Mamma Mia!</div>
+            </div>
+          </div>
+        `;
+      } else if (game.order_num === 2) { // Globus
+        contentBox.innerHTML = `
+          <div class="text-center space-y-6 py-8">
+            <i data-lucide="timer" class="w-20 h-20 text-orange-500 mx-auto stroke-[1.8]"></i>
+            <h3 class="text-4xl font-black text-neutral-900">Temps límit: 2 Minuts</h3>
+            <p class="text-xl text-neutral-600 font-medium">Cada persona ha d'inflar i lligar un globus alhora. Es valora rapidesa i mida total!</p>
+          </div>
+        `;
+      } else if (game.order_num === 3) { // Taral·larejar
+        contentBox.innerHTML = `
+          <div class="space-y-6">
+            <p class="text-lg font-medium text-neutral-600">${game.description}</p>
+            <div class="space-y-3">
+              <div class="p-4 bg-orange-50 text-orange-900 rounded-2xl font-black text-xl flex items-center justify-between"><span>Cançó 1</span> <i data-lucide="music" class="w-6 h-6"></i></div>
+              <div class="p-4 bg-orange-50 text-orange-900 rounded-2xl font-black text-xl flex items-center justify-between"><span>Cançó 2</span> <i data-lucide="music" class="w-6 h-6"></i></div>
+              <div class="p-4 bg-orange-50 text-orange-900 rounded-2xl font-black text-xl flex items-center justify-between"><span>Cançó 3</span> <i data-lucide="music" class="w-6 h-6"></i></div>
+              <div class="p-4 bg-orange-50 text-orange-900 rounded-2xl font-black text-xl flex items-center justify-between"><span>Cançó 4</span> <i data-lucide="music" class="w-6 h-6"></i></div>
+            </div>
+          </div>
+        `;
+      } else if (game.order_num === 4) { // Acrosport
+        contentBox.innerHTML = `
+          <div class="space-y-6 text-center">
+            <i data-lucide="users" class="w-16 h-16 text-purple-500 mx-auto stroke-[1.8]"></i>
+            <h3 class="text-3xl font-black text-neutral-900">Figures Humanes en Equip</h3>
+            <div class="grid grid-cols-2 gap-6 text-left">
+              <div class="p-6 bg-purple-50 rounded-3xl border border-purple-100">
+                <h4 class="font-extrabold text-purple-900 text-lg mb-1">Ronda 1: Fàcil</h4>
+                <p class="text-sm text-purple-700">Figures bàsiques d'equilibri conjunt.</p>
+              </div>
+              <div class="p-6 bg-purple-50 rounded-3xl border border-purple-100">
+                <h4 class="font-extrabold text-purple-900 text-lg mb-1">Ronda 2: Difícil</h4>
+                <p class="text-sm text-purple-700">Figures complexes d'elevació.</p>
+              </div>
+            </div>
+          </div>
+        `;
+      } else { // Llengua fora
+        contentBox.innerHTML = `
+          <div class="space-y-4">
+            <p class="text-base font-medium text-neutral-500">Digueu la frase sense equivocar-vos:</p>
+            <div class="space-y-2 text-sm font-bold text-neutral-800">
+              <div class="p-3 bg-neutral-50 rounded-2xl">1. "El sabater és el qui va més mal calçat"</div>
+              <div class="p-3 bg-neutral-50 rounded-2xl">2. "Al lloc de la guineu, qui se n'alça ja no hi seu"</div>
+              <div class="p-3 bg-neutral-50 rounded-2xl">3. "Qui no vulgui pols, que no vagi a l'era"</div>
+              <div class="p-3 bg-neutral-50 rounded-2xl">4. "Val més boig conegut que savi per conéixer"</div>
+            </div>
+          </div>
+        `;
+      }
+
+      lucide.createIcons();
+    }
+
+    // PODIUM FINAL
+    function renderPodium() {
+      const ranked = getRankedTeams();
+      const container = document.getElementById('podiumContainer');
+
+      if (ranked.length < 3) return;
+
+      const first = ranked[0];
+      const second = ranked[1];
+      const third = ranked[2];
+
+      const s1 = getTeamStyles(first.color);
+      const s2 = getTeamStyles(second.color);
+      const s3 = getTeamStyles(third.color);
+
+      container.innerHTML = `
+        <!-- 2n Lloc -->
+        <div class="flex-1 flex flex-col items-center justify-end h-full">
+          <span class="font-black text-neutral-700 text-sm mb-1">Equip "${second.color}"</span>
+          <span class="font-extrabold text-xs text-neutral-400 mb-2">${second.totalPoints} pts</span>
+          <div class="w-full h-40 rounded-t-3xl flex items-center justify-center font-black text-2xl text-white shadow-md" style="background-color: ${s2.dotColor}">
+            2º
+          </div>
+        </div>
+
+        <!-- 1r Lloc -->
+        <div class="flex-1 flex flex-col items-center justify-end h-full">
+          <i data-lucide="crown" class="w-8 h-8 text-amber-500 mb-1 stroke-[2.5]"></i>
+          <span class="font-black text-neutral-900 text-base mb-1">Equip "${first.color}"</span>
+          <span class="font-extrabold text-sm text-amber-600 mb-2">${first.totalPoints} pts</span>
+          <div class="w-full h-56 rounded-t-3xl flex items-center justify-center font-black text-4xl text-white shadow-lg" style="background-color: ${s1.dotColor}">
+            1º
+          </div>
+        </div>
+
+        <!-- 3r Lloc -->
+        <div class="flex-1 flex flex-col items-center justify-end h-full">
+          <span class="font-black text-neutral-700 text-sm mb-1">Equip "${third.color}"</span>
+          <span class="font-extrabold text-xs text-neutral-400 mb-2">${third.totalPoints} pts</span>
+          <div class="w-full h-28 rounded-t-3xl flex items-center justify-center font-black text-xl text-white shadow-sm" style="background-color: ${s3.dotColor}">
+            3º
+          </div>
+        </div>
+      `;
+
+      lucide.createIcons();
+    }
+
+    function getTeamStyles(colorName) {
+      switch (colorName.toLowerCase()) {
+        case 'groc': return { bannerBg: '#fefce8', bannerBorder: '#fef08a', dotColor: '#eab308', textColor: '#854d0e' };
+        case 'blau': return { bannerBg: '#eff6ff', bannerBorder: '#bfdbfe', dotColor: '#3b82f6', textColor: '#1e40af' };
+        case 'rosa': return { bannerBg: '#fdf2f8', bannerBorder: '#fbcfe8', dotColor: '#ec4899', textColor: '#9d174d' };
+        case 'verd': return { bannerBg: '#f0fdf4', bannerBorder: '#bbf7d0', dotColor: '#22c55e', textColor: '#166534' };
+        default: return { bannerBg: '#f5f5f5', bannerBorder: '#e5e5e5', dotColor: '#a3a3a3', textColor: '#171717' };
+      }
+    }
+  </script>
+</body>
+</html>
