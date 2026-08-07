@@ -109,28 +109,28 @@
             <span>Iniciar Compte Enrere</span>
           </button>
         </div>
-      </div>
 
-      <!-- CONTROL DE CRONÒMETRE I REVELACIÓ DE CANÇONS (TARAL·LAREJAR) -->
-      <div id="taralControlBox" class="bg-amber-50 p-4 rounded-2xl border border-amber-100 space-y-3 hidden">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-bold text-amber-900">Control Taral·larejar</span>
-          <span id="taralTimerStatusBadge" class="text-[10px] font-bold bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full">Aturat (30s)</span>
-        </div>
+        <!-- CONTROL DE CRONÒMETRE I REVELACIÓ DE CANÇONS (TARAL·LAREJAR) -->
+        <div id="taralControlBox" class="bg-amber-50 p-4 rounded-2xl border border-amber-100 space-y-3 hidden">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-amber-900">Control Taral·larejar</span>
+            <span id="taralTimerStatusBadge" class="text-[10px] font-bold bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full">Aturat (30s)</span>
+          </div>
 
-        <button 
-          onclick="toggleTimer()" 
-          id="taralTimerBtn" 
-          class="w-full py-3 px-4 rounded-xl bg-amber-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-amber-600 active:scale-95 transition-all"
-        >
-          <i data-lucide="play" class="w-4 h-4"></i>
-          <span>Iniciar Cronòmetre (30s)</span>
-        </button>
+          <button 
+            onclick="toggleTimer()" 
+            id="taralTimerBtn" 
+            class="w-full py-3 px-4 rounded-xl bg-amber-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-amber-600 active:scale-95 transition-all"
+          >
+            <i data-lucide="play" class="w-4 h-4"></i>
+            <span>Iniciar Cronòmetre (30s)</span>
+          </button>
 
-        <div class="pt-2 border-t border-amber-200/60 space-y-1.5">
-          <span class="text-[10px] font-bold text-amber-800 uppercase tracking-wider block">Revelar títol a la TV quan hagin acabat:</span>
-          <div class="grid grid-cols-1 gap-1" id="revealSongsButtons">
-            <!-- Botons de revelar cançó generats dinàmicament -->
+          <div class="pt-2 border-t border-amber-200/60 space-y-1.5">
+            <span class="text-[10px] font-bold text-amber-800 uppercase tracking-wider block">Revelar títol a la TV quan hagin acabat:</span>
+            <div class="grid grid-cols-1 gap-1" id="revealSongsButtons">
+              <!-- Botons de revelar cançó generats dinàmicament -->
+            </div>
           </div>
         </div>
       </div>
@@ -165,7 +165,9 @@
     let allGames = [];
     let allTeams = [];
     let currentState = { active_slide: 'benvinguda', active_game_id: null, active_subround: 0, reveal_solution: false };
-    let selectedMimicaRoundIndex = 0;
+    let selectedMimicaRoundIndex = 1;
+    let selectedTaralSongIndex = 1;
+    let allPlayers = [];
 
     const mimicaRondes = [
       { id: 0, title: "0. Introducció i Instruccions", phrase: "INTRO" },
@@ -175,6 +177,14 @@
       { id: 4, title: "4. Teletubis", phrase: "Teletubis" },
       { id: 5, title: "5. Els àngels de Charlie", phrase: "Els àngels de Charlie" },
       { id: 6, title: "6. Mamma Mia", phrase: "Mamma Mia" }
+    ];
+
+    const taralSongs = [
+      { id: 1, title: "En algún lugar", artist: "Duncan Dhu" },
+      { id: 2, title: "Coti x Coti", artist: "The Tyets" },
+      { id: 3, title: "Macarena", artist: "Los Del Rio" },
+      { id: 4, title: "Superestrella", artist: "Aitana" },
+      { id: 5, title: "El meu avi", artist: "Els Pescadors de l'Escala" }
     ];
 
     window.addEventListener('DOMContentLoaded', async () => {
@@ -229,7 +239,7 @@
         const updateData = { 
           active_slide: slideName, 
           active_subround: subround,
-          reveal_solution: false, // Per defecte oculta quan canviem de ronda
+          reveal_solution: false,
           updated_at: new Date() 
         };
         if (gameId) updateData.active_game_id = gameId;
@@ -293,46 +303,63 @@
       });
 
       document.querySelectorAll('.game-sub-btn').forEach(btn => {
-        btn.classList.remove('bg-orange-500', 'text-white', 'shadow-md');
+        btn.classList.remove('bg-orange-500', 'bg-purple-600', 'bg-amber-500', 'text-white', 'shadow-md');
         btn.classList.add('bg-neutral-50', 'text-neutral-700');
       });
 
       const mimicaBox = document.getElementById('mimicaControlBox');
-
       const globusBox = document.getElementById('globusControlBox');
-      if (slideName === 'ronda_actual' && gameId) {
-        const game = allGames.find(x => x.id === gameId);
-        if (game && game.order_num === 2 && subround === 1) {
-          globusBox.classList.remove('hidden');
-          updateTimerBtnUI();
-        } else {
-          globusBox.classList.add('hidden');
-        }
-      } else {
-        globusBox.classList.add('hidden');
-      }
+      const taralBox = document.getElementById('taralControlBox');
+
+      // Amagar tots els pans de control especials inicialment
+      mimicaBox?.classList.add('hidden');
+      globusBox?.classList.add('hidden');
+      taralBox?.classList.add('hidden');
 
       if (slideName === 'ronda_actual' && gameId) {
         const game = allGames.find(x => x.id === gameId);
-        if (game && game.order_num === 1) {
-          mimicaBox.classList.remove('hidden');
-          updateRevealBtnUI();
 
-          const subBtn = document.getElementById(`mimicaSubBtn_${subround}`);
-          if (subBtn) {
-            subBtn.classList.remove('bg-neutral-50', 'text-neutral-700');
-            subBtn.classList.add('bg-purple-600', 'text-white', 'shadow-md');
-          }
-        } else {
-          mimicaBox.classList.add('hidden');
-          const subBtn = document.getElementById(`gameSubBtn_${gameId}`);
-          if (subBtn) {
-            subBtn.classList.remove('bg-neutral-50', 'text-neutral-700');
-            subBtn.classList.add('bg-orange-500', 'text-white', 'shadow-md');
+        if (game) {
+          if (game.order_num === 1) { // Mímica
+            if (subround > 0) {
+              mimicaBox?.classList.remove('hidden');
+              updateRevealBtnUI();
+            }
+            const subBtn = document.getElementById(`mimicaSubBtn_${subround}`);
+            if (subBtn) {
+              subBtn.classList.remove('bg-neutral-50', 'text-neutral-700');
+              subBtn.classList.add('bg-purple-600', 'text-white', 'shadow-md');
+            }
+          } else if (game.order_num === 2) { // Globus
+            if (subround === 1) {
+              globusBox?.classList.remove('hidden');
+              updateTimerBtnUI();
+            }
+            const subBtn = document.getElementById(`globusSubBtn_${subround}`);
+            if (subBtn) {
+              subBtn.classList.remove('bg-neutral-50', 'text-neutral-700');
+              subBtn.classList.add('bg-orange-500', 'text-white', 'shadow-md');
+            }
+          } else if (game.order_num === 3) { // Taral·larejar
+            if (subround === 1) {
+              taralBox?.classList.remove('hidden');
+              renderRevealSongButtons();
+              updateTimerBtnUI();
+            }
+            const subBtn = document.getElementById(`taralSubBtn_${subround}`);
+            if (subBtn) {
+              subBtn.classList.remove('bg-neutral-50', 'text-neutral-700');
+              subBtn.classList.add('bg-amber-500', 'text-white', 'shadow-md');
+            }
+          } else {
+            const subBtn = document.getElementById(`gameSubBtn_${gameId}`);
+            if (subBtn) {
+              subBtn.classList.remove('bg-neutral-50', 'text-neutral-700');
+              subBtn.classList.add('bg-orange-500', 'text-white', 'shadow-md');
+            }
           }
         }
       } else {
-        mimicaBox.classList.add('hidden');
         const activeBtn = document.getElementById(`slideBtn_${slideName}`);
         if (activeBtn) {
           activeBtn.classList.add('slide-btn-active');
@@ -353,7 +380,7 @@
         const g = allGames.find(x => x.id === gameId);
         if (g) {
           labelText += `: ${g.title}`;
-          if (g.order_num === 1) {
+          if (g.order_num === 1 && mimicaRondes[subround]) {
             labelText += ` (${mimicaRondes[subround].title})`;
           }
         }
@@ -370,7 +397,6 @@
 
       let html = '';
 
-      // Joc 1: Mímica
       if (mimicaGame) {
         html += `
           <div class="space-y-1 bg-purple-50/50 p-2.5 rounded-2xl border border-purple-100">
@@ -389,7 +415,6 @@
         `;
       }
 
-      // Joc 2: Els Globus
       if (globusGame) {
         html += `
           <div class="space-y-1 bg-orange-50/50 p-2.5 rounded-2xl border border-orange-100 mt-2">
@@ -414,7 +439,6 @@
         `;
       }
 
-      // Joc 3: Taral·larejar
       if (taralGame) {
         html += `
           <div class="space-y-1 bg-amber-50/50 p-2.5 rounded-2xl border border-amber-100 mt-2">
@@ -439,7 +463,6 @@
         `;
       }
 
-      // Resta de jocs
       otherGames.forEach(g => {
         html += `
           <button 
@@ -464,8 +487,6 @@
       `).join('');
     }
 
-    let allPlayers = [];
-
     async function loadGameScoreControls() {
       const gameId = document.getElementById('scoreGameSelect').value;
       const container = document.getElementById('scoreControlsContainer');
@@ -473,7 +494,6 @@
 
       if (!game) return;
 
-      // Carregar jugadors per a la cerca ràpida per nom
       if (allPlayers.length === 0) {
         const { data: players } = await db.from('players').select('*, teams(name, color)');
         allPlayers = players || [];
@@ -488,7 +508,6 @@
         </div>
       `;
 
-      // Si és el joc 1 (Mímica)
       if (game.order_num === 1) {
         html += `
           <div class="bg-white p-4 rounded-3xl border border-neutral-100 shadow-sm space-y-2">
@@ -500,12 +519,11 @@
         `;
       }
 
-      // Si és el joc 2 (Globus): Cercador ràpida per nom per a la rapidesa
       if (game.order_num === 2) {
         html += `
           <div class="bg-white p-4 rounded-3xl border border-neutral-100 shadow-sm space-y-2">
             <label class="block text-xs font-extrabold text-orange-600 uppercase tracking-wider">
-              ⚡ Entrada Ràpida per Rapidesa (Nom + Enter):
+              Entrada Ràpida per Rapidesa (Nom + Enter):
             </label>
             <div class="relative">
               <input 
@@ -522,7 +540,6 @@
         `;
       }
 
-      // Si és el joc 3 (Taral·larejar): Desplegable per triar per quina cançó puntuem
       if (game.order_num === 3) {
         html += `
           <div class="bg-white p-4 rounded-3xl border border-neutral-100 shadow-sm space-y-2">
@@ -534,7 +551,6 @@
         `;
       }
 
-      // Llista per equips
       allTeams.forEach(team => {
         const styles = getTeamStyles(team.color);
         const teamScoresList = (existingScores || []).filter(s => s.team_id === team.id);
@@ -616,8 +632,10 @@
       const player = allPlayers.find(p => p.id === playerId);
       if (player) {
         await assignQuickPoints(gameId, player);
-        document.getElementById('quickNameInput').value = '';
-        document.getElementById('quickSearchResults').classList.add('hidden');
+        const input = document.getElementById('quickNameInput');
+        if (input) input.value = '';
+        const res = document.getElementById('quickSearchResults');
+        if (res) res.classList.add('hidden');
       }
     }
 
@@ -625,7 +643,7 @@
       const { data: existingScores } = await db.from('scores').select('*').eq('game_id', gameId);
       const speedScoresCount = (existingScores || []).filter(s => s.round_name.includes('Rapidesa')).length;
 
-      const pointsTable = [10, 6, 3, 1];
+      const pointsTable = [5, 3, 2, 1];
       const pts = pointsTable[speedScoresCount] || 1;
       const rankText = `${speedScoresCount + 1}r`;
 
@@ -633,76 +651,6 @@
         game_id: gameId,
         team_id: player.team_id,
         round_name: `Rapidesa ${rankText} (${player.name})`,
-        points: pts
-      });
-
-      await loadGameScoreControls();
-    }
-
-    // LÒGICA DE CERCA RÀPIDA PER NOM
-    async function handleQuickNameKeydown(event, gameId) {
-      if (event.key !== 'Enter') return;
-      event.preventDefault();
-
-      const query = event.target.value.trim().toLowerCase();
-      if (!query) return;
-
-      // Filtrar jugadors que comencin o continguin les lletres
-      const matches = allPlayers.filter(p => p.name.toLowerCase().includes(query));
-      const resultsDiv = document.getElementById('quickSearchResults');
-
-      if (matches.length === 1) {
-        // Coincidència exacta única! Assignem punts de rapidesa
-        const player = matches[0];
-        await assignQuickPoints(gameId, player);
-        event.target.value = '';
-        resultsDiv.classList.add('hidden');
-      } else if (matches.length > 1) {
-        // Diversos jugadors coincideixen: mostrem opcions
-        resultsDiv.classList.remove('hidden');
-        resultsDiv.innerHTML = `
-          <span class="text-neutral-400 font-normal px-2 block">S'han trobat diversos jugadors:</span>
-          ${matches.map(p => `
-            <button 
-              onclick="selectMatchedPlayer('${gameId}', '${p.id}')" 
-              class="w-full text-left p-2 hover:bg-orange-100 rounded-xl text-orange-900 font-bold flex items-center justify-between"
-            >
-              <span>${escapeHtml(p.name)} (${p.teams?.color || 'Sense equip'})</span>
-              <span class="text-[10px] bg-orange-200 px-2 py-0.5 rounded-full">Seleccionar</span>
-            </button>
-          `).join('')}
-        `;
-      } else {
-        // Cap jugador trobat
-        resultsDiv.classList.remove('hidden');
-        resultsDiv.innerHTML = `<span class="text-red-500 font-bold px-2">No s'ha trobat cap jugador amb "${escapeHtml(query)}"</span>`;
-      }
-    }
-
-    async function selectMatchedPlayer(gameId, playerId) {
-      const player = allPlayers.find(p => p.id === playerId);
-      if (player) {
-        await assignQuickPoints(gameId, player);
-        document.getElementById('quickNameInput').value = '';
-        document.getElementById('quickSearchResults').classList.add('hidden');
-      }
-    }
-
-    async function assignQuickPoints(gameId, player) {
-      // Obtenir quantes puntuacions de rapidesa s'han atorgat ja en aquest joc per determinar el lloc (1r, 2n, 3r, 4t)
-      const { data: existingScores } = await db.from('scores').select('*').eq('game_id', gameId);
-      const speedScoresCount = (existingScores || []).filter(s => s.round_name.includes('Rapidesa')).length;
-
-      const pointsTable = [10, 6, 3, 1]; // 1r = 10pts, 2n = 6pts, 3r = 3pts, 4t = 1pt
-      const pts = pointsTable[speedScoresCount] || 1;
-      const rankText = `${speedScoresCount + 1}r`;
-
-      const roundLabel = `Rapidesa ${rankText} (${player.name})`;
-
-      await db.from('scores').insert({
-        game_id: gameId,
-        team_id: player.team_id,
-        round_name: roundLabel,
         points: pts
       });
 
@@ -722,14 +670,14 @@
         return `
           <div class="w-full space-y-2 pt-1">
             <div class="flex items-center gap-1.5 flex-wrap">
-              <span class="text-[10px] font-bold text-orange-600 uppercase tracking-wider w-full block">⚡ Rapidesa:</span>
+              <span class="text-[10px] font-bold text-orange-600 uppercase tracking-wider w-full block">Rapidesa:</span>
               <button onclick="addPoints('${gameId}', '${teamId}', 'Rapidesa 1r', 5)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+5)</button>
               <button onclick="addPoints('${gameId}', '${teamId}', 'Rapidesa 2n', 3)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+3)</button>
               <button onclick="addPoints('${gameId}', '${teamId}', 'Rapidesa 3r', 2)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+2)</button>
               <button onclick="addPoints('${gameId}', '${teamId}', 'Rapidesa 4t', 1)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+1)</button>
             </div>
             <div class="flex items-center gap-1.5 flex-wrap pt-1 border-t border-neutral-100">
-              <span class="text-[10px] font-bold text-purple-600 uppercase tracking-wider w-full block">🎈 Mida / Quantitat:</span>
+              <span class="text-[10px] font-bold text-purple-600 uppercase tracking-wider w-full block">Mida / Quantitat:</span>
               <button onclick="addPoints('${gameId}', '${teamId}', 'Mida 1r', 5)" class="btn-score bg-purple-50 text-purple-700 hover:bg-purple-100">1r (+5)</button>
               <button onclick="addPoints('${gameId}', '${teamId}', 'Mida 2n', 3)" class="btn-score bg-indigo-50 text-indigo-700 hover:bg-indigo-100">2n (+3)</button>
               <button onclick="addPoints('${gameId}', '${teamId}', 'Mida 3r', 2)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+2)</button>
@@ -737,21 +685,21 @@
             </div>
           </div>
         `;
-      } else if (gameNum === 3) { // Taral·larejar (Puntuació per cançó)
+      } else if (gameNum === 3) { // Taral·larejar
         const currentSong = taralSongs.find(s => s.id == selectedTaralSongIndex) || taralSongs[0];
         const songTag = `C${currentSong.id}`;
 
         return `
           <div class="w-full space-y-2 pt-1">
             <div class="flex items-center gap-1.5 flex-wrap">
-              <span class="text-[10px] font-bold text-amber-600 uppercase tracking-wider w-full block">⚡ Rapidesa (${songTag}):</span>
+              <span class="text-[10px] font-bold text-amber-600 uppercase tracking-wider w-full block">Rapidesa (${songTag}):</span>
               <button onclick="addPoints('${gameId}', '${teamId}', '${songTag} Rapidesa 1r', 3)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+3)</button>
               <button onclick="addPoints('${gameId}', '${teamId}', '${songTag} Rapidesa 2n', 2)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+2)</button>
               <button onclick="addPoints('${gameId}', '${teamId}', '${songTag} Rapidesa 3r', 1)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+1)</button>
               <button onclick="addPoints('${gameId}', '${teamId}', '${songTag} Rapidesa 4t', 0)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+0)</button>
             </div>
             <div class="flex items-center gap-1.5 flex-wrap pt-1 border-t border-neutral-100">
-              <span class="text-[10px] font-bold text-purple-600 uppercase tracking-wider w-full block">🎵 Encert (${songTag}):</span>
+              <span class="text-[10px] font-bold text-purple-600 uppercase tracking-wider w-full block">Encert (${songTag}):</span>
               <button onclick="addPoints('${gameId}', '${teamId}', '${songTag} Nom/Artista', 4)" class="btn-score bg-purple-50 text-purple-700 hover:bg-purple-100">Nom O Artista (+4)</button>
               <button onclick="addPoints('${gameId}', '${teamId}', '${songTag} Nom i Artista', 7)" class="btn-score bg-amber-50 text-amber-800 hover:bg-amber-100">Nom I Artista (+7)</button>
             </div>
@@ -807,7 +755,6 @@
         timer_running: !isRunning,
         updated_at: new Date()
       };
-      // Si el reiniciem quan ja ha acabat o està parat
       if (!isRunning && (currentState.timer_seconds === undefined || currentState.timer_seconds <= 0)) {
         updateData.timer_seconds = 30;
       }
@@ -818,74 +765,42 @@
     }
 
     function updateTimerBtnUI() {
-      const badge = document.getElementById('timerStatusBadge');
-      const btn = document.getElementById('timerBtn');
-      if (!badge || !btn) return;
+      const globusBadge = document.getElementById('timerStatusBadge');
+      const globusBtn = document.getElementById('timerBtn');
+      const taralBadge = document.getElementById('taralTimerStatusBadge');
+      const taralBtn = document.getElementById('taralTimerBtn');
 
-      if (currentState.timer_running) {
-        badge.textContent = "En marxa!";
-        badge.className = "text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full";
-        btn.innerHTML = `<i data-lucide="pause" class="w-4 h-4"></i><span>Pausar Cronòmetre</span>`;
-        btn.className = "w-full py-3 px-4 rounded-xl bg-neutral-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-neutral-800 active:scale-95 transition-all";
-      } else {
-        badge.textContent = "Aturat";
-        badge.className = "text-[10px] font-bold bg-orange-200 text-orange-800 px-2 py-0.5 rounded-full";
-        btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i><span>Iniciar Compte Enrere</span>`;
-        btn.className = "w-full py-3 px-4 rounded-xl bg-orange-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-orange-600 active:scale-95 transition-all";
-      }
-      lucide.createIcons();
-    }
+      const isRunning = currentState.timer_running;
 
-    function getTeamStyles(colorName) {
-      switch (colorName.toLowerCase()) {
-        case 'groc': return { dotColor: '#eab308' };
-        case 'blau': return { dotColor: '#3b82f6' };
-        case 'rosa': return { dotColor: '#ec4899' };
-        case 'verd': return { dotColor: '#22c55e' };
-        default: return { dotColor: '#a3a3a3' };
-      }
-    }
-
-    function escapeHtml(string) {
-      return String(string).replace(/[&<>"']/g, function(s) {
-        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[s];
-      });
-    }
-
-    const taralSongs = [
-      { id: 1, title: "En algún lugar", artist: "Duncan Dhu" },
-      { id: 2, title: "Coti x Coti", artist: "The Tyets" },
-      { id: 3, title: "Macarena", artist: "Los Del Rio" },
-      { id: 4, title: "Superestrella", artist: "Aitana" },
-      { id: 5, title: "El meu avi", artist: "Els Pescadors de l'Escala" }
-    ];
-    let selectedTaralSongIndex = 1; // Cançó seleccionada per defecte per puntuar
-
-    function updateSlideUI(slideName, gameId = null, subround = 0) {
-      // ... mantenir codi previ de la funció ...
-
-      const globusBox = document.getElementById('globusControlBox');
-      const taralBox = document.getElementById('taralControlBox');
-
-      if (slideName === 'ronda_actual' && gameId) {
-        const game = allGames.find(x => x.id === gameId);
-        if (game && game.order_num === 2 && subround === 1) {
-          globusBox?.classList.remove('hidden');
-          taralBox?.classList.add('hidden');
-          updateTimerBtnUI();
-        } else if (game && game.order_num === 3 && subround === 1) {
-          taralBox?.classList.remove('hidden');
-          globusBox?.classList.add('hidden');
-          renderRevealSongButtons();
-          updateTimerBtnUI();
+      if (globusBadge && globusBtn) {
+        if (isRunning) {
+          globusBadge.textContent = "En marxa!";
+          globusBadge.className = "text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full";
+          globusBtn.innerHTML = `<i data-lucide="pause" class="w-4 h-4"></i><span>Pausar Cronòmetre</span>`;
+          globusBtn.className = "w-full py-3 px-4 rounded-xl bg-neutral-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-neutral-800 active:scale-95 transition-all";
         } else {
-          globusBox?.classList.add('hidden');
-          taralBox?.classList.add('hidden');
+          globusBadge.textContent = "Aturat";
+          globusBadge.className = "text-[10px] font-bold bg-orange-200 text-orange-800 px-2 py-0.5 rounded-full";
+          globusBtn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i><span>Iniciar Compte Enrere</span>`;
+          globusBtn.className = "w-full py-3 px-4 rounded-xl bg-orange-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-orange-600 active:scale-95 transition-all";
         }
-      } else {
-        globusBox?.classList.add('hidden');
-        taralBox?.classList.add('hidden');
       }
+
+      if (taralBadge && taralBtn) {
+        if (isRunning) {
+          taralBadge.textContent = "En marxa!";
+          taralBadge.className = "text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full";
+          taralBtn.innerHTML = `<i data-lucide="pause" class="w-4 h-4"></i><span>Pausar Cronòmetre</span>`;
+          taralBtn.className = "w-full py-3 px-4 rounded-xl bg-neutral-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-neutral-800 active:scale-95 transition-all";
+        } else {
+          taralBadge.textContent = "Aturat";
+          taralBadge.className = "text-[10px] font-bold bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full";
+          taralBtn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i><span>Iniciar Cronòmetre (30s)</span>`;
+          taralBtn.className = "w-full py-3 px-4 rounded-xl bg-amber-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-amber-600 active:scale-95 transition-all";
+        }
+      }
+
+      lucide.createIcons();
     }
 
     async function toggleRevealSong(songId) {
@@ -925,6 +840,22 @@
           </button>
         `;
       }).join('');
+    }
+
+    function getTeamStyles(colorName) {
+      switch (colorName.toLowerCase()) {
+        case 'groc': return { dotColor: '#eab308' };
+        case 'blau': return { dotColor: '#3b82f6' };
+        case 'rosa': return { dotColor: '#ec4899' };
+        case 'verd': return { dotColor: '#22c55e' };
+        default: return { dotColor: '#a3a3a3' };
+      }
+    }
+
+    function escapeHtml(string) {
+      return String(string).replace(/[&<>"']/g, function(s) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[s];
+      });
     }
   </script>
 

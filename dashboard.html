@@ -115,94 +115,7 @@
           </p>
         </div>
       </div>
-      <p class="text-[11px] text-neutral-400 italic font-medium px-1">* Nom provisional fins a la votació final.</p>
     </section>
-
-    <!-- SECCIÓ 3: NOM D'EQUIP -->
-    <section class="space-y-3">
-      <div class="space-y-0.5">
-        <h2 class="text-xl font-bold text-neutral-900 flex items-center gap-2">
-          <i data-lucide="pen-tool" class="w-5 h-5 text-neutral-500"></i>
-          Nom de l'equip
-        </h2>
-        <p class="text-xs text-neutral-400 font-medium">Proposa un nom i vota els que t'agradin</p>
-      </div>
-
-      <!-- AVÍS DATA LÍMIT -->
-      <div class="bg-orange-50 border border-orange-200/60 rounded-2xl p-3.5 flex items-center gap-3">
-        <i data-lucide="calendar-clock" class="w-5 h-5 text-orange-500 shrink-0"></i>
-        <p class="text-xs text-orange-900 font-medium">
-          Les propostes i votacions estaran obertes fins al <strong>7 d'agost a les 23:59 h</strong> (el dia abans del sopar).
-        </p>
-      </div>
-
-      <!-- FORMULARI DE PROPOSTA -->
-      <div class="bg-white rounded-3xl p-5 shadow-sm border border-neutral-100 space-y-3">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-bold text-neutral-700">Les teves propostes</span>
-          <span id="proposalsCounter" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">0/2</span>
-        </div>
-
-        <form onsubmit="handleAddSuggestion(event)" class="flex items-center gap-2">
-          <input 
-            type="text" 
-            id="suggestionInput" 
-            placeholder="Nom d'equip..."
-            class="flex-1 bg-neutral-100/80 text-neutral-800 placeholder-neutral-400 px-4 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500/50 transition-all text-sm font-medium border border-transparent focus:border-orange-200"
-          />
-          <button 
-            type="submit" 
-            id="addBtn"
-            class="w-11 h-11 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white rounded-2xl flex items-center justify-center shrink-0 transition-all shadow-md shadow-orange-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <i data-lucide="plus" class="w-5 h-5 stroke-[2.5]"></i>
-          </button>
-        </form>
-      </div>
-
-      <!-- LLISTAT I VOTACIONS -->
-      <div class="space-y-3">
-        <div class="flex items-center justify-between gap-2 px-1">
-            <span class="text-xs text-neutral-400 font-medium leading-tight">Vots permesos: 50% de les opcions</span>
-            <span id="votesCounter" class="px-2.5 py-1.8 rounded-full text-xs font-bold bg-orange-100 text-orange-600 shrink-0 whitespace-nowrap">0 vots disponibles</span>
-        </div>
-
-        <!-- Contenidor de llista de propostes -->
-        <div id="suggestionsList" class="space-y-2">
-          <!-- Es carregarà dinàmicament -->
-        </div>
-      </div>
-    </section>
-
-    <!-- MODAL DE CONFIRMACIÓ PER ELIMINAR PROPOSTA -->
-    <div id="deleteModal" class="fixed inset-0 bg-neutral-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-      <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-xl space-y-4 border border-neutral-100 text-center animate-in fade-in zoom-in duration-150">
-        <div class="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center mx-auto">
-          <i data-lucide="trash-2" class="w-6 h-6 stroke-[2]"></i>
-        </div>
-        
-        <div class="space-y-1">
-          <h3 class="font-bold text-lg text-neutral-800">Eliminar proposta?</h3>
-          <p class="text-xs text-neutral-500">Aquesta acció no es pot desfer i la proposta perdrà tots els vots rebuts.</p>
-        </div>
-
-        <div class="flex items-center gap-2 pt-2">
-          <button 
-            onclick="closeDeleteModal()" 
-            class="flex-1 py-3 px-4 rounded-2xl bg-neutral-100 text-neutral-700 font-bold text-xs hover:bg-neutral-200 transition-all active:scale-95"
-          >
-            Cancelar
-          </button>
-          <button 
-            id="confirmDeleteBtn" 
-            class="flex-1 py-3 px-4 rounded-2xl bg-red-500 text-white font-bold text-xs hover:bg-red-600 transition-all shadow-md shadow-red-500/20 active:scale-95"
-          >
-            Eliminar
-          </button>
-        </div>
-      </div>
-    </div>
-
   </main>
 
   <!-- LÒGICA JS I CONNEXIÓ SUPABASE -->
@@ -255,7 +168,7 @@
       document.getElementById('headerUserName').textContent = currentPlayer.name;
       
       if (playerTeam) {
-        document.getElementById('headerTeamName').textContent = `Equip "${playerTeam.color}"`;
+        document.getElementById('headerTeamName').textContent = `${playerTeam.name}`;
         const dot = document.getElementById('headerTeamDot');
         const badge = document.getElementById('headerTeamBadge');
         
@@ -279,7 +192,7 @@
       card.style.borderColor = styles.bannerBorder;
       circle.style.backgroundColor = styles.dotColor;
       
-      name.textContent = `Equip "${playerTeam.color}"*`;
+      name.textContent = `${playerTeam.name}`;
       name.style.color = styles.textColor;
       
       // Adaptació de concordància de gènere del color (blau -> blava, etc.)
