@@ -4,51 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>La Costellada - Projector TV</title>
-
-  <!-- Tailwind CSS per CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-
   <style>
-    body {
-      background-color: #f7f6f2;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      overflow: hidden; /* Evitem scrollbars a la TV */
+    body { background-color: #f7f6f2; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overflow: hidden; }
+    .letter-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.8rem;
+      height: 3.5rem;
+      border-bottom: 4px solid #f97316;
+      font-size: 2rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin: 0 3px;
+      transition: all 0.3s ease;
+    }
+    @keyframes timerBeat {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.25); }
+      100% { transform: scale(1); }
+    }
+    .animate-timer-beat {
+      animation: timerBeat 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
   </style>
 </head>
 <body class="h-screen w-screen flex flex-col justify-between p-8 sm:p-12 select-none">
 
-  <!-- ================= VIEWS / SLIDES ================= -->
-
-  <!-- 1. SLIDE: BENVINGUDA -->
+  <!-- SLIDE 1: BENVINGUDA -->
   <div id="slide_benvinguda" class="slide-view h-full flex flex-col items-center justify-center text-center space-y-12">
     <div class="space-y-4">
       <div class="flex items-center justify-center gap-4">
         <i data-lucide="beef" class="w-16 h-16 text-orange-500 stroke-[2]"></i>
         <i data-lucide="trophy" class="w-16 h-16 text-amber-500 stroke-[2]"></i>
       </div>
-      <h1 class="text-6xl sm:text-7xl font-black text-neutral-900 tracking-tight">
-        La Costellada
-      </h1>
+      <h1 class="text-6xl sm:text-7xl font-black text-neutral-900 tracking-tight">La Costellada</h1>
     </div>
-
-    <!-- TARGETES D'EQUIPS -->
-    <div id="welcomeTeamsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full max-w-5xl">
-      <!-- Carregat dinàmicament -->
-    </div>
+    <div id="welcomeTeamsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full max-w-5xl"></div>
   </div>
 
-
-  <!-- 2. SLIDE: RONDA ACTUAL (PANTALLA DE JOC AMB MARCADOR DRETA DALT) -->
+  <!-- SLIDE 2: RONDA ACTUAL -->
   <div id="slide_ronda_actual" class="slide-view h-full flex flex-col justify-between hidden space-y-6">
-    
-    <!-- HEADER DEL JOC -->
     <div class="flex items-center justify-between border-b border-neutral-200 pb-4">
       <div class="flex items-center gap-4">
         <div id="gameIconBox" class="p-4 rounded-3xl bg-orange-50 text-orange-500">
@@ -61,71 +60,48 @@
       </div>
     </div>
 
-    <!-- COS PRINCIPAL: MATERIAL A L'ESQUERRA + MARCADOR A LA DRETA SUPERIOR -->
     <div class="grid grid-cols-12 gap-8 flex-1 items-start">
-      
-      <!-- ESQUERRA (COL 8): CONTENGUT I MATERIAL DEL JOC -->
-      <div id="gameContentBox" class="col-span-8 bg-white rounded-3xl p-8 shadow-sm border border-neutral-100 h-full flex flex-col justify-center space-y-6">
-        <!-- Es carrega dinàmicament segons el joc actiu -->
-      </div>
+      <!-- ESQUERRA: CONTINGUT DEL JOC -->
+      <div id="gameContentBox" class="col-span-8 bg-white rounded-3xl p-8 shadow-sm border border-neutral-100 h-full flex flex-col justify-center space-y-6"></div>
 
-      <!-- DRETA (COL 4): MARCADOR TOTAL ORDENAT (DALT MEITAT) -->
+      <!-- DRETA: CLASSIFICACIÓ JOC ACTIU -->
       <div class="col-span-4 bg-white rounded-3xl p-6 shadow-sm border border-neutral-100 space-y-4">
         <div class="flex items-center justify-between border-b border-neutral-100 pb-3">
           <h3 class="text-base font-extrabold text-neutral-800 flex items-center gap-2">
             <i data-lucide="trophy" class="w-5 h-5 text-amber-500"></i>
             Classificació
           </h3>
-          <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">Total</span>
+          <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">Joc actual</span>
         </div>
-
-        <!-- Llista d'Equips Ordenats de Més a Menys Punts -->
-        <div id="liveSidebarScores" class="space-y-3">
-          <!-- Carregat dinàmicament -->
-        </div>
+        <div id="liveSidebarScores" class="space-y-3"></div>
       </div>
-
     </div>
   </div>
 
-
-  <!-- 3. SLIDE: PUNTUACIÓ EQUIPS (MARCADOR A PANTALLA COMPLETA) -->
+  <!-- SLIDE 3: PUNTUACIÓ EQUIPS -->
   <div id="slide_puntuacio_equips" class="slide-view h-full flex flex-col items-center justify-center text-center space-y-10 hidden">
     <div class="space-y-2">
       <h2 class="text-5xl font-black text-neutral-900">Marcador General</h2>
       <p class="text-lg text-neutral-400 font-medium">Puntuació acumulada de la nit</p>
     </div>
-
-    <div id="fullScoreboardGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full max-w-6xl">
-      <!-- Carregat dinàmicament -->
-    </div>
+    <div id="fullScoreboardGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full max-w-6xl"></div>
   </div>
 
-
-  <!-- 4. SLIDE: CLASSIFICACIÓ FINAL -->
+  <!-- SLIDE 4: CLASSIFICACIÓ FINAL -->
   <div id="slide_classificacio" class="slide-view h-full flex flex-col items-center justify-center text-center space-y-8 hidden">
     <div class="space-y-2">
       <i data-lucide="crown" class="w-16 h-16 text-amber-500 mx-auto stroke-[2]"></i>
       <h2 class="text-6xl font-black text-neutral-900">Podium Final</h2>
-      <p class="text-xl text-orange-500 font-bold">Guanyadors de La Costellada 2026!</p>
+      <p class="text-xl text-orange-500 font-bold">Guanyadors de La Costellada!</p>
     </div>
-
-    <div id="podiumContainer" class="flex items-end justify-center gap-6 w-full max-w-4xl h-72 pt-8">
-      <!-- Carregat dinàmicament -->
-    </div>
+    <div id="podiumContainer" class="flex items-end justify-center gap-6 w-full max-w-4xl h-72 pt-8"></div>
   </div>
 
-  <!-- FOOTER DISCRET -->
   <footer class="flex items-center justify-between text-xs text-neutral-400 font-semibold border-t border-neutral-200/50 pt-4 mt-auto">
     <span>La Costellada 2026</span>
-    <span class="flex items-center gap-1.5">
-      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-      En directe
-    </span>
+    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> En directe</span>
   </footer>
 
-
-  <!-- LÒGICA JS I SUPABASE REALTIME -->
   <script>
     const SUPABASE_URL = 'https://bhgvnkhewhdvltpsajqm.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_qgX6u8s01wg0hYngVq5kJw_37ep4SNj';
@@ -134,7 +110,17 @@
     let allTeams = [];
     let allGames = [];
     let allScores = [];
-    let currentState = { active_slide: 'benvinguda', active_game_id: null };
+    let currentState = { active_slide: 'benvinguda', active_game_id: null, active_subround: 0, reveal_solution: false };
+
+    const mimicaPhrases = [
+      "INTRODUCCIO",
+      "Els tres porquets i el llop",
+      "Els tres mosqueters i en d'Artagnan",
+      "Les tres bessones i la bruixa avorrida",
+      "Teletubis",
+      "Els àngels de Charlie",
+      "Mamma Mia"
+    ];
 
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
@@ -144,19 +130,15 @@
 
     async function loadTVData() {
       try {
-        // Carregar Equips
         const { data: teams } = await db.from('teams').select('*').order('name');
         allTeams = teams || [];
 
-        // Carregar Jocs
         const { data: games } = await db.from('games').select('*').order('order_num');
         allGames = games || [];
 
-        // Carregar Puntuacions
         const { data: scores } = await db.from('scores').select('*');
         allScores = scores || [];
 
-        // Carregar Estat Inicial
         const { data: state } = await db.from('game_state').select('*').eq('id', 1).maybeSingle();
         if (state) {
           currentState = state;
@@ -169,14 +151,13 @@
       }
     }
 
-    // SUBSCROPCIÓ EN TEMPS REAL
     function setupRealtimeSubscriptions() {
-      // 1. Canal Realtime via WebSockets
       db.channel('tv_realtime')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'game_state' }, payload => {
           if (payload.new) {
             currentState = payload.new;
             renderSlide(currentState.active_slide, currentState.active_game_id);
+            handleTimerState(); // <--- afegit
           }
         })
         .on('postgres_changes', { event: '*', schema: 'public', table: 'scores' }, async () => {
@@ -186,24 +167,19 @@
         })
         .subscribe();
 
-      // 2. Sistema de seguretat (Polling): comprova l'estat cada 1 segon per si falla el WebSocket
       setInterval(async () => {
         const { data: state } = await db.from('game_state').select('*').eq('id', 1).maybeSingle();
         if (state) {
-          const hasSlideChanged = state.active_slide !== currentState.active_slide;
-          const hasGameChanged = state.active_game_id !== currentState.active_game_id;
+          const changed = state.active_slide !== currentState.active_slide ||
+                          state.active_game_id !== currentState.active_game_id ||
+                          state.active_subround !== currentState.active_subround ||
+                          state.timer_running !== currentState.timer_running;
 
-          if (hasSlideChanged || hasGameChanged) {
+          if (changed) {
             currentState = state;
             renderSlide(currentState.active_slide, currentState.active_game_id);
+            handleTimerState(); // <--- afegit
           }
-        }
-
-        // Refrescar puntuacions en segon pla
-        const { data: scores } = await db.from('scores').select('*');
-        if (scores && scores.length !== allScores.length) {
-          allScores = scores;
-          renderScores();
         }
       }, 1000);
     }
@@ -214,43 +190,49 @@
       renderSlide(currentState.active_slide, currentState.active_game_id);
     }
 
-    // CALCULAR TOTALS PER EQUIP
+    // Obtenir la classificació filtrant NOMÉS I EN EXCLUSIVA pel joc actiu
+    function getRankedTeamsForGame(gameId) {
+      if (!gameId) return allTeams.map(t => ({ ...t, gamePoints: 0 }));
+
+      return allTeams.map(team => {
+        // Sumem ÚNICAMENT els registres de la taula scores que tenen exactament aquest game_id
+        const gameTotal = allScores
+          .filter(s => String(s.game_id) === String(gameId) && String(s.team_id) === String(team.id))
+          .reduce((acc, curr) => acc + (Number(curr.points) || 0), 0);
+        
+        return { ...team, gamePoints: gameTotal };
+      }).sort((a, b) => b.gamePoints - a.gamePoints);
+    }
+
     function getRankedTeams() {
       return allTeams.map(team => {
         const teamTotal = allScores
           .filter(s => s.team_id === team.id)
           .reduce((acc, curr) => acc + (curr.points || 0), 0);
-        
         return { ...team, totalPoints: teamTotal };
       }).sort((a, b) => b.totalPoints - a.totalPoints);
     }
 
-    // RENDERITZAR CANVI DE SLIDE
     function renderSlide(slideName, gameId) {
-  // 1. Amagar totes les vistes sense excepció
-  document.querySelectorAll('.slide-view').forEach(s => {
-    s.classList.add('hidden');
-  });
+      document.querySelectorAll('.slide-view').forEach(s => s.classList.add('hidden'));
 
-  // 2. Mostrar la vista seleccionada
-  const targetSlide = document.getElementById(`slide_${slideName}`);
-  if (targetSlide) {
-    targetSlide.classList.remove('hidden');
-  }
+      const targetSlide = document.getElementById(`slide_${slideName}`);
+      if (targetSlide) {
+        targetSlide.classList.remove('hidden');
+      }
 
-  // 3. Executar la lògica segons la vista
-  if (slideName === 'ronda_actual' && gameId) {
-    renderActiveGameContent(gameId);
-  } else if (slideName === 'classificacio') {
-    renderPodium();
-  } else if (slideName === 'puntuacio_equips') {
-    renderScores();
-  }
+      // Forçar l'actualització immediata dels marcadors per al joc actualment actiu
+      renderScores();
 
-  lucide.createIcons();
-}
+      if (slideName === 'ronda_actual' && gameId) {
+        renderActiveGameContent(gameId);
+      } else if (slideName === 'classificacio') {
+        renderPodium();
+      }
 
-    // RENDERITZAR BENVINGUDA
+      lucide.createIcons();
+    }
+
     function renderWelcomeTeams() {
       const grid = document.getElementById('welcomeTeamsGrid');
       grid.innerHTML = allTeams.map(team => {
@@ -266,40 +248,44 @@
 
     // RENDERITZAR MARCADORS
     function renderScores() {
-      const ranked = getRankedTeams();
-
-      // 1. Sidebar dreta a la pantalla de Joc
+      // 1. Sidebar dreta a la pantalla de Joc (NOMÉS PUNTS DEL JOC ACTUALMENT EN PANTALLA)
       const sidebar = document.getElementById('liveSidebarScores');
-      sidebar.innerHTML = ranked.map((team, index) => {
-        const styles = getTeamStyles(team.color);
-        return `
-          <div class="flex items-center justify-between p-3.5 rounded-2xl border transition-all" style="background-color: ${styles.bannerBg}; border-color: ${styles.bannerBorder}">
-            <div class="flex items-center gap-3">
-              <span class="text-xs font-black text-neutral-400 w-4">${index + 1}º</span>
-              <span class="w-3.5 h-3.5 rounded-full" style="background-color: ${styles.dotColor}"></span>
-              <span class="font-bold text-sm" style="color: ${styles.textColor}">Equip "${team.color}"</span>
+      if (sidebar && currentState.active_game_id) {
+        const rankedGame = getRankedTeamsForGame(currentState.active_game_id);
+        
+        sidebar.innerHTML = rankedGame.map((team, index) => {
+          const styles = getTeamStyles(team.color);
+          return `
+            <div class="flex items-center justify-between p-3.5 rounded-2xl border transition-all" style="background-color: ${styles.bannerBg}; border-color: ${styles.bannerBorder}">
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-black text-neutral-400 w-4">${index + 1}º</span>
+                <span class="w-3.5 h-3.5 rounded-full" style="background-color: ${styles.dotColor}"></span>
+                <span class="font-bold text-sm" style="color: ${styles.textColor}">Equip "${team.color}"</span>
+              </div>
+              <span class="font-black text-base text-neutral-800">${team.gamePoints} <span class="text-[10px] font-normal text-neutral-400">pts</span></span>
             </div>
-            <span class="font-black text-base text-neutral-800">${team.totalPoints} <span class="text-[10px] font-normal text-neutral-400">pts</span></span>
-          </div>
-        `;
-      }).join('');
+          `;
+        }).join('');
+      }
 
-      // 2. Grid pantalla completa
+      // 2. Grid pantalla completa (PUNTUACIÓ GENERAL ACUMULADA DE TOTA LA NIT)
       const fullGrid = document.getElementById('fullScoreboardGrid');
-      fullGrid.innerHTML = ranked.map(team => {
-        const styles = getTeamStyles(team.color);
-        return `
-          <div class="bg-white rounded-3xl p-8 border-2 shadow-sm flex flex-col items-center space-y-4" style="background-color: ${styles.bannerBg}; border-color: ${styles.bannerBorder}">
-            <div class="w-16 h-16 rounded-full shadow-inner" style="background-color: ${styles.dotColor}"></div>
-            <h3 class="font-black text-2xl" style="color: ${styles.textColor}">Equip "${team.color}"</h3>
-            <div class="text-5xl font-black text-neutral-800">${team.totalPoints}</div>
-            <span class="text-xs font-bold text-neutral-400 uppercase tracking-widest">Punts</span>
-          </div>
-        `;
-      }).join('');
+      if (fullGrid) {
+        const rankedTotal = getRankedTeams();
+        fullGrid.innerHTML = rankedTotal.map(team => {
+          const styles = getTeamStyles(team.color);
+          return `
+            <div class="bg-white rounded-3xl p-8 border-2 shadow-sm flex flex-col items-center space-y-4" style="background-color: ${styles.bannerBg}; border-color: ${styles.bannerBorder}">
+              <div class="w-16 h-16 rounded-full shadow-inner" style="background-color: ${styles.dotColor}"></div>
+              <h3 class="font-black text-2xl" style="color: ${styles.textColor}">Equip "${team.color}"</h3>
+              <div class="text-5xl font-black text-neutral-800">${team.totalPoints}</div>
+              <span class="text-xs font-bold text-neutral-400 uppercase tracking-widest">Punts Totals Acumulats</span>
+            </div>
+          `;
+        }).join('');
+      }
     }
 
-    // CONTINGUT DEL JOC ACTIU
     function renderActiveGameContent(gameId) {
       const game = allGames.find(g => g.id === gameId);
       if (!game) return;
@@ -309,41 +295,329 @@
 
       const contentBox = document.getElementById('gameContentBox');
 
-      // Generem la vista visual segons el joc
       if (game.order_num === 1) { // Mímica
-        contentBox.innerHTML = `
-          <div class="space-y-6">
-            <p class="text-lg font-medium text-neutral-600">${game.description}</p>
-            <div class="grid grid-cols-2 gap-4">
-              <div class="p-4 bg-neutral-50 rounded-2xl border border-neutral-100 font-bold text-neutral-800">1. Els tres porquets i el llop</div>
-              <div class="p-4 bg-neutral-50 rounded-2xl border border-neutral-100 font-bold text-neutral-800">2. Els tres mosqueters i d'Artagnan</div>
-              <div class="p-4 bg-neutral-50 rounded-2xl border border-neutral-100 font-bold text-neutral-800">3. Les tres bessones i la bruixa</div>
-              <div class="p-4 bg-neutral-50 rounded-2xl border border-neutral-100 font-bold text-neutral-800">4. Els Teletubbies</div>
-              <div class="p-4 bg-neutral-50 rounded-2xl border border-neutral-100 font-bold text-neutral-800">5. Els àngels de Charlie</div>
-              <div class="p-4 bg-neutral-50 rounded-2xl border border-neutral-100 font-bold text-neutral-800">6. Mamma Mia!</div>
+        const subIndex = currentState.active_subround || 0;
+
+        // --- SUB-RONDA 0: INTRODUCCIÓ AMB TRANSICIÓ ALS 5 SEGONS ---
+        if (subIndex === 0) {
+          // Amaguem el header superior del joc i la columna dreta de puntuacions durant la introducció
+          document.getElementById('gameOrderBadge').parentElement.parentElement.parentElement.classList.add('hidden');
+          const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
+          sidebarCol.classList.add('hidden');
+
+          contentBox.className = "col-span-12 bg-white rounded-3xl p-12 shadow-sm border border-neutral-100 h-full flex flex-col items-center justify-center text-center relative overflow-hidden";
+
+          contentBox.innerHTML = `
+            <!-- PAS 1: TÍTOL I PREGUNTA INICIAL -->
+            <div id="introStep1" class="space-y-6 transition-all duration-1000 ease-in-out opacity-100 scale-100">
+              <div class="p-5 rounded-3xl bg-purple-50 text-purple-600 inline-block shadow-inner">
+                <i data-lucide="theater" class="w-20 h-20 stroke-[1.8]"></i>
+              </div>
+              <h1 class="text-6xl font-black text-neutral-900 tracking-tight">Mímica en Grup</h1>
+              <p class="text-3xl font-extrabold text-purple-600">Esteu preparats ... ?</p>
             </div>
-          </div>
-        `;
+
+            <!-- PAS 2: INSTRUCCIONS (AMAGAT D'ENTRADA) -->
+            <div id="introStep2" class="space-y-8 w-full max-w-4xl absolute inset-0 m-auto flex flex-col justify-center px-12 transition-all duration-1000 ease-in-out opacity-0 pointer-events-none translate-y-6">
+              <div class="space-y-2">
+                <span class="text-xs font-black uppercase text-purple-600 bg-purple-100 px-4 py-1.5 rounded-full">Regles del Joc</span>
+                <h2 class="text-4xl font-black text-neutral-900">Com es juga a la Mímica en grup?</h2>
+              </div>
+
+              <div class="grid grid-cols-2 gap-5 text-left">
+                <div class="p-5 bg-neutral-50 rounded-2xl border border-neutral-100 space-y-1">
+                  <div class="flex items-center gap-2 text-purple-600 font-bold text-base">
+                    <i data-lucide="users" class="w-5 h-5"></i> <span>Tothom hi participa</span>
+                  </div>
+                  <p class="text-xs text-neutral-600 font-medium leading-relaxed">Un jugador de cada equip sortirà alhora a fer mímica a cada ronda.</p>
+                </div>
+
+                <div class="p-5 bg-neutral-50 rounded-2xl border border-neutral-100 space-y-1">
+                  <div class="flex items-center gap-2 text-purple-600 font-bold text-base">
+                    <i data-lucide="volume-x" class="w-5 h-5"></i> <span>Silenci absolut</span>
+                  </div>
+                  <p class="text-xs text-neutral-600 font-medium leading-relaxed">Només gestos i moviments. Està totalment prohibit fer cap mena de so o soroll!</p>
+                </div>
+
+                <div class="p-5 bg-neutral-50 rounded-2xl border border-neutral-100 space-y-1">
+                  <div class="flex items-center gap-2 text-purple-600 font-bold text-base">
+                    <i data-lucide="pencil" class="w-5 h-5"></i> <span>Apunteu al paper</span>
+                  </div>
+                  <p class="text-xs text-neutral-600 font-medium leading-relaxed">Escriviu al paper el que creieu que s'està representant.</p>
+                </div>
+
+                <div class="p-5 bg-neutral-50 rounded-2xl border border-neutral-100 space-y-1">
+                  <div class="flex items-center gap-2 text-purple-600 font-bold text-base">
+                    <i data-lucide="zap" class="w-5 h-5"></i> <span>Entrega ràpida</span>
+                  </div>
+                  <p class="text-xs text-neutral-600 font-medium leading-relaxed">Quan ho tingueu, doneu el paper. La puntuació depèn de la rapidesa i l'encert!</p>
+                </div>
+              </div>
+            </div>
+          `;
+
+          // Transició suau creuada (Fade-out / Fade-in) als 5 segons
+          setTimeout(() => {
+            const step1 = document.getElementById('introStep1');
+            const step2 = document.getElementById('introStep2');
+            if (step1 && step2) {
+              // El pas 1 es difumina i puja lleugerament
+              step1.classList.remove('opacity-100', 'scale-100');
+              step1.classList.add('opacity-0', '-translate-y-6', 'pointer-events-none');
+
+              // El pas 2 apareix de forma suau des de baix
+              step2.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-6');
+              step2.classList.add('opacity-100', 'translate-y-0');
+            }
+          }, 5000);
+
+        } else {
+          // --- SUB-RONDES 1 A 6: PANTALLA DE JOC DE GUIONS ---
+          // Restablir vista estàndard (mostrar header i sidebar)
+          document.getElementById('gameOrderBadge').parentElement.parentElement.parentElement.classList.remove('hidden');
+          const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
+          sidebarCol.classList.remove('hidden');
+
+          contentBox.className = "col-span-8 bg-white rounded-3xl p-8 shadow-sm border border-neutral-100 h-full flex flex-col justify-center space-y-6";
+
+          const phrase = mimicaPhrases[subIndex] || mimicaPhrases[1];
+          const isRevealed = currentState.reveal_solution;
+
+          const words = phrase.split(' ');
+          const phraseHtml = words.map(word => {
+            const letters = word.split('').map(char => {
+              const displayChar = isRevealed ? char : '_';
+              const colorClass = isRevealed ? 'text-orange-600 border-orange-500' : 'text-neutral-300 border-neutral-300';
+              return `<span class="letter-box ${colorClass}">${displayChar}</span>`;
+            }).join('');
+            return `<div class="inline-flex my-3 mx-6 sm:mx-8">${letters}</div>`;
+          }).join('');
+
+          contentBox.innerHTML = `
+            <div class="space-y-8 text-center py-2 my-auto w-full">
+              <div>
+                <span class="text-sm font-black uppercase text-purple-600 bg-purple-100 px-4 py-1.5 rounded-full">Ronda ${subIndex} de 6</span>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-center w-full px-2 py-4">
+                ${phraseHtml}
+              </div>
+            </div>
+          `;
+        }
       } else if (game.order_num === 2) { // Globus
-        contentBox.innerHTML = `
-          <div class="text-center space-y-6 py-8">
-            <i data-lucide="timer" class="w-20 h-20 text-orange-500 mx-auto stroke-[1.8]"></i>
-            <h3 class="text-4xl font-black text-neutral-900">Temps límit: 2 Minuts</h3>
-            <p class="text-xl text-neutral-600 font-medium">Cada persona ha d'inflar i lligar un globus alhora. Es valora rapidesa i mida total!</p>
-          </div>
-        `;
-      } else if (game.order_num === 3) { // Taral·larejar
-        contentBox.innerHTML = `
-          <div class="space-y-6">
-            <p class="text-lg font-medium text-neutral-600">${game.description}</p>
-            <div class="space-y-3">
-              <div class="p-4 bg-orange-50 text-orange-900 rounded-2xl font-black text-xl flex items-center justify-between"><span>Cançó 1</span> <i data-lucide="music" class="w-6 h-6"></i></div>
-              <div class="p-4 bg-orange-50 text-orange-900 rounded-2xl font-black text-xl flex items-center justify-between"><span>Cançó 2</span> <i data-lucide="music" class="w-6 h-6"></i></div>
-              <div class="p-4 bg-orange-50 text-orange-900 rounded-2xl font-black text-xl flex items-center justify-between"><span>Cançó 3</span> <i data-lucide="music" class="w-6 h-6"></i></div>
-              <div class="p-4 bg-orange-50 text-orange-900 rounded-2xl font-black text-xl flex items-center justify-between"><span>Cançó 4</span> <i data-lucide="music" class="w-6 h-6"></i></div>
+        const subIndex = currentState.active_subround || 0;
+
+        if (subIndex === 0) {
+          // --- SUB-RONDA 0: INTRODUCCIÓ I REGLAS ---
+          document.getElementById('gameOrderBadge').parentElement.parentElement.parentElement.classList.add('hidden');
+          const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
+          sidebarCol.classList.add('hidden');
+
+          contentBox.className = "col-span-12 bg-white rounded-3xl p-12 shadow-sm border border-neutral-100 h-full flex flex-col items-center justify-center text-center relative overflow-hidden";
+
+          contentBox.innerHTML = `
+            <div id="introGlobusStep1" class="space-y-6 transition-all duration-1000 ease-in-out opacity-100 scale-100">
+              <div class="p-5 rounded-3xl bg-orange-50 text-orange-500 inline-block shadow-inner">
+                <i data-lucide="timer" class="w-20 h-20 stroke-[1.8]"></i>
+              </div>
+              <h1 class="text-6xl font-black text-neutral-900 tracking-tight">Els Globus</h1>
+              <p class="text-3xl font-extrabold text-orange-500">Teniu prou pulmons ... ?</p>
             </div>
-          </div>
-        `;
+
+            <div id="introGlobusStep2" class="space-y-8 w-full max-w-4xl absolute inset-0 m-auto flex flex-col justify-center px-12 transition-all duration-1000 ease-in-out opacity-0 pointer-events-none translate-y-6">
+              <div class="space-y-2">
+                <span class="text-xs font-black uppercase text-orange-600 bg-orange-100 px-4 py-1.5 rounded-full">Regles del Joc</span>
+                <h2 class="text-4xl font-black text-neutral-900">Com es juga als Globus?</h2>
+              </div>
+
+              <div class="grid grid-cols-2 gap-6 text-left">
+                <div class="p-6 bg-neutral-50 rounded-2xl border border-neutral-100 space-y-2">
+                  <div class="flex items-center gap-2 text-orange-600 font-bold text-lg">
+                    <i data-lucide="clock" class="w-6 h-6"></i> <span>Temps límit</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 font-medium leading-relaxed">Tothom haurà d'inflar i lligar el seu propi globus en menys de trenta segons!</p>
+                </div>
+
+                <div class="p-6 bg-neutral-50 rounded-2xl border border-neutral-100 space-y-2">
+                  <div class="flex items-center gap-2 text-orange-600 font-bold text-lg">
+                    <i data-lucide="ruler" class="w-6 h-6"></i> <span>Criteri de puntuació</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 font-medium leading-relaxed">Es tindrà en compte la rapidesa de l'equip i la mida final dels globus.</p>
+                </div>
+              </div>
+            </div>
+          `;
+
+          setTimeout(() => {
+            const step1 = document.getElementById('introGlobusStep1');
+            const step2 = document.getElementById('introGlobusStep2');
+            if (step1 && step2) {
+              step1.classList.remove('opacity-100', 'scale-100');
+              step1.classList.add('opacity-0', '-translate-y-6', 'pointer-events-none');
+              step2.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-6');
+              step2.classList.add('opacity-100', 'translate-y-0');
+            }
+          }, 5000);
+
+        } else {
+          // --- SUB-RONDA 1: CRONÒMETRE GEGANT ---
+          document.getElementById('gameOrderBadge').parentElement.parentElement.parentElement.classList.remove('hidden');
+          const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
+          sidebarCol.classList.remove('hidden');
+
+          contentBox.className = "col-span-8 bg-white rounded-3xl p-8 shadow-sm border border-neutral-100 h-full flex flex-col items-center justify-center text-center space-y-6";
+
+          const currentSecs = currentState.timer_seconds !== undefined ? currentState.timer_seconds : 60;
+          const m = Math.floor(currentSecs / 60).toString().padStart(2, '0');
+          const s = (currentSecs % 60).toString().padStart(2, '0');
+
+          contentBox.innerHTML = `
+            <div class="space-y-4">
+              <span class="text-xs font-black uppercase text-orange-600 bg-orange-100 px-4 py-1.5 rounded-full">Temps Restant</span>
+              <div id="tvTimerDisplay" class="text-8xl sm:text-9xl font-black text-neutral-900 tracking-tight font-mono py-4">
+                ${m}:${s}
+              </div>
+              <p id="tvTimerSubtitle" class="text-base font-bold text-neutral-400">
+                ${currentState.timer_running ? 'Temps en marxa! Infleu els globus!' : 'A punt per començar...'}
+              </p>
+            </div>
+          `;
+
+          // Activem o actualitzem el temporitzador local immediatament
+          handleTimerState();
+        }
+      } else if (game.order_num === 3) { // Taral·larejar
+        const subIndex = currentState.active_subround || 0;
+
+        if (subIndex === 0) {
+          // --- SUB-RONDA 0: INTRODUCCIÓ I REGLES ---
+          document.getElementById('gameOrderBadge').parentElement.parentElement.parentElement.classList.add('hidden');
+          const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
+          sidebarCol.classList.add('hidden');
+
+          contentBox.className = "col-span-12 bg-white rounded-3xl p-12 shadow-sm border border-neutral-100 h-full flex flex-col items-center justify-center text-center relative overflow-hidden";
+
+          contentBox.innerHTML = `
+            <div id="introTaralStep1" class="space-y-6 transition-all duration-1000 ease-in-out opacity-100 scale-100">
+              <div class="p-5 rounded-3xl bg-amber-50 text-amber-500 inline-block shadow-inner">
+                <i data-lucide="music" class="w-20 h-20 stroke-[1.8]"></i>
+              </div>
+              <h1 class="text-6xl font-black text-neutral-900 tracking-tight">Taral·larejar</h1>
+              <p class="text-3xl font-extrabold text-amber-500">Teniu bona oïda ... ?</p>
+            </div>
+
+            <div id="introTaralStep2" class="space-y-8 w-full max-w-4xl absolute inset-0 m-auto flex flex-col justify-center px-12 transition-all duration-1000 ease-in-out opacity-0 pointer-events-none translate-y-6">
+              <div class="space-y-2">
+                <span class="text-xs font-black uppercase text-amber-600 bg-amber-100 px-4 py-1.5 rounded-full">Regles del Joc</span>
+                <h2 class="text-4xl font-black text-neutral-900">Com es juga a Taral·larejar?</h2>
+              </div>
+
+              <div class="grid grid-cols-2 gap-5 text-left">
+                <div class="p-5 bg-neutral-50 rounded-2xl border border-neutral-100 space-y-1">
+                  <div class="flex items-center gap-2 text-amber-600 font-bold text-base">
+                    <i data-lucide="mic-off" class="w-5 h-5"></i> <span>Sense paraules ni lletra</span>
+                  </div>
+                  <p class="text-xs text-neutral-600 font-medium leading-relaxed">Només es pot fer "tara", "mhm" o sons bàsics. Prohibit dir qualsevol paraula de la lletra!</p>
+                </div>
+
+                <div class="p-5 bg-neutral-50 rounded-2xl border border-neutral-100 space-y-1">
+                  <div class="flex items-center gap-2 text-amber-600 font-bold text-base">
+                    <i data-lucide="ban" class="w-5 h-5"></i> <span>Sense percussió</span>
+                  </div>
+                  <p class="text-xs text-neutral-600 font-medium leading-relaxed">Està totalment prohibit fer ritme picant de mans, taula o peus.</p>
+                </div>
+
+                <div class="p-5 bg-neutral-50 rounded-2xl border border-neutral-100 space-y-1">
+                  <div class="flex items-center gap-2 text-amber-600 font-bold text-base">
+                    <i data-lucide="pencil" class="w-5 h-5"></i> <span>Apunteu al paper</span>
+                  </div>
+                  <p class="text-xs text-neutral-600 font-medium leading-relaxed">Escriviu el nom de la cançó i l'artista al paper.</p>
+                </div>
+
+                <div class="p-5 bg-neutral-50 rounded-2xl border border-neutral-100 space-y-1">
+                  <div class="flex items-center gap-2 text-amber-600 font-bold text-base">
+                    <i data-lucide="timer" class="w-5 h-5"></i> <span>30 segons per cançó</span>
+                  </div>
+                  <p class="text-xs text-neutral-600 font-medium leading-relaxed">Escolta atentament i lliura el paper al més ràpid possible.</p>
+                </div>
+              </div>
+            </div>
+          `;
+
+          setTimeout(() => {
+            const step1 = document.getElementById('introTaralStep1');
+            const step2 = document.getElementById('introTaralStep2');
+            if (step1 && step2) {
+              step1.classList.remove('opacity-100', 'scale-100');
+              step1.classList.add('opacity-0', '-translate-y-6', 'pointer-events-none');
+              step2.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-6');
+              step2.classList.add('opacity-100', 'translate-y-0');
+            }
+          }, 5000);
+
+        } else {
+          // --- SUB-RONDA 1: CANÇONS (AMAGADES / REVELADES) I CRONÒMETRE ---
+          document.getElementById('gameOrderBadge').parentElement.parentElement.parentElement.classList.remove('hidden');
+          const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
+          sidebarCol.classList.remove('hidden');
+
+          contentBox.className = "col-span-8 bg-white rounded-3xl p-8 shadow-sm border border-neutral-100 h-full flex flex-col justify-between space-y-6";
+
+          const currentSecs = currentState.timer_seconds !== undefined ? currentState.timer_seconds : 30;
+          const m = Math.floor(currentSecs / 60).toString().padStart(2, '0');
+          const s = (currentSecs % 60).toString().padStart(2, '0');
+
+          const songs = [
+            { id: 1, title: "En algún lugar", artist: "Duncan Dhu" },
+            { id: 2, title: "Coti x Coti", artist: "The Tyets" },
+            { id: 3, title: "Macarena", artist: "Los Del Rio" },
+            { id: 4, title: "Superestrella", artist: "Aitana" },
+            { id: 5, title: "El meu avi", artist: "Els Pescadors de l'Escala" }
+          ];
+
+          const revealed = currentState.revealed_songs || [];
+
+          contentBox.innerHTML = `
+            <!-- CRONÒMETRE I CAPÇALERA -->
+            <div class="flex items-center justify-between bg-amber-50 p-4 rounded-2xl border border-amber-100">
+              <div class="flex items-center gap-3">
+                <i data-lucide="music" class="w-6 h-6 text-amber-600"></i>
+                <span class="font-bold text-sm text-amber-900">Les Cançons</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-amber-700">Temps:</span>
+                <span id="tvTimerDisplay" class="text-3xl font-black text-amber-900 font-mono">${m}:${s}</span>
+              </div>
+            </div>
+
+            <!-- LLISTA DE CANÇONS -->
+            <div class="grid grid-cols-1 gap-2.5">
+              ${songs.map(song => {
+                const isRevealed = revealed.includes(song.id);
+                return `
+                  <div class="p-3.5 rounded-2xl border transition-all flex items-center justify-between ${isRevealed ? 'bg-amber-500 text-white border-amber-600 shadow-md' : 'bg-neutral-50 text-neutral-800 border-neutral-100'}">
+                    <div class="flex items-center gap-3">
+                      <span class="text-xs font-extrabold px-3 py-1 rounded-full ${isRevealed ? 'bg-white text-amber-900' : 'bg-amber-100 text-amber-800'}">
+                        Cançó ${song.id}
+                      </span>
+                      <span class="font-bold text-base">
+                        ${isRevealed ? `${song.title} <span class="text-xs font-normal opacity-90">(${song.artist})</span>` : '_______________'}
+                      </span>
+                    </div>
+                    <i data-lucide="${isRevealed ? 'check-circle-2' : 'lock'}" class="w-5 h-5 opacity-80"></i>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+            <p id="tvTimerSubtitle" class="text-xs text-center font-bold text-neutral-400">
+              Escriviu al paper el nom i l'artista de la cançó abans que s'acabi el temps!
+            </p>
+          `;
+
+          handleTimerState();
+        } 
       } else if (game.order_num === 4) { // Acrosport
         contentBox.innerHTML = `
           <div class="space-y-6 text-center">
@@ -378,7 +652,6 @@
       lucide.createIcons();
     }
 
-    // PODIUM FINAL
     function renderPodium() {
       const ranked = getRankedTeams();
       const container = document.getElementById('podiumContainer');
@@ -394,32 +667,21 @@
       const s3 = getTeamStyles(third.color);
 
       container.innerHTML = `
-        <!-- 2n Lloc -->
         <div class="flex-1 flex flex-col items-center justify-end h-full">
           <span class="font-black text-neutral-700 text-sm mb-1">Equip "${second.color}"</span>
           <span class="font-extrabold text-xs text-neutral-400 mb-2">${second.totalPoints} pts</span>
-          <div class="w-full h-40 rounded-t-3xl flex items-center justify-center font-black text-2xl text-white shadow-md" style="background-color: ${s2.dotColor}">
-            2º
-          </div>
+          <div class="w-full h-40 rounded-t-3xl flex items-center justify-center font-black text-2xl text-white shadow-md" style="background-color: ${s2.dotColor}">2º</div>
         </div>
-
-        <!-- 1r Lloc -->
         <div class="flex-1 flex flex-col items-center justify-end h-full">
           <i data-lucide="crown" class="w-8 h-8 text-amber-500 mb-1 stroke-[2.5]"></i>
           <span class="font-black text-neutral-900 text-base mb-1">Equip "${first.color}"</span>
           <span class="font-extrabold text-sm text-amber-600 mb-2">${first.totalPoints} pts</span>
-          <div class="w-full h-56 rounded-t-3xl flex items-center justify-center font-black text-4xl text-white shadow-lg" style="background-color: ${s1.dotColor}">
-            1º
-          </div>
+          <div class="w-full h-56 rounded-t-3xl flex items-center justify-center font-black text-4xl text-white shadow-lg" style="background-color: ${s1.dotColor}">1º</div>
         </div>
-
-        <!-- 3r Lloc -->
         <div class="flex-1 flex flex-col items-center justify-end h-full">
           <span class="font-black text-neutral-700 text-sm mb-1">Equip "${third.color}"</span>
           <span class="font-extrabold text-xs text-neutral-400 mb-2">${third.totalPoints} pts</span>
-          <div class="w-full h-28 rounded-t-3xl flex items-center justify-center font-black text-xl text-white shadow-sm" style="background-color: ${s3.dotColor}">
-            3º
-          </div>
+          <div class="w-full h-28 rounded-t-3xl flex items-center justify-center font-black text-xl text-white shadow-sm" style="background-color: ${s3.dotColor}">3º</div>
         </div>
       `;
 
@@ -433,6 +695,95 @@
         case 'rosa': return { bannerBg: '#fdf2f8', bannerBorder: '#fbcfe8', dotColor: '#ec4899', textColor: '#9d174d' };
         case 'verd': return { bannerBg: '#f0fdf4', bannerBorder: '#bbf7d0', dotColor: '#22c55e', textColor: '#166534' };
         default: return { bannerBg: '#f5f5f5', bannerBorder: '#e5e5e5', dotColor: '#a3a3a3', textColor: '#171717' };
+      }
+    }
+
+    let timerInterval = null;
+
+    function handleTimerState() {
+      const display = document.getElementById('tvTimerDisplay');
+      const subtitle = document.getElementById('tvTimerSubtitle');
+      if (!display) return;
+
+      if (currentState.timer_running) {
+        if (!timerInterval) {
+          timerInterval = setInterval(async () => {
+            if (currentState.timer_seconds > 0) {
+              currentState.timer_seconds--;
+              updateTimerDisplay(currentState.timer_seconds);
+            } else {
+              // Aturem el temps localment i a Supabase per evitar que es reiniciï
+              clearInterval(timerInterval);
+              timerInterval = null;
+              currentState.timer_running = false;
+              currentState.timer_seconds = 0;
+
+              // Actualitzem Supabase
+              await db.from('game_state').update({
+                timer_running: false,
+                timer_seconds: 0,
+                updated_at: new Date()
+              }).eq('id', 1);
+
+              if (display) {
+                display.classList.remove('text-neutral-900', 'text-orange-500', 'animate-timer-beat');
+                display.classList.add('text-red-500', 'scale-110');
+                display.textContent = "00:00";
+              }
+              if (subtitle) {
+                subtitle.textContent = "TEMPS ESGOTAT!";
+                subtitle.className = "text-xl font-black text-red-500 animate-pulse";
+              }
+            }
+          }, 1000);
+        }
+      } else {
+        if (timerInterval) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+        }
+        if (currentState.timer_seconds === 0) {
+          if (display) {
+            display.classList.remove('text-neutral-900', 'text-orange-500', 'animate-timer-beat');
+            display.classList.add('text-red-500', 'scale-110');
+            display.textContent = "00:00";
+          }
+          if (subtitle) {
+            subtitle.textContent = "TEMPS ESGOTAT!";
+            subtitle.className = "text-xl font-black text-red-500 animate-pulse";
+          }
+        } else {
+          updateTimerDisplay(currentState.timer_seconds !== undefined ? currentState.timer_seconds : 30);
+        }
+      }
+    }
+
+    function updateTimerDisplay(secs) {
+      const display = document.getElementById('tvTimerDisplay');
+      const subtitle = document.getElementById('tvTimerSubtitle');
+      if (!display) return;
+
+      const m = Math.floor(secs / 60).toString().padStart(2, '0');
+      const s = (secs % 60).toString().padStart(2, '0');
+      display.textContent = `${m}:${s}`;
+
+      // Efecte Batec quan queden 10 segons o menys
+      if (secs <= 10 && secs > 0) {
+        display.classList.remove('text-neutral-900');
+        display.classList.add('text-orange-500');
+        
+        // Apliquem la classe de batec breu
+        display.classList.remove('animate-timer-beat');
+        void display.offsetWidth; // Força el reflow del navegador per reiniciar l'animació
+        display.classList.add('animate-timer-beat');
+
+        if (subtitle) {
+          subtitle.textContent = "Últims segons!";
+          subtitle.className = "text-base font-black text-orange-500";
+        }
+      } else if (secs > 10) {
+        display.classList.remove('text-orange-500', 'text-red-500', 'animate-timer-beat');
+        display.classList.add('text-neutral-900');
       }
     }
   </script>

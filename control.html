@@ -69,12 +69,70 @@
         <span class="active-dot w-3 h-3 rounded-full bg-orange-500 shrink-0 hidden"></span>
       </button>
 
+      <!-- JOCS I SUB-RONDES -->
       <div class="bg-white border border-neutral-200 rounded-3xl p-4 shadow-sm space-y-3">
         <div class="flex items-center gap-3.5">
           <div class="p-2.5 rounded-2xl bg-purple-50 text-purple-500 shrink-0"><i data-lucide="mic" class="w-6 h-6"></i></div>
           <div><h3 class="font-extrabold text-neutral-800 text-base">Ronda actual</h3><p class="text-xs text-neutral-400 font-medium">Selecciona el joc que vols projectar</p></div>
         </div>
+        
         <div id="gamesSublist" class="space-y-2 pt-2 border-t border-neutral-100"></div>
+
+        <!-- REVELAR / OCULTAR RESPOSTA PER A LA MÍMICA -->
+        <div id="mimicaControlBox" class="bg-purple-50 p-4 rounded-2xl border border-purple-100 space-y-3 hidden">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-purple-900">Control de Resposta (Mímica)</span>
+            <span id="revealStatusBadge" class="text-[10px] font-bold bg-purple-200 text-purple-800 px-2 py-0.5 rounded-full">Oculta</span>
+          </div>
+          <button 
+            onclick="toggleRevealSolution()" 
+            id="revealBtn" 
+            class="w-full py-3 px-4 rounded-xl bg-purple-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-purple-700 active:scale-95 transition-all"
+          >
+            <i data-lucide="eye" class="w-4 h-4"></i>
+            <span>Revelar Resposta a la TV</span>
+          </button>
+        </div>
+
+        <!-- CONTROL DE CRONÒMETRE PER ALS GLOBUS -->
+        <div id="globusControlBox" class="bg-orange-50 p-4 rounded-2xl border border-orange-100 space-y-3 hidden">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-orange-900">Cronòmetre (Globus)</span>
+            <span id="timerStatusBadge" class="text-[10px] font-bold bg-orange-200 text-orange-800 px-2 py-0.5 rounded-full">Aturat (30s)</span>
+          </div>
+          <button 
+            onclick="toggleTimer()" 
+            id="timerBtn" 
+            class="w-full py-3 px-4 rounded-xl bg-orange-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-orange-600 active:scale-95 transition-all"
+          >
+            <i data-lucide="play" class="w-4 h-4"></i>
+            <span>Iniciar Compte Enrere</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- CONTROL DE CRONÒMETRE I REVELACIÓ DE CANÇONS (TARAL·LAREJAR) -->
+      <div id="taralControlBox" class="bg-amber-50 p-4 rounded-2xl border border-amber-100 space-y-3 hidden">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-amber-900">Control Taral·larejar</span>
+          <span id="taralTimerStatusBadge" class="text-[10px] font-bold bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full">Aturat (30s)</span>
+        </div>
+
+        <button 
+          onclick="toggleTimer()" 
+          id="taralTimerBtn" 
+          class="w-full py-3 px-4 rounded-xl bg-amber-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-amber-600 active:scale-95 transition-all"
+        >
+          <i data-lucide="play" class="w-4 h-4"></i>
+          <span>Iniciar Cronòmetre (30s)</span>
+        </button>
+
+        <div class="pt-2 border-t border-amber-200/60 space-y-1.5">
+          <span class="text-[10px] font-bold text-amber-800 uppercase tracking-wider block">Revelar títol a la TV quan hagin acabat:</span>
+          <div class="grid grid-cols-1 gap-1" id="revealSongsButtons">
+            <!-- Botons de revelar cançó generats dinàmicament -->
+          </div>
+        </div>
       </div>
 
       <button onclick="setSlide('classificacio')" id="slideBtn_classificacio" class="slide-btn w-full bg-white border border-neutral-200 rounded-3xl p-4 shadow-sm text-left flex items-center justify-between gap-3 transition-all">
@@ -106,16 +164,17 @@
 
     let allGames = [];
     let allTeams = [];
-    let currentState = { active_slide: 'benvinguda', active_game_id: null };
-    let selectedMimicaRound = 'Ronda 1: Els tres porquets';
+    let currentState = { active_slide: 'benvinguda', active_game_id: null, active_subround: 0, reveal_solution: false };
+    let selectedMimicaRoundIndex = 0;
 
     const mimicaRondes = [
-      'Ronda 1: Els tres porquets',
-      'Ronda 2: Els tres mosqueters',
-      'Ronda 3: Les tres bessones',
-      'Ronda 4: Teletubbies',
-      'Ronda 5: Àngels de Charlie',
-      'Ronda 6: Mamma Mia!'
+      { id: 0, title: "0. Introducció i Instruccions", phrase: "INTRO" },
+      { id: 1, title: "1. Els tres porquets i el llop", phrase: "Els tres porquets i el llop" },
+      { id: 2, title: "2. Els tres mosqueters i en d'Artagnan", phrase: "Els tres mosqueters i en d'Artagnan" },
+      { id: 3, title: "3. Les tres bessones i la bruixa avorrida", phrase: "Les tres bessones i la bruixa avorrida" },
+      { id: 4, title: "4. Teletubis", phrase: "Teletubis" },
+      { id: 5, title: "5. Els àngels de Charlie", phrase: "Els àngels de Charlie" },
+      { id: 6, title: "6. Mamma Mia", phrase: "Mamma Mia" }
     ];
 
     window.addEventListener('DOMContentLoaded', async () => {
@@ -138,7 +197,7 @@
 
         renderGamesSublist();
         renderGameSelect();
-        updateSlideUI(currentState.active_slide || 'benvinguda', currentState.active_game_id);
+        updateSlideUI(currentState.active_slide || 'benvinguda', currentState.active_game_id, currentState.active_subround || 0);
 
       } catch (err) {
         console.error('Error inicialitzant control:', err);
@@ -165,25 +224,68 @@
       }
     }
 
-    async function setSlide(slideName, gameId = null) {
+    async function setSlide(slideName, gameId = null, subround = 0) {
       try {
-        const updateData = { active_slide: slideName, updated_at: new Date() };
+        const updateData = { 
+          active_slide: slideName, 
+          active_subround: subround,
+          reveal_solution: false, // Per defecte oculta quan canviem de ronda
+          updated_at: new Date() 
+        };
         if (gameId) updateData.active_game_id = gameId;
 
         const { error } = await db.from('game_state').update(updateData).eq('id', 1);
         if (error) throw error;
 
         currentState.active_slide = slideName;
+        currentState.active_subround = subround;
+        currentState.reveal_solution = false;
         if (gameId) currentState.active_game_id = gameId;
 
-        updateSlideUI(slideName, gameId);
+        updateSlideUI(slideName, gameId, subround);
 
       } catch (err) {
         console.error('Error canviant diapositiva:', err);
       }
     }
 
-    function updateSlideUI(slideName, gameId = null) {
+    async function toggleRevealSolution() {
+      try {
+        const newStatus = !currentState.reveal_solution;
+        const { error } = await db.from('game_state').update({ 
+          reveal_solution: newStatus,
+          updated_at: new Date()
+        }).eq('id', 1);
+
+        if (error) throw error;
+        currentState.reveal_solution = newStatus;
+        updateRevealBtnUI();
+
+      } catch (err) {
+        console.error('Error revelant solució:', err);
+      }
+    }
+
+    function updateRevealBtnUI() {
+      const badge = document.getElementById('revealStatusBadge');
+      const btn = document.getElementById('revealBtn');
+      if (!badge || !btn) return;
+
+      if (currentState.reveal_solution) {
+        badge.textContent = "Visible a la TV";
+        badge.className = "text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full";
+        btn.innerHTML = `<i data-lucide="eye-off" class="w-4 h-4"></i><span>Ocultar Resposta</span>`;
+        btn.className = "w-full py-3 px-4 rounded-xl bg-neutral-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-neutral-800 active:scale-95 transition-all";
+      } else {
+        badge.textContent = "Oculta";
+        badge.className = "text-[10px] font-bold bg-purple-200 text-purple-800 px-2 py-0.5 rounded-full";
+        btn.innerHTML = `<i data-lucide="eye" class="w-4 h-4"></i><span>Revelar Resposta a la TV</span>`;
+        btn.className = "w-full py-3 px-4 rounded-xl bg-purple-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-purple-700 active:scale-95 transition-all";
+      }
+      lucide.createIcons();
+    }
+
+    function updateSlideUI(slideName, gameId = null, subround = 0) {
       document.querySelectorAll('.slide-btn').forEach(btn => {
         btn.classList.remove('slide-btn-active');
         const dot = btn.querySelector('.active-dot');
@@ -195,13 +297,42 @@
         btn.classList.add('bg-neutral-50', 'text-neutral-700');
       });
 
+      const mimicaBox = document.getElementById('mimicaControlBox');
+
+      const globusBox = document.getElementById('globusControlBox');
       if (slideName === 'ronda_actual' && gameId) {
-        const subBtn = document.getElementById(`gameSubBtn_${gameId}`);
-        if (subBtn) {
-          subBtn.classList.remove('bg-neutral-50', 'text-neutral-700');
-          subBtn.classList.add('bg-orange-500', 'text-white', 'shadow-md');
+        const game = allGames.find(x => x.id === gameId);
+        if (game && game.order_num === 2 && subround === 1) {
+          globusBox.classList.remove('hidden');
+          updateTimerBtnUI();
+        } else {
+          globusBox.classList.add('hidden');
         }
       } else {
+        globusBox.classList.add('hidden');
+      }
+
+      if (slideName === 'ronda_actual' && gameId) {
+        const game = allGames.find(x => x.id === gameId);
+        if (game && game.order_num === 1) {
+          mimicaBox.classList.remove('hidden');
+          updateRevealBtnUI();
+
+          const subBtn = document.getElementById(`mimicaSubBtn_${subround}`);
+          if (subBtn) {
+            subBtn.classList.remove('bg-neutral-50', 'text-neutral-700');
+            subBtn.classList.add('bg-purple-600', 'text-white', 'shadow-md');
+          }
+        } else {
+          mimicaBox.classList.add('hidden');
+          const subBtn = document.getElementById(`gameSubBtn_${gameId}`);
+          if (subBtn) {
+            subBtn.classList.remove('bg-neutral-50', 'text-neutral-700');
+            subBtn.classList.add('bg-orange-500', 'text-white', 'shadow-md');
+          }
+        }
+      } else {
+        mimicaBox.classList.add('hidden');
         const activeBtn = document.getElementById(`slideBtn_${slideName}`);
         if (activeBtn) {
           activeBtn.classList.add('slide-btn-active');
@@ -220,23 +351,109 @@
       let labelText = labels[slideName] || slideName;
       if (slideName === 'ronda_actual' && gameId) {
         const g = allGames.find(x => x.id === gameId);
-        if (g) labelText += `: ${g.title}`;
+        if (g) {
+          labelText += `: ${g.title}`;
+          if (g.order_num === 1) {
+            labelText += ` (${mimicaRondes[subround].title})`;
+          }
+        }
       }
       document.getElementById('currentSlideLabel').textContent = labelText;
     }
 
     function renderGamesSublist() {
       const container = document.getElementById('gamesSublist');
-      container.innerHTML = allGames.map(g => `
-        <button 
-          id="gameSubBtn_${g.id}"
-          onclick="setSlide('ronda_actual', '${g.id}')"
-          class="game-sub-btn w-full text-left p-3.5 rounded-2xl bg-neutral-50 transition-all text-xs font-bold flex items-center justify-between active:scale-[0.99]"
-        >
-          <span>Joc ${g.order_num}: ${escapeHtml(g.title)}</span>
-          <i data-lucide="play" class="w-3.5 h-3.5"></i>
-        </button>
-      `).join('');
+      const mimicaGame = allGames.find(g => g.order_num === 1);
+      const globusGame = allGames.find(g => g.order_num === 2);
+      const taralGame = allGames.find(g => g.order_num === 3);
+      const otherGames = allGames.filter(g => g.order_num > 3);
+
+      let html = '';
+
+      // Joc 1: Mímica
+      if (mimicaGame) {
+        html += `
+          <div class="space-y-1 bg-purple-50/50 p-2.5 rounded-2xl border border-purple-100">
+            <span class="text-[10px] font-bold text-purple-700 uppercase tracking-wider block px-1">Joc 1: Mímica</span>
+            ${mimicaRondes.map(mr => `
+              <button 
+                id="mimicaSubBtn_${mr.id}"
+                onclick="setSlide('ronda_actual', '${mimicaGame.id}', ${mr.id})"
+                class="game-sub-btn w-full text-left p-2.5 rounded-xl bg-neutral-50 transition-all text-xs font-bold flex items-center justify-between active:scale-[0.99]"
+              >
+                <span>${mr.title}</span>
+                <i data-lucide="play" class="w-3.5 h-3.5"></i>
+              </button>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      // Joc 2: Els Globus
+      if (globusGame) {
+        html += `
+          <div class="space-y-1 bg-orange-50/50 p-2.5 rounded-2xl border border-orange-100 mt-2">
+            <span class="text-[10px] font-bold text-orange-700 uppercase tracking-wider block px-1">Joc 2: Els Globus</span>
+            <button 
+              id="globusSubBtn_0"
+              onclick="setSlide('ronda_actual', '${globusGame.id}', 0)"
+              class="game-sub-btn w-full text-left p-2.5 rounded-xl bg-neutral-50 transition-all text-xs font-bold flex items-center justify-between active:scale-[0.99]"
+            >
+              <span>0. Introducció i Instruccions</span>
+              <i data-lucide="play" class="w-3.5 h-3.5"></i>
+            </button>
+            <button 
+              id="globusSubBtn_1"
+              onclick="setSlide('ronda_actual', '${globusGame.id}', 1)"
+              class="game-sub-btn w-full text-left p-2.5 rounded-xl bg-neutral-50 transition-all text-xs font-bold flex items-center justify-between active:scale-[0.99]"
+            >
+              <span>1. Compte enrere (30s)</span>
+              <i data-lucide="timer" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        `;
+      }
+
+      // Joc 3: Taral·larejar
+      if (taralGame) {
+        html += `
+          <div class="space-y-1 bg-amber-50/50 p-2.5 rounded-2xl border border-amber-100 mt-2">
+            <span class="text-[10px] font-bold text-amber-700 uppercase tracking-wider block px-1">Joc 3: Taral·larejar</span>
+            <button 
+              id="taralSubBtn_0"
+              onclick="setSlide('ronda_actual', '${taralGame.id}', 0)"
+              class="game-sub-btn w-full text-left p-2.5 rounded-xl bg-neutral-50 transition-all text-xs font-bold flex items-center justify-between active:scale-[0.99]"
+            >
+              <span>0. Introducció i Instruccions</span>
+              <i data-lucide="play" class="w-3.5 h-3.5"></i>
+            </button>
+            <button 
+              id="taralSubBtn_1"
+              onclick="setSlide('ronda_actual', '${taralGame.id}', 1)"
+              class="game-sub-btn w-full text-left p-2.5 rounded-xl bg-neutral-50 transition-all text-xs font-bold flex items-center justify-between active:scale-[0.99]"
+            >
+              <span>1. Cançons en Joc i Cronòmetre</span>
+              <i data-lucide="music" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        `;
+      }
+
+      // Resta de jocs
+      otherGames.forEach(g => {
+        html += `
+          <button 
+            id="gameSubBtn_${g.id}"
+            onclick="setSlide('ronda_actual', '${g.id}')"
+            class="game-sub-btn w-full text-left p-3.5 rounded-2xl bg-neutral-50 transition-all text-xs font-bold flex items-center justify-between active:scale-[0.99] mt-2"
+          >
+            <span>Joc ${g.order_num}: ${escapeHtml(g.title)}</span>
+            <i data-lucide="play" class="w-3.5 h-3.5"></i>
+          </button>
+        `;
+      });
+
+      container.innerHTML = html;
       lucide.createIcons();
     }
 
@@ -247,6 +464,8 @@
       `).join('');
     }
 
+    let allPlayers = [];
+
     async function loadGameScoreControls() {
       const gameId = document.getElementById('scoreGameSelect').value;
       const container = document.getElementById('scoreControlsContainer');
@@ -254,27 +473,68 @@
 
       if (!game) return;
 
+      // Carregar jugadors per a la cerca ràpida per nom
+      if (allPlayers.length === 0) {
+        const { data: players } = await db.from('players').select('*, teams(name, color)');
+        allPlayers = players || [];
+      }
+
       const { data: existingScores } = await db.from('scores').select('*').eq('game_id', gameId).order('updated_at', { ascending: false });
 
       let html = `
-        <div class="bg-orange-50 border border-orange-200/60 p-4 rounded-3xl space-y-2">
+        <div class="bg-orange-50 border border-orange-200/60 p-4 rounded-3xl space-y-1">
           <h4 class="font-bold text-orange-900 text-sm">${escapeHtml(game.title)}</h4>
           <p class="text-xs text-orange-700 font-medium">${escapeHtml(game.description || '')}</p>
         </div>
       `;
 
-      // Si és el joc 1 (Mímica), afegim el selector de ronda de Mímica
+      // Si és el joc 1 (Mímica)
       if (game.order_num === 1) {
         html += `
           <div class="bg-white p-4 rounded-3xl border border-neutral-100 shadow-sm space-y-2">
-            <label class="block text-xs font-bold text-purple-600 uppercase tracking-wider">Ronda de Mímica Actual:</label>
-            <select id="mimicaRoundSelect" onchange="selectedMimicaRound = this.value; loadGameScoreControls();" class="w-full bg-purple-50 text-purple-900 font-bold px-4 py-2.5 rounded-2xl outline-none text-xs">
-              ${mimicaRondes.map(r => `<option value="${r}" ${selectedMimicaRound === r ? 'selected' : ''}>${r}</option>`).join('')}
+            <label class="block text-xs font-bold text-purple-600 uppercase tracking-wider">Sub-Ronda de Mímica:</label>
+            <select id="mimicaRoundSelect" onchange="selectedMimicaRoundIndex = this.value; loadGameScoreControls();" class="w-full bg-purple-50 text-purple-900 font-bold px-4 py-2.5 rounded-2xl outline-none text-xs">
+              ${mimicaRondes.filter(r => r.id > 0).map(r => `<option value="${r.id}" ${selectedMimicaRoundIndex == r.id ? 'selected' : ''}>${r.title}</option>`).join('')}
             </select>
           </div>
         `;
       }
 
+      // Si és el joc 2 (Globus): Cercador ràpida per nom per a la rapidesa
+      if (game.order_num === 2) {
+        html += `
+          <div class="bg-white p-4 rounded-3xl border border-neutral-100 shadow-sm space-y-2">
+            <label class="block text-xs font-extrabold text-orange-600 uppercase tracking-wider">
+              ⚡ Entrada Ràpida per Rapidesa (Nom + Enter):
+            </label>
+            <div class="relative">
+              <input 
+                type="text" 
+                id="quickNameInput" 
+                onkeydown="handleQuickNameKeydown(event, '${game.id}')"
+                placeholder="Ex: Jú (prem Enter)" 
+                class="w-full bg-neutral-100 text-neutral-800 font-bold px-4 py-2.5 rounded-2xl outline-none text-xs border-2 border-transparent focus:border-orange-500 transition-all"
+                autocomplete="off"
+              />
+            </div>
+            <div id="quickSearchResults" class="hidden space-y-1 bg-neutral-50 p-2 rounded-2xl border border-neutral-200 text-xs font-bold"></div>
+          </div>
+        `;
+      }
+
+      // Si és el joc 3 (Taral·larejar): Desplegable per triar per quina cançó puntuem
+      if (game.order_num === 3) {
+        html += `
+          <div class="bg-white p-4 rounded-3xl border border-neutral-100 shadow-sm space-y-2">
+            <label class="block text-xs font-bold text-amber-700 uppercase tracking-wider">Selecciona Cançó a Puntuar:</label>
+            <select id="taralSongSelect" onchange="selectedTaralSongIndex = this.value; loadGameScoreControls();" class="w-full bg-amber-50 text-amber-900 font-bold px-4 py-2.5 rounded-2xl outline-none text-xs">
+              ${taralSongs.map(s => `<option value="${s.id}" ${selectedTaralSongIndex == s.id ? 'selected' : ''}>Cançó ${s.id}: ${s.title} (${s.artist})</option>`).join('')}
+            </select>
+          </div>
+        `;
+      }
+
+      // Llista per equips
       allTeams.forEach(team => {
         const styles = getTeamStyles(team.color);
         const teamScoresList = (existingScores || []).filter(s => s.team_id === team.id);
@@ -291,15 +551,12 @@
             </div>
 
             <div class="space-y-1">
-              <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block">Afegir lloc per ronda:</span>
-              <div class="flex flex-wrap gap-1.5">
-                ${getGameButtons(game.order_num, game.id, team.id)}
-              </div>
+              ${getGameButtons(game.order_num, game.id, team.id)}
             </div>
 
             ${teamScoresList.length > 0 ? `
               <div class="pt-2 border-t border-neutral-100 space-y-1.5">
-                <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block">Historial (clica 🗑️ per esborrar un error):</span>
+                <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block">Historial d'aquesta prova:</span>
                 <div class="space-y-1">
                   ${teamScoresList.map(s => `
                     <div class="flex items-center justify-between text-xs bg-neutral-50 px-3 py-1.5 rounded-xl">
@@ -320,28 +577,185 @@
       lucide.createIcons();
     }
 
+    async function handleQuickNameKeydown(event, gameId) {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+
+      const query = event.target.value.trim().toLowerCase();
+      if (!query) return;
+
+      const matches = allPlayers.filter(p => p.name.toLowerCase().includes(query));
+      const resultsDiv = document.getElementById('quickSearchResults');
+
+      if (matches.length === 1) {
+        const player = matches[0];
+        await assignQuickPoints(gameId, player);
+        event.target.value = '';
+        resultsDiv.classList.add('hidden');
+      } else if (matches.length > 1) {
+        resultsDiv.classList.remove('hidden');
+        resultsDiv.innerHTML = `
+          <span class="text-neutral-400 font-normal px-2 block">Selecciona el jugador:</span>
+          ${matches.map(p => `
+            <button 
+              onclick="selectMatchedPlayer('${gameId}', '${p.id}')" 
+              class="w-full text-left p-2 hover:bg-orange-100 rounded-xl text-orange-900 font-bold flex items-center justify-between"
+            >
+              <span>${escapeHtml(p.name)} (${p.teams?.color || 'Equip'})</span>
+              <span class="text-[10px] bg-orange-200 px-2 py-0.5 rounded-full">Triar</span>
+            </button>
+          `).join('')}
+        `;
+      } else {
+        resultsDiv.classList.remove('hidden');
+        resultsDiv.innerHTML = `<span class="text-red-500 font-bold px-2">No s'ha trobat ningú amb "${escapeHtml(query)}"</span>`;
+      }
+    }
+
+    async function selectMatchedPlayer(gameId, playerId) {
+      const player = allPlayers.find(p => p.id === playerId);
+      if (player) {
+        await assignQuickPoints(gameId, player);
+        document.getElementById('quickNameInput').value = '';
+        document.getElementById('quickSearchResults').classList.add('hidden');
+      }
+    }
+
+    async function assignQuickPoints(gameId, player) {
+      const { data: existingScores } = await db.from('scores').select('*').eq('game_id', gameId);
+      const speedScoresCount = (existingScores || []).filter(s => s.round_name.includes('Rapidesa')).length;
+
+      const pointsTable = [10, 6, 3, 1];
+      const pts = pointsTable[speedScoresCount] || 1;
+      const rankText = `${speedScoresCount + 1}r`;
+
+      await db.from('scores').insert({
+        game_id: gameId,
+        team_id: player.team_id,
+        round_name: `Rapidesa ${rankText} (${player.name})`,
+        points: pts
+      });
+
+      await loadGameScoreControls();
+    }
+
+    // LÒGICA DE CERCA RÀPIDA PER NOM
+    async function handleQuickNameKeydown(event, gameId) {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+
+      const query = event.target.value.trim().toLowerCase();
+      if (!query) return;
+
+      // Filtrar jugadors que comencin o continguin les lletres
+      const matches = allPlayers.filter(p => p.name.toLowerCase().includes(query));
+      const resultsDiv = document.getElementById('quickSearchResults');
+
+      if (matches.length === 1) {
+        // Coincidència exacta única! Assignem punts de rapidesa
+        const player = matches[0];
+        await assignQuickPoints(gameId, player);
+        event.target.value = '';
+        resultsDiv.classList.add('hidden');
+      } else if (matches.length > 1) {
+        // Diversos jugadors coincideixen: mostrem opcions
+        resultsDiv.classList.remove('hidden');
+        resultsDiv.innerHTML = `
+          <span class="text-neutral-400 font-normal px-2 block">S'han trobat diversos jugadors:</span>
+          ${matches.map(p => `
+            <button 
+              onclick="selectMatchedPlayer('${gameId}', '${p.id}')" 
+              class="w-full text-left p-2 hover:bg-orange-100 rounded-xl text-orange-900 font-bold flex items-center justify-between"
+            >
+              <span>${escapeHtml(p.name)} (${p.teams?.color || 'Sense equip'})</span>
+              <span class="text-[10px] bg-orange-200 px-2 py-0.5 rounded-full">Seleccionar</span>
+            </button>
+          `).join('')}
+        `;
+      } else {
+        // Cap jugador trobat
+        resultsDiv.classList.remove('hidden');
+        resultsDiv.innerHTML = `<span class="text-red-500 font-bold px-2">No s'ha trobat cap jugador amb "${escapeHtml(query)}"</span>`;
+      }
+    }
+
+    async function selectMatchedPlayer(gameId, playerId) {
+      const player = allPlayers.find(p => p.id === playerId);
+      if (player) {
+        await assignQuickPoints(gameId, player);
+        document.getElementById('quickNameInput').value = '';
+        document.getElementById('quickSearchResults').classList.add('hidden');
+      }
+    }
+
+    async function assignQuickPoints(gameId, player) {
+      // Obtenir quantes puntuacions de rapidesa s'han atorgat ja en aquest joc per determinar el lloc (1r, 2n, 3r, 4t)
+      const { data: existingScores } = await db.from('scores').select('*').eq('game_id', gameId);
+      const speedScoresCount = (existingScores || []).filter(s => s.round_name.includes('Rapidesa')).length;
+
+      const pointsTable = [10, 6, 3, 1]; // 1r = 10pts, 2n = 6pts, 3r = 3pts, 4t = 1pt
+      const pts = pointsTable[speedScoresCount] || 1;
+      const rankText = `${speedScoresCount + 1}r`;
+
+      const roundLabel = `Rapidesa ${rankText} (${player.name})`;
+
+      await db.from('scores').insert({
+        game_id: gameId,
+        team_id: player.team_id,
+        round_name: roundLabel,
+        points: pts
+      });
+
+      await loadGameScoreControls();
+    }
+
     function getGameButtons(gameNum, gameId, teamId) {
-      if (gameNum === 1) { // Mímica amb rondes dinàmiques
-        const round = selectedMimicaRound;
+      if (gameNum === 1) { // Mímica
+        const roundTitle = mimicaRondes[selectedMimicaRoundIndex]?.title || 'Mímica';
         return `
-          <button onclick="addPoints('${gameId}', '${teamId}', '${round}', 5)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+5)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', '${round}', 4)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+4)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', '${round}', 3)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+3)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', '${round}', 2)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+2)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', '${roundTitle}', 5)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+5)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', '${roundTitle}', 4)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+4)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', '${roundTitle}', 3)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+3)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', '${roundTitle}', 2)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+2)</button>
         `;
-      } else if (gameNum === 2) { // Globus
+      } else if (gameNum === 2) { // Globus: Rapidesa + Mida
         return `
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Globus', 10)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+10)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Globus', 6)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+6)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Globus', 3)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+3)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Globus', 1)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+1)</button>
+          <div class="w-full space-y-2 pt-1">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-[10px] font-bold text-orange-600 uppercase tracking-wider w-full block">⚡ Rapidesa:</span>
+              <button onclick="addPoints('${gameId}', '${teamId}', 'Rapidesa 1r', 5)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+5)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', 'Rapidesa 2n', 3)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+3)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', 'Rapidesa 3r', 2)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+2)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', 'Rapidesa 4t', 1)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+1)</button>
+            </div>
+            <div class="flex items-center gap-1.5 flex-wrap pt-1 border-t border-neutral-100">
+              <span class="text-[10px] font-bold text-purple-600 uppercase tracking-wider w-full block">🎈 Mida / Quantitat:</span>
+              <button onclick="addPoints('${gameId}', '${teamId}', 'Mida 1r', 5)" class="btn-score bg-purple-50 text-purple-700 hover:bg-purple-100">1r (+5)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', 'Mida 2n', 3)" class="btn-score bg-indigo-50 text-indigo-700 hover:bg-indigo-100">2n (+3)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', 'Mida 3r', 2)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+2)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', 'Mida 4t', 1)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+1)</button>
+            </div>
+          </div>
         `;
-      } else if (gameNum === 3) { // Taral·larejar
+      } else if (gameNum === 3) { // Taral·larejar (Puntuació per cançó)
+        const currentSong = taralSongs.find(s => s.id == selectedTaralSongIndex) || taralSongs[0];
+        const songTag = `C${currentSong.id}`;
+
         return `
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Nom o Artista', 4)" class="btn-score bg-purple-50 text-purple-700 hover:bg-purple-100">Nom/Artista (+4)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Nom i Artista', 7)" class="btn-score bg-orange-50 text-orange-700 hover:bg-orange-100">Nom i Artista (+7)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Posició 1r', 3)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+3)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Posició 2n', 2)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+2)</button>
+          <div class="w-full space-y-2 pt-1">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-[10px] font-bold text-amber-600 uppercase tracking-wider w-full block">⚡ Rapidesa (${songTag}):</span>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${songTag} Rapidesa 1r', 3)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+3)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${songTag} Rapidesa 2n', 2)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+2)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${songTag} Rapidesa 3r', 1)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+1)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${songTag} Rapidesa 4t', 0)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+0)</button>
+            </div>
+            <div class="flex items-center gap-1.5 flex-wrap pt-1 border-t border-neutral-100">
+              <span class="text-[10px] font-bold text-purple-600 uppercase tracking-wider w-full block">🎵 Encert (${songTag}):</span>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${songTag} Nom/Artista', 4)" class="btn-score bg-purple-50 text-purple-700 hover:bg-purple-100">Nom O Artista (+4)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${songTag} Nom i Artista', 7)" class="btn-score bg-amber-50 text-amber-800 hover:bg-amber-100">Nom I Artista (+7)</button>
+            </div>
+          </div>
         `;
       } else if (gameNum === 4) { // Acrosport
         return `
@@ -352,10 +766,10 @@
         `;
       } else { // Llengua fora
         return `
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Llengua fora', 5)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+5)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Llengua fora', 4)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+4)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Llengua fora', 3)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+3)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Llengua fora', 2)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+2)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Llengua fora 1r', 5)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+5)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Llengua fora 2n', 4)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+4)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Llengua fora 3r', 3)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+3)</button>
+          <button onclick="addPoints('${gameId}', '${teamId}', 'Llengua fora 4t', 2)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+2)</button>
         `;
       }
     }
@@ -387,6 +801,41 @@
       }
     }
 
+    async function toggleTimer() {
+      const isRunning = currentState.timer_running;
+      const updateData = { 
+        timer_running: !isRunning,
+        updated_at: new Date()
+      };
+      // Si el reiniciem quan ja ha acabat o està parat
+      if (!isRunning && (currentState.timer_seconds === undefined || currentState.timer_seconds <= 0)) {
+        updateData.timer_seconds = 30;
+      }
+
+      await db.from('game_state').update(updateData).eq('id', 1);
+      currentState.timer_running = !isRunning;
+      updateTimerBtnUI();
+    }
+
+    function updateTimerBtnUI() {
+      const badge = document.getElementById('timerStatusBadge');
+      const btn = document.getElementById('timerBtn');
+      if (!badge || !btn) return;
+
+      if (currentState.timer_running) {
+        badge.textContent = "En marxa!";
+        badge.className = "text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full";
+        btn.innerHTML = `<i data-lucide="pause" class="w-4 h-4"></i><span>Pausar Cronòmetre</span>`;
+        btn.className = "w-full py-3 px-4 rounded-xl bg-neutral-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-neutral-800 active:scale-95 transition-all";
+      } else {
+        badge.textContent = "Aturat";
+        badge.className = "text-[10px] font-bold bg-orange-200 text-orange-800 px-2 py-0.5 rounded-full";
+        btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i><span>Iniciar Compte Enrere</span>`;
+        btn.className = "w-full py-3 px-4 rounded-xl bg-orange-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-orange-600 active:scale-95 transition-all";
+      }
+      lucide.createIcons();
+    }
+
     function getTeamStyles(colorName) {
       switch (colorName.toLowerCase()) {
         case 'groc': return { dotColor: '#eab308' };
@@ -401,6 +850,81 @@
       return String(string).replace(/[&<>"']/g, function(s) {
         return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[s];
       });
+    }
+
+    const taralSongs = [
+      { id: 1, title: "En algún lugar", artist: "Duncan Dhu" },
+      { id: 2, title: "Coti x Coti", artist: "The Tyets" },
+      { id: 3, title: "Macarena", artist: "Los Del Rio" },
+      { id: 4, title: "Superestrella", artist: "Aitana" },
+      { id: 5, title: "El meu avi", artist: "Els Pescadors de l'Escala" }
+    ];
+    let selectedTaralSongIndex = 1; // Cançó seleccionada per defecte per puntuar
+
+    function updateSlideUI(slideName, gameId = null, subround = 0) {
+      // ... mantenir codi previ de la funció ...
+
+      const globusBox = document.getElementById('globusControlBox');
+      const taralBox = document.getElementById('taralControlBox');
+
+      if (slideName === 'ronda_actual' && gameId) {
+        const game = allGames.find(x => x.id === gameId);
+        if (game && game.order_num === 2 && subround === 1) {
+          globusBox?.classList.remove('hidden');
+          taralBox?.classList.add('hidden');
+          updateTimerBtnUI();
+        } else if (game && game.order_num === 3 && subround === 1) {
+          taralBox?.classList.remove('hidden');
+          globusBox?.classList.add('hidden');
+          renderRevealSongButtons();
+          updateTimerBtnUI();
+        } else {
+          globusBox?.classList.add('hidden');
+          taralBox?.classList.add('hidden');
+        }
+      } else {
+        globusBox?.classList.add('hidden');
+        taralBox?.classList.add('hidden');
+      }
+    }
+
+    async function toggleRevealSong(songId) {
+      let currentRevealed = currentState.revealed_songs || [];
+      if (currentRevealed.includes(songId)) {
+        currentRevealed = currentRevealed.filter(id => id !== songId);
+      } else {
+        currentRevealed.push(songId);
+      }
+
+      await db.from('game_state').update({
+        revealed_songs: currentRevealed,
+        updated_at: new Date()
+      }).eq('id', 1);
+
+      currentState.revealed_songs = currentRevealed;
+      renderRevealSongButtons();
+    }
+
+    function renderRevealSongButtons() {
+      const container = document.getElementById('revealSongsButtons');
+      if (!container) return;
+
+      const currentRevealed = currentState.revealed_songs || [];
+
+      container.innerHTML = taralSongs.map(s => {
+        const isRev = currentRevealed.includes(s.id);
+        return `
+          <button 
+            onclick="toggleRevealSong(${s.id})"
+            class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-between transition-all ${isRev ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-white text-neutral-700 border border-neutral-200'}"
+          >
+            <span>Cançó ${s.id}: ${s.title} (${s.artist})</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isRev ? 'bg-emerald-200 text-emerald-900' : 'bg-neutral-100 text-neutral-500'}">
+              ${isRev ? 'Visible a la TV' : 'Oculta'}
+            </span>
+          </button>
+        `;
+      }).join('');
     }
   </script>
 
