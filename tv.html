@@ -95,7 +95,7 @@
   <div id="slide_classificacio" class="slide-view h-full flex flex-col items-center justify-center text-center space-y-10 hidden">
     <div class="space-y-3">
       <i data-lucide="crown" class="w-24 h-24 text-amber-500 mx-auto stroke-[2.5]"></i>
-      <h2 class="text-7xl font-black text-neutral-900">Podium Final</h2>
+      <h2 class="text-7xl font-black text-neutral-900">Podi Final</h2>
       <p class="text-3xl text-orange-500 font-bold">Guanyadors de La Costellada!</p>
     </div>
     <div id="podiumContainer" class="flex items-end justify-center gap-8 w-full max-w-5xl h-80 pt-10"></div>
@@ -114,11 +114,18 @@
     const mimicaPhrases = [
       "INTRODUCCIO",
       "Els tres porquets i el llop",
-      "Els tres mosqueters i en d'Artagnan",
+      "Els teletubis",
       "Les tres bessones i la bruixa avorrida",
-      "Teletubis",
       "Els àngels de Charlie",
-      "Mamma Mia"
+      "Els tres mosqueters i en d'Artagnan"
+    ];
+
+    const llenguaPhrases = [
+      "INTRODUCCIO",
+      "El sabater és el qui va més mal calçat",
+      "Al lloc de la guineu, qui se n'alça ja no hi seu",
+      "Qui no vulgui pols, que no vagi a l'era",
+      "Val més boig conegut que savi per conéixer"
     ];
 
     window.addEventListener('DOMContentLoaded', async () => {
@@ -257,7 +264,7 @@
                 <span class="w-5 h-5 rounded-full" style="background-color: ${styles.dotColor}"></span>
                 <span class="font-bold text-lg" style="color: ${styles.textColor}">${team.name}</span>
               </div>
-              <span class="font-black text-2xl text-neutral-800">${team.gamePoints} <span class="text-xs font-normal text-neutral-400">pts</span></span>
+              <span class="font-black text-2xl text-neutral-800">${team.gamePoints} <span class="text-xs font-normal text-neutral-400">punts</span></span>
             </div>
           `;
         }).join('');
@@ -318,7 +325,7 @@
                   <div class="flex items-center gap-3 text-purple-600 font-bold text-xl">
                     <i data-lucide="users" class="w-7 h-7"></i> <span>Tothom hi participa</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Un jugador de cada equip sortirà alhora a fer mímica a cada ronda.</p>
+                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Un jugador de cada equip sortirà alhora a fer mímica, que serà conjunta.</p>
                 </div>
 
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
@@ -379,7 +386,7 @@
           contentBox.innerHTML = `
             <div class="space-y-10 text-center py-4 my-auto w-full">
               <div>
-                <span class="text-base font-black uppercase text-purple-600 bg-purple-100 px-6 py-2 rounded-full">Ronda ${subIndex} de 6</span>
+                <span class="text-base font-black uppercase text-purple-600 bg-purple-100 px-6 py-2 rounded-full">Ronda ${subIndex} de 5</span>
               </div>
 
               <div class="flex flex-wrap items-center justify-center w-full px-4 py-6">
@@ -404,7 +411,7 @@
                 <i data-lucide="timer" class="w-24 h-24 stroke-[2]"></i>
               </div>
               <h1 class="text-7xl font-black text-neutral-900 tracking-tight">Els Globus</h1>
-              <p class="text-4xl font-extrabold text-orange-500">Teniu prou pulmons?</p>
+              <p class="text-4xl font-extrabold text-orange-500">Com va la bufera?</p>
             </div>
 
             <div id="introGlobusStep2" class="space-y-10 w-full max-w-5xl absolute inset-0 m-auto flex flex-col justify-center px-12 transition-all duration-1000 ease-in-out opacity-0 pointer-events-none translate-y-6">
@@ -493,6 +500,14 @@
               </div>
 
               <div class="grid grid-cols-2 gap-6 text-left">
+
+                <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
+                  <div class="flex items-center gap-3 text-amber-600 font-bold text-xl">
+                    <i data-lucide="users" class="w-7 h-7"></i> <span>Participants</span>
+                  </div>
+                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Esculliu un jugador de cada equip perquè taral·laregi una cançó. Cada equip en taral·larejarà només una.</p>
+                </div>
+
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
                   <div class="flex items-center gap-3 text-amber-600 font-bold text-xl">
                     <i data-lucide="mic-off" class="w-7 h-7"></i> <span>Sense paraules ni lletra</span>
@@ -502,23 +517,16 @@
 
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
                   <div class="flex items-center gap-3 text-amber-600 font-bold text-xl">
-                    <i data-lucide="ban" class="w-7 h-7"></i> <span>Sense percussió</span>
-                  </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Està totalment prohibit fer ritme picant de mans, taula o peus.</p>
-                </div>
-
-                <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-amber-600 font-bold text-xl">
                     <i data-lucide="pencil" class="w-7 h-7"></i> <span>Apunteu al paper</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Escriviu el nom de la cançó i l'artista al paper.</p>
+                  <p class="text-base text-neutral-600 font-medium leading-relaxed">TOTS ELS EQUIPS: \nEscriviu el nom de la cançó i l'artista al paper.</p>
                 </div>
 
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
                   <div class="flex items-center gap-3 text-amber-600 font-bold text-xl">
                     <i data-lucide="timer" class="w-7 h-7"></i> <span>30 segons per cançó</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Escolta atentament i lliura el paper al més ràpid possible.</p>
+                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Escolteu atentament i doneu el paper al més ràpid possible, la rapidesa també conta!</p>
                 </div>
               </div>
             </div>
@@ -547,11 +555,10 @@
           const s = (currentSecs % 60).toString().padStart(2, '0');
 
           const songs = [
-            { id: 1, title: "En algún lugar", artist: "Duncan Dhu" },
-            { id: 2, title: "Coti x Coti", artist: "The Tyets" },
-            { id: 3, title: "Macarena", artist: "Los Del Rio" },
-            { id: 4, title: "Superestrella", artist: "Aitana" },
-            { id: 5, title: "El meu avi", artist: "Els Pescadors de l'Escala" }
+            { id: 1, title: "El meu avi", artist: "Els Pescadors de l'Escala" },
+            { id: 2, title: "Superestrella", artist: "Aitana" },
+            { id: 3, title: "Coti x Coti", artist: "The Tyets" },
+            { id: 4, title: "En algún lugar", artist: "Duncan Dhu" }
           ];
 
           const revealed = currentState.revealed_songs || [];
@@ -595,34 +602,227 @@
           handleTimerState();
         }
       } else if (game.order_num === 4) { // Acrosport
-        contentBox.innerHTML = `
-          <div class="space-y-8 text-center">
-            <i data-lucide="users" class="w-20 h-20 text-purple-500 mx-auto stroke-[2]"></i>
-            <h3 class="text-4xl font-black text-neutral-900">Figures Humanes en Equip</h3>
-            <div class="grid grid-cols-2 gap-8 text-left">
-              <div class="p-8 bg-purple-50 rounded-3xl border-2 border-purple-100">
-                <h4 class="font-extrabold text-purple-900 text-2xl mb-2">Ronda 1: Fàcil</h4>
-                <p class="text-base text-purple-700">Figures bàsiques d'equilibri conjunt.</p>
+        const subIndex = currentState.active_subround || 0;
+
+        if (subIndex === 0) {
+          // --- SUB-RONDA 0: INTRODUCCIÓ I REGLES ---
+          document.getElementById('gameOrderBadge').parentElement.parentElement.parentElement.classList.add('hidden');
+          const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
+          sidebarCol.classList.add('hidden');
+
+          contentBox.className = "col-span-12 bg-white rounded-3xl p-16 shadow-sm border-2 border-neutral-100 h-full flex flex-col items-center justify-center text-center relative overflow-hidden";
+
+          contentBox.innerHTML = `
+            <div id="introAcroStep1" class="space-y-8 transition-all duration-1000 ease-in-out opacity-100 scale-100">
+              <div class="p-6 rounded-3xl bg-purple-50 text-purple-600 inline-block shadow-inner">
+                <i data-lucide="person-standing" class="w-24 h-24 stroke-[2]"></i>
               </div>
-              <div class="p-8 bg-purple-50 rounded-3xl border-2 border-purple-100">
-                <h4 class="font-extrabold text-purple-900 text-2xl mb-2">Ronda 2: Difícil</h4>
-                <p class="text-base text-purple-700">Figures complexes d'elevació.</p>
+              <h1 class="text-7xl font-black text-neutral-900 tracking-tight">Acrosport</h1>
+              <p class="text-4xl font-extrabold text-purple-600">Qui sap fer la vertical?</p>
+            </div>
+
+            <div id="introAcroStep2" class="space-y-10 w-full max-w-5xl absolute inset-0 m-auto flex flex-col justify-center px-12 transition-all duration-1000 ease-in-out opacity-0 pointer-events-none translate-y-6">
+              <div class="space-y-3">
+                <span class="text-sm font-black uppercase text-purple-600 bg-purple-100 px-5 py-2 rounded-full">Regles del Joc</span>
+                <h2 class="text-5xl font-black text-neutral-900">Com es juga a l'Acrosport?</h2>
+              </div>
+
+              <div class="grid grid-cols-2 gap-6 text-left">
+                <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
+                  <div class="flex items-center gap-3 text-purple-600 font-bold text-xl">
+                    <i data-lucide="clock" class="w-7 h-7"></i> <span>30s d'estratègia</span>
+                  </div>
+                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Tindreu 30 segons per mirar la imatge i organitzar-vos. PROHIBIT començar a muntar la figura!</p>
+                </div>
+
+                <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
+                  <div class="flex items-center gap-3 text-purple-600 font-bold text-xl">
+                    <i data-lucide="zap" class="w-7 h-7"></i> <span>Muntatge ràpid</span>
+                  </div>
+                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Quan s'acabi el temps d'organizació, podeu començar a muntar la figura.</p>
+                </div>
+
+                <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
+                  <div class="flex items-center gap-3 text-purple-600 font-bold text-xl">
+                    <i data-lucide="heart-handshake" class="w-7 h-7"></i> <span>Col·laboració total</span>
+                  </div>
+                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Tots els membres de l'equip han de participar directament en la construcció de la figura.</p>
+                </div>
+
+                <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
+                  <div class="flex items-center gap-3 text-purple-600 font-bold text-xl">
+                    <i data-lucide="trophy" class="w-7 h-7"></i> <span>Competició directa</span>
+                  </div>
+                  <p class="text-base text-neutral-600 font-medium leading-relaxed">La competició serà només entre els equips amb el mateix nombre de participants.</p>
+                </div>
               </div>
             </div>
-          </div>
-        `;
-      } else { // Llengua fora
-        contentBox.innerHTML = `
-          <div class="space-y-6">
-            <p class="text-xl font-medium text-neutral-500">Digueu la frase sense equivocar-vos:</p>
-            <div class="space-y-3 text-lg font-bold text-neutral-800">
-              <div class="p-4 bg-neutral-50 rounded-2xl border-2 border-neutral-100">1. "El sabater és el qui va més mal calçat"</div>
-              <div class="p-4 bg-neutral-50 rounded-2xl border-2 border-neutral-100">2. "Al lloc de la guineu, qui se n'alça ja no hi seu"</div>
-              <div class="p-4 bg-neutral-50 rounded-2xl border-2 border-neutral-100">3. "Qui no vulgui pols, que no vagi a l'era"</div>
-              <div class="p-4 bg-neutral-50 rounded-2xl border-2 border-neutral-100">4. "Val més boig conegut que savi per conéixer"</div>
+          `;
+
+          setTimeout(() => {
+            const step1 = document.getElementById('introAcroStep1');
+            const step2 = document.getElementById('introAcroStep2');
+            if (step1 && step2) {
+              step1.classList.remove('opacity-100', 'scale-100');
+              step1.classList.add('opacity-0', '-translate-y-6', 'pointer-events-none');
+              step2.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-6');
+              step2.classList.add('opacity-100', 'translate-y-0');
+            }
+          }, 5000);
+
+        } else {
+          // --- SUB-RONDES 1 A 4: IMATGE I COMPTE ENRERE AUTOMÀTIC D'ORGANITZACIÓ ---
+          document.getElementById('gameOrderBadge').parentElement.parentElement.parentElement.classList.remove('hidden');
+          const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
+          sidebarCol.classList.remove('hidden');
+
+          contentBox.className = "col-span-8 bg-white rounded-3xl p-8 shadow-sm border-2 border-neutral-100 h-full flex flex-col justify-between items-center text-center space-y-4";
+
+          const roundsData = {
+            1: { title: "Fàcil - Equips de 4", img: "images/acro_4_facil.jpg" },
+            2: { title: "Fàcil - Equips de 5", img: "images/acro_5_facil.jpg" },
+            3: { title: "Difícil - Equips de 4", img: "images/acro_4_dificil.jpg" },
+            4: { title: "Difícil - Equips de 5", img: "images/acro_5_dificil.jpg" }
+          };
+
+          const currentRound = roundsData[subIndex] || roundsData[1];
+          const currentSecs = currentState.timer_seconds !== undefined ? currentState.timer_seconds : 30;
+          const m = Math.floor(currentSecs / 60).toString().padStart(2, '0');
+          const s = (currentSecs % 60).toString().padStart(2, '0');
+
+          contentBox.innerHTML = `
+            <!-- CAPÇALERA AMB TITOL I CRONÒMETRE -->
+            <div class="w-full flex items-center justify-between bg-purple-50 p-4 rounded-2xl border-2 border-purple-100">
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-black uppercase text-purple-700 bg-purple-200 px-3 py-1 rounded-full">Ronda ${subIndex} de 4</span>
+                <span class="text-xl font-black text-purple-900">${currentRound.title}</span>
+              </div>
+              <div class="flex items-center gap-2 bg-white px-4 py-1.5 rounded-xl border border-purple-200 shadow-sm">
+                <span class="text-xs font-extrabold text-purple-700">Organització:</span>
+                <span id="tvTimerDisplay" class="text-3xl font-black text-purple-950 font-mono">${m}:${s}</span>
+              </div>
             </div>
-          </div>
-        `;
+
+            <!-- IMATGE DE LA FIGURA -->
+            <div class="flex-1 flex items-center justify-center w-full py-1">
+              <img 
+                src="${currentRound.img}" 
+                alt="${currentRound.title}" 
+                class="max-h-[50vh] w-auto max-w-full rounded-2xl shadow-lg border-2 border-neutral-200 object-contain"
+                onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'p-8 text-neutral-400 font-bold border-2 border-dashed rounded-2xl\'>Imatge no trobada<br><span class=\'text-xs font-normal\'>Asegura\\'t de desar la imatge a: ${currentRound.img}</span></div>';"
+              />
+            </div>
+
+            <!-- MISSATGE DE STATUS DE TEMPS -->
+            <p id="tvTimerSubtitle" class="text-lg font-bold text-neutral-500">
+              ${currentState.timer_running ? 'Temps d\'estratègia! Organitzeu-vos, NO es pot començar a muntar!' : (currentSecs <= 0 ? 'PODEU COMENÇAR A MUNTAR LA FIGURA!' : 'A punt per iniciar els 30s d\'organització...')}
+            </p>
+          `;
+
+          handleTimerState();
+        }
+      } else if (game.order_num === 5) { // Llengua fora
+        const subIndex = currentState.active_subround || 0;
+
+        if (subIndex === 0) {
+          // --- SUB-RONDA 0: INTRODUCCIÓ I REGLES ---
+          document.getElementById('gameOrderBadge').parentElement.parentElement.parentElement.classList.add('hidden');
+          const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
+          sidebarCol.classList.add('hidden');
+
+          contentBox.className = "col-span-12 bg-white rounded-3xl p-16 shadow-sm border-2 border-neutral-100 h-full flex flex-col items-center justify-center text-center relative overflow-hidden";
+
+          contentBox.innerHTML = `
+            <div id="introLlenguaStep1" class="space-y-8 transition-all duration-1000 ease-in-out opacity-100 scale-100">
+              <div class="p-6 rounded-3xl bg-emerald-50 text-emerald-600 inline-block shadow-inner">
+                <i data-lucide="book-a" class="w-24 h-24 stroke-[2]"></i>
+              </div>
+              <h1 class="text-7xl font-black text-neutral-900 tracking-tight">Llengua fora</h1>
+              <p class="text-4xl font-extrabold text-emerald-600">Com més serem, més riurem!</p>
+            </div>
+
+            <div id="introLlenguaStep2" class="space-y-10 w-full max-w-5xl absolute inset-0 m-auto flex flex-col justify-center px-12 transition-all duration-1000 ease-in-out opacity-0 pointer-events-none translate-y-6">
+              <div class="space-y-3">
+                <span class="text-sm font-black uppercase text-emerald-600 bg-emerald-100 px-5 py-2 rounded-full">Regles del Joc</span>
+                <h2 class="text-5xl font-black text-neutral-900">Com es juga a Llengua fora?</h2>
+              </div>
+
+              <div class="grid grid-cols-2 gap-6 text-left">
+                <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
+                  <div class="flex items-center gap-3 text-emerald-600 font-bold text-xl">
+                    <i data-lucide="user-check" class="w-7 h-7"></i> <span>Un representant per ronda</span>
+                  </div>
+                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Esculliu un jugador de cada equip perquè digui el refrany. Cada equip en dirà només un.</p>
+                </div>
+
+                <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
+                  <div class="flex items-center gap-3 text-emerald-600 font-bold text-xl">
+                    <i data-lucide="face-grinning" class="w-7 h-7"></i> <span>Parla amb la llengua fora</span>
+                  </div>
+                  <p class="text-base text-neutral-600 font-medium leading-relaxed">El jugador escollit haurà de dir el refrany en veu alta ensenyant la llengua!</p>
+                </div>
+
+                <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
+                  <div class="flex items-center gap-3 text-emerald-600 font-bold text-xl">
+                    <i data-lucide="pencil" class="w-7 h-7"></i> <span>Apunteu al paper</span>
+                  </div>
+                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Escriviu al paper el refrany que creieu que està dient.</p>
+                </div>
+
+                <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
+                  <div class="flex items-center gap-3 text-emerald-600 font-bold text-xl">
+                    <i data-lucide="trophy" class="w-7 h-7"></i> <span>Valoració i rapidesa</span>
+                  </div>
+                  <p class="text-base text-neutral-600 font-medium leading-relaxed">La puntuació depèn de la rapidesa i d'escriure correctament la frase.</p>
+                </div>
+              </div>
+            </div>
+          `;
+
+          setTimeout(() => {
+            const step1 = document.getElementById('introLlenguaStep1');
+            const step2 = document.getElementById('introLlenguaStep2');
+            if (step1 && step2) {
+              step1.classList.remove('opacity-100', 'scale-100');
+              step1.classList.add('opacity-0', '-translate-y-6', 'pointer-events-none');
+              step2.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-6');
+              step2.classList.add('opacity-100', 'translate-y-0');
+            }
+          }, 5000);
+
+        } else {
+          // --- SUB-RONDES 1 A 4: FRASE AMB GUIONS BAIXOS ---
+          document.getElementById('gameOrderBadge').parentElement.parentElement.parentElement.classList.remove('hidden');
+          const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
+          sidebarCol.classList.remove('hidden');
+
+          contentBox.className = "col-span-8 bg-white rounded-3xl p-10 shadow-sm border-2 border-neutral-100 h-full flex flex-col justify-center space-y-8";
+
+          const phrase = llenguaPhrases[subIndex] || llenguaPhrases[1];
+          const isRevealed = currentState.reveal_solution;
+
+          const words = phrase.split(' ');
+          const phraseHtml = words.map(word => {
+            const letters = word.split('').map(char => {
+              const displayChar = isRevealed ? char : '_';
+              const colorClass = isRevealed ? 'text-emerald-600 border-emerald-500' : 'text-neutral-300 border-neutral-300';
+              return `<span class="letter-box ${colorClass}">${displayChar}</span>`;
+            }).join('');
+            return `<div class="inline-flex my-4 mx-6 sm:mx-8">${letters}</div>`;
+          }).join('');
+
+          contentBox.innerHTML = `
+            <div class="space-y-10 text-center py-4 my-auto w-full">
+              <div>
+                <span class="text-base font-black uppercase text-emerald-600 bg-emerald-100 px-6 py-2 rounded-full">Frase ${subIndex} de 4</span>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-center w-full px-4 py-6">
+                ${phraseHtml}
+              </div>
+            </div>
+          `;
+        }
       }
 
       lucide.createIcons();
@@ -639,36 +839,70 @@
       const third = ranked[2];
       const fourth = ranked[3];
 
-      const s1 = getTeamStyles(first.color);
-      const s2 = getTeamStyles(second.color);
-      const s3 = getTeamStyles(third.color);
-      const s4 = getTeamStyles(fourth.color);
+      const s1 = getTeamStyles(first ? first.color : '');
+      const s2 = getTeamStyles(second ? second.color : '');
+      const s3 = getTeamStyles(third ? third.color : '');
+      const s4 = getTeamStyles(fourth ? fourth.color : '');
 
-      container.innerHTML = `
-        <div class="flex-1 flex flex-col items-center justify-end h-full">
-          <span class="font-black text-neutral-700 text-lg mb-1">${second.name}</span>
-          <span class="font-extrabold text-sm text-neutral-400 mb-3">${second.totalPoints} pts</span>
-          <div class="w-full h-44 rounded-t-3xl flex items-center justify-center font-black text-3xl text-white shadow-md" style="background-color: ${s2.dotColor}">2</div>
-        </div>
-        <div class="flex-1 flex flex-col items-center justify-end h-full">
-          <i data-lucide="crown" class="w-12 h-12 text-amber-500 mb-2 stroke-[2.5]"></i>
-          <span class="font-black text-neutral-900 text-2xl mb-1">${first.name}</span>
-          <span class="font-extrabold text-base text-amber-600 mb-3">${first.totalPoints} pts</span>
-          <div class="w-full h-64 rounded-t-3xl flex items-center justify-center font-black text-5xl text-white shadow-lg" style="background-color: ${s1.dotColor}">1</div>
-        </div>
-        <div class="flex-1 flex flex-col items-center justify-end h-full">
-          <span class="font-black text-neutral-700 text-lg mb-1">${third.name}</span>
-          <span class="font-extrabold text-sm text-neutral-400 mb-3">${third.totalPoints} pts</span>
-          <div class="w-full h-32 rounded-t-3xl flex items-center justify-center font-black text-2xl text-white shadow-sm" style="background-color: ${s3.dotColor}">3</div>
-        </div>
-        
-        <div class="flex-1 flex flex-col items-center justify-end h-full">
-          <span class="font-black text-neutral-700 text-lg mb-1">${fourth.name}</span>
-          <span class="font-extrabold text-sm text-neutral-400 mb-3">${fourth.totalPoints} pts</span>
-          <div class="w-full h-26 rounded-t-3xl flex items-center justify-center font-black text-2xl text-white shadow-sm" style="background-color: ${s4.dotColor}">4</div>
-        </div>
-      `;
+      let html = '';
 
+      // 4t LLOC (EXTREM ESQUERRA - MÉS ESTRET I BAIX)
+      if (fourth) {
+        html += `
+          <div class="w-1/5 flex flex-col items-center justify-end h-full shrink-0">
+            <div class="h-24 flex flex-col items-center justify-end mb-2">
+              <i data-lucide="candy" class="w-8 h-8 text-amber-900 mb-1 stroke-[2.5]"></i>
+              <span class="font-black text-neutral-700 text-base leading-tight">${fourth.name}</span>
+              <span class="font-extrabold text-xs text-neutral-400 mt-0.5">${fourth.totalPoints} punts</span>
+            </div>
+            <div class="w-full h-16 rounded-t-3xl flex items-center justify-center font-black text-3xl text-white shadow-sm" style="background-color: ${s4.dotColor}">4</div>
+          </div>
+        `;
+      }
+
+      // 2n LLOC (ESQUERRA DEL MEDI - ARGENT)
+      if (second) {
+        html += `
+          <div class="w-1/4 flex flex-col items-center justify-end h-full shrink-0">
+            <div class="h-24 flex flex-col items-center justify-end mb-2">
+              <i data-lucide="medal" class="w-10 h-10 text-slate-400 mb-1 stroke-[2.5]"></i>
+              <span class="font-black text-neutral-800 text-xl leading-tight">${second.name}</span>
+              <span class="font-extrabold text-xs text-neutral-400 mt-0.5">${second.totalPoints} punts</span>
+            </div>
+            <div class="w-full h-40 rounded-t-3xl flex items-center justify-center font-black text-5xl text-white shadow-md" style="background-color: ${s2.dotColor}">2</div>
+          </div>
+        `;
+      }
+
+      // 1r LLOC (CENTRE EXACTE - OR - MÉS ALT I AMPLI)
+      if (first) {
+        html += `
+          <div class="w-1/3 flex flex-col items-center justify-end h-full shrink-0 z-10">
+            <div class="h-24 flex flex-col items-center justify-end mb-2">
+              <i data-lucide="crown" class="w-14 h-14 text-amber-500 mb-1 stroke-[2.5]"></i>
+              <span class="font-black text-neutral-900 text-3xl leading-tight">${first.name}</span>
+              <span class="font-extrabold text-sm text-amber-600 mt-0.5">${first.totalPoints} punts</span>
+            </div>
+            <div class="w-full h-64 rounded-t-3xl flex items-center justify-center font-black text-7xl text-white shadow-xl" style="background-color: ${s1.dotColor}">1</div>
+          </div>
+        `;
+      }
+
+      // 3r LLOC (DRETA DEL MEDI - BRONZE)
+      if (third) {
+        html += `
+          <div class="w-1/4 flex flex-col items-center justify-end h-full shrink-0">
+            <div class="h-24 flex flex-col items-center justify-end mb-2">
+              <i data-lucide="award" class="w-10 h-10 text-amber-700 mb-1 stroke-[2.5]"></i>
+              <span class="font-black text-neutral-800 text-xl leading-tight">${third.name}</span>
+              <span class="font-extrabold text-xs text-neutral-400 mt-0.5">${third.totalPoints} punts</span>
+            </div>
+            <div class="w-full h-28 rounded-t-3xl flex items-center justify-center font-black text-4xl text-white shadow-sm" style="background-color: ${s3.dotColor}">3</div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
       lucide.createIcons();
     }
 
@@ -689,6 +923,8 @@
       const subtitle = document.getElementById('tvTimerSubtitle');
       if (!display) return;
 
+      const secs = currentState.timer_seconds !== undefined ? currentState.timer_seconds : 30;
+
       if (currentState.timer_running) {
         if (!timerInterval) {
           timerInterval = setInterval(async () => {
@@ -696,10 +932,13 @@
               currentState.timer_seconds--;
               updateTimerDisplay(currentState.timer_seconds);
             } else {
+              // TEMPS ESGOTAT: Tocar bocina final
               clearInterval(timerInterval);
               timerInterval = null;
               currentState.timer_running = false;
               currentState.timer_seconds = 0;
+
+              playBuzzer(); // SO DE BOCINA FINAL!
 
               await db.from('game_state').update({
                 timer_running: false,
@@ -708,13 +947,13 @@
               }).eq('id', 1);
 
               if (display) {
-                display.classList.remove('text-neutral-900', 'text-orange-500', 'animate-timer-beat');
+                display.classList.remove('text-neutral-900', 'text-orange-500', 'text-amber-900', 'animate-timer-beat');
                 display.classList.add('text-red-500', 'scale-110');
                 display.textContent = "00:00";
               }
               if (subtitle) {
                 subtitle.textContent = "TEMPS ESGOTAT!";
-                subtitle.className = "text-2xl font-black text-red-500 animate-pulse";
+                subtitle.className = "text-2xl font-black text-red-500 animate-pulse text-center";
               }
             }
           }, 1000);
@@ -724,18 +963,23 @@
           clearInterval(timerInterval);
           timerInterval = null;
         }
-        if (currentState.timer_seconds === 0) {
-          if (display) {
-            display.classList.remove('text-neutral-900', 'text-orange-500', 'animate-timer-beat');
-            display.classList.add('text-red-500', 'scale-110');
-            display.textContent = "00:00";
-          }
+
+        if (secs <= 0) {
+          display.classList.remove('text-neutral-900', 'text-orange-500', 'text-amber-900', 'animate-timer-beat');
+          display.classList.add('text-red-500', 'scale-110');
+          display.textContent = "00:00";
           if (subtitle) {
             subtitle.textContent = "TEMPS ESGOTAT!";
-            subtitle.className = "text-2xl font-black text-red-500 animate-pulse";
+            subtitle.className = "text-2xl font-black text-red-500 animate-pulse text-center";
           }
         } else {
-          updateTimerDisplay(currentState.timer_seconds !== undefined ? currentState.timer_seconds : 30);
+          display.classList.remove('text-red-500', 'text-orange-500', 'scale-110', 'animate-timer-beat');
+          display.classList.add('text-neutral-900');
+          updateTimerDisplay(secs);
+          if (subtitle) {
+            subtitle.textContent = "A punt per començar...";
+            subtitle.className = "text-xl font-bold text-neutral-400 text-center";
+          }
         }
       }
     }
@@ -749,8 +993,12 @@
       const s = (secs % 60).toString().padStart(2, '0');
       display.textContent = `${m}:${s}`;
 
+      // LÒGICA DE SO I ANIMACIÓ PER SEGON
       if (secs <= 10 && secs > 0) {
-        display.classList.remove('text-neutral-900');
+        // Ultim 10 segons: Beep agut i intens + batec
+        playBeep(880, 'square', 0.15);
+
+        display.classList.remove('text-neutral-900', 'text-amber-900');
         display.classList.add('text-orange-500');
         
         display.classList.remove('animate-timer-beat');
@@ -759,13 +1007,78 @@
 
         if (subtitle) {
           subtitle.textContent = "Últims segons!";
-          subtitle.className = "text-xl font-black text-orange-500";
+          subtitle.className = "text-xl font-black text-orange-500 text-center";
         }
       } else if (secs > 10) {
+        // Segons normals (30s a 11s): Beep suau
+        playBeep(440, 'sine', 0.08);
+
         display.classList.remove('text-orange-500', 'text-red-500', 'animate-timer-beat');
         display.classList.add('text-neutral-900');
       }
     }
-  </script>
+
+    // Sistema de So Natiu (Sintetitzador Web Audio)
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    // Activar l'àudio al primer clic o interacció a la TV (requisit dels navegadors)
+    window.addEventListener('click', () => initAudio(), { once: true });
+
+    function playBeep(freq = 440, type = 'sine', duration = 0.1) {
+      try {
+        initAudio();
+        if (!audioCtx) return;
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = type;
+        osc.frequency.value = freq;
+
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.log("Àudio no permès encara");
+      }
+    }
+
+    function playBuzzer() {
+      try {
+        initAudio();
+        if (!audioCtx) return;
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sawtooth'; // So tipus bocina/banya de basquetbol
+        osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 1.2);
+
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.2);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1.2);
+      } catch (e) {
+        console.log("Àudio no permès encara");
+      }
+    }
+
+    </script>
 </body>
 </html>

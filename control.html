@@ -172,20 +172,36 @@
     const mimicaRondes = [
       { id: 0, title: "0. Introducció i Instruccions", phrase: "INTRO" },
       { id: 1, title: "1. Els tres porquets i el llop", phrase: "Els tres porquets i el llop" },
-      { id: 2, title: "2. Els tres mosqueters i en d'Artagnan", phrase: "Els tres mosqueters i en d'Artagnan" },
+      { id: 2, title: "2. Els teletubis", phrase: "Els teletubis" },
       { id: 3, title: "3. Les tres bessones i la bruixa avorrida", phrase: "Les tres bessones i la bruixa avorrida" },
-      { id: 4, title: "4. Teletubis", phrase: "Teletubis" },
-      { id: 5, title: "5. Els àngels de Charlie", phrase: "Els àngels de Charlie" },
-      { id: 6, title: "6. Mamma Mia", phrase: "Mamma Mia" }
+      { id: 4, title: "4. Els àngels de Charlie", phrase: "Els àngels de Charlie" },
+      { id: 5, title: "5. Els tres mosqueters i en d'Artagnan", phrase: "Els tres mosqueters i en d'Artagnan" }
     ];
 
     const taralSongs = [
-      { id: 1, title: "En algún lugar", artist: "Duncan Dhu" },
-      { id: 2, title: "Coti x Coti", artist: "The Tyets" },
-      { id: 3, title: "Macarena", artist: "Los Del Rio" },
-      { id: 4, title: "Superestrella", artist: "Aitana" },
-      { id: 5, title: "El meu avi", artist: "Els Pescadors de l'Escala" }
+            { id: 1, title: "El meu avi", artist: "Els Pescadors de l'Escala" },
+            { id: 2, title: "Superestrella", artist: "Aitana" },
+            { id: 3, title: "Coti x Coti", artist: "The Tyets" },
+            { id: 4, title: "En algún lugar", artist: "Duncan Dhu" }
     ];
+
+    const acroRondes = [
+      { id: 0, title: "0. Introducció i Instruccions", isDifficult: false },
+      { id: 1, title: "1. Fàcil (Equips de 4)", isDifficult: false },
+      { id: 2, title: "2. Fàcil (Equips de 5)", isDifficult: false },
+      { id: 3, title: "3. Difícil (Equips de 4)", isDifficult: true },
+      { id: 4, title: "4. Difícil (Equips de 5)", isDifficult: true }
+    ];
+    let selectedAcroRoundIndex = 1;
+
+    const llenguaRondes = [
+      { id: 0, title: "0. Introducció i Instruccions" },
+      { id: 1, title: "1. El sabater és el qui va més mal calçat" },
+      { id: 2, title: "2. Al lloc de la guineu, qui se n'alça ja no hi seu" },
+      { id: 3, title: "3. Qui no vulgui pols, que no vagi a l'era" },
+      { id: 4, title: "4. Val més boig conegut que savi per conéixer" }
+    ];
+    let selectedLlenguaRoundIndex = 1;
 
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
@@ -244,12 +260,21 @@
         };
         if (gameId) updateData.active_game_id = gameId;
 
+        // Si entrem a una ronda amb cronòmetre, el reiniciem a 30s i el parem
+        if (slideName === 'ronda_actual') {
+          updateData.timer_running = false;
+          updateData.timer_seconds = 30;
+        }
+
         const { error } = await db.from('game_state').update(updateData).eq('id', 1);
         if (error) throw error;
 
         currentState.active_slide = slideName;
         currentState.active_subround = subround;
         currentState.reveal_solution = false;
+        currentState.timer_running = false;
+        currentState.timer_seconds = 30;
+
         if (gameId) currentState.active_game_id = gameId;
 
         updateSlideUI(slideName, gameId, subround);
@@ -351,7 +376,29 @@
               subBtn.classList.remove('bg-neutral-50', 'text-neutral-700');
               subBtn.classList.add('bg-amber-500', 'text-white', 'shadow-md');
             }
-          } else {
+          } else if (game.order_num === 4) { // Acrosport
+            if (subround > 0) {
+              // Reutilitzem el control de cronòmetre (globus/acro)
+              globusBox?.classList.remove('hidden');
+              updateTimerBtnUI();
+            }
+            const subBtn = document.getElementById(`acroSubBtn_${subround}`);
+            if (subBtn) {
+              subBtn.classList.remove('bg-neutral-50', 'text-neutral-700');
+              subBtn.classList.add('bg-purple-600', 'text-white', 'shadow-md');
+            }
+          } else if (game.order_num === 5) { // Llengua fora
+            if (subround > 0) {
+              mimicaBox?.classList.remove('hidden'); // Reutilitzem el botó de Revelar Solució
+              updateRevealBtnUI();
+            }
+            const subBtn = document.getElementById(`llenguaSubBtn_${subround}`);
+            if (subBtn) {
+              subBtn.classList.remove('bg-neutral-50', 'text-neutral-700');
+              subBtn.classList.add('bg-emerald-600', 'text-white', 'shadow-md');
+            }
+          }
+          else {
             const subBtn = document.getElementById(`gameSubBtn_${gameId}`);
             if (subBtn) {
               subBtn.classList.remove('bg-neutral-50', 'text-neutral-700');
@@ -393,7 +440,9 @@
       const mimicaGame = allGames.find(g => g.order_num === 1);
       const globusGame = allGames.find(g => g.order_num === 2);
       const taralGame = allGames.find(g => g.order_num === 3);
-      const otherGames = allGames.filter(g => g.order_num > 3);
+      const acroGame = allGames.find(g => g.order_num === 4);
+      const llenguaGame = allGames.find(g => g.order_num === 5);
+      // const otherGames = allGames.filter(g => g.order_num > 4);
 
       let html = '';
 
@@ -463,18 +512,56 @@
         `;
       }
 
-      otherGames.forEach(g => {
+      // Joc 4: Acrosport
+      if (acroGame) {
         html += `
-          <button 
-            id="gameSubBtn_${g.id}"
-            onclick="setSlide('ronda_actual', '${g.id}')"
-            class="game-sub-btn w-full text-left p-3.5 rounded-2xl bg-neutral-50 transition-all text-xs font-bold flex items-center justify-between active:scale-[0.99] mt-2"
-          >
-            <span>Joc ${g.order_num}: ${escapeHtml(g.title)}</span>
-            <i data-lucide="play" class="w-3.5 h-3.5"></i>
-          </button>
+          <div class="space-y-1 bg-purple-50/50 p-2.5 rounded-2xl border border-purple-100 mt-2">
+            <span class="text-[10px] font-bold text-purple-700 uppercase tracking-wider block px-1">Joc 4: Acrosport</span>
+            ${acroRondes.map(ar => `
+              <button 
+                id="acroSubBtn_${ar.id}"
+                onclick="setSlide('ronda_actual', '${acroGame.id}', ${ar.id})"
+                class="game-sub-btn w-full text-left p-2.5 rounded-xl bg-neutral-50 transition-all text-xs font-bold flex items-center justify-between active:scale-[0.99]"
+              >
+                <span>${ar.title}</span>
+                <i data-lucide="play" class="w-3.5 h-3.5"></i>
+              </button>
+            `).join('')}
+          </div>
         `;
-      });
+      }
+
+      // Joc 5: Llengua fora
+      if (llenguaGame) {
+        html += `
+          <div class="space-y-1 bg-emerald-50/50 p-2.5 rounded-2xl border border-emerald-100 mt-2">
+            <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block px-1">Joc 5: Llengua fora</span>
+            ${llenguaRondes.map(lr => `
+              <button 
+                id="llenguaSubBtn_${lr.id}"
+                onclick="setSlide('ronda_actual', '${llenguaGame.id}', ${lr.id})"
+                class="game-sub-btn w-full text-left p-2.5 rounded-xl bg-neutral-50 transition-all text-xs font-bold flex items-center justify-between active:scale-[0.99]"
+              >
+                <span>${lr.title}</span>
+                <i data-lucide="play" class="w-3.5 h-3.5"></i>
+              </button>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      // otherGames.forEach(g => {
+      //   html += `
+      //     <button 
+      //       id="gameSubBtn_${g.id}"
+      //       onclick="setSlide('ronda_actual', '${g.id}')"
+      //       class="game-sub-btn w-full text-left p-3.5 rounded-2xl bg-neutral-50 transition-all text-xs font-bold flex items-center justify-between active:scale-[0.99] mt-2"
+      //     >
+      //       <span>Joc ${g.order_num}: ${escapeHtml(g.title)}</span>
+      //       <i data-lucide="play" class="w-3.5 h-3.5"></i>
+      //     </button>
+      //   `;
+      // });
 
       container.innerHTML = html;
       lucide.createIcons();
@@ -546,6 +633,30 @@
             <label class="block text-xs font-bold text-amber-700 uppercase tracking-wider">Selecciona Cançó a Puntuar:</label>
             <select id="taralSongSelect" onchange="selectedTaralSongIndex = this.value; loadGameScoreControls();" class="w-full bg-amber-50 text-amber-900 font-bold px-4 py-2.5 rounded-2xl outline-none text-xs">
               ${taralSongs.map(s => `<option value="${s.id}" ${selectedTaralSongIndex == s.id ? 'selected' : ''}>Cançó ${s.id}: ${s.title} (${s.artist})</option>`).join('')}
+            </select>
+          </div>
+        `;
+      }
+
+      // Si és el joc 4 (Acrosport)
+      if (game.order_num === 4) {
+        html += `
+          <div class="bg-white p-4 rounded-3xl border border-neutral-100 shadow-sm space-y-2">
+            <label class="block text-xs font-bold text-purple-600 uppercase tracking-wider">Selecciona Ronda d'Acrosport a Puntuar:</label>
+            <select id="acroRoundSelect" onchange="selectedAcroRoundIndex = this.value; loadGameScoreControls();" class="w-full bg-purple-50 text-purple-900 font-bold px-4 py-2.5 rounded-2xl outline-none text-xs">
+              ${acroRondes.filter(r => r.id > 0).map(r => `<option value="${r.id}" ${selectedAcroRoundIndex == r.id ? 'selected' : ''}>${r.title}</option>`).join('')}
+            </select>
+          </div>
+        `;
+      }
+
+      // Si és el joc 5 (Llengua fora)
+      if (game.order_num === 5) {
+        html += `
+          <div class="bg-white p-4 rounded-3xl border border-neutral-100 shadow-sm space-y-2">
+            <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider">Selecciona Ronda a Puntuar:</label>
+            <select id="llenguaRoundSelect" onchange="selectedLlenguaRoundIndex = this.value; loadGameScoreControls();" class="w-full bg-emerald-50 text-emerald-900 font-bold px-4 py-2.5 rounded-2xl outline-none text-xs">
+              ${llenguaRondes.filter(r => r.id > 0).map(r => `<option value="${r.id}" ${selectedLlenguaRoundIndex == r.id ? 'selected' : ''}>${r.title}</option>`).join('')}
             </select>
           </div>
         `;
@@ -658,15 +769,32 @@
     }
 
     function getGameButtons(gameNum, gameId, teamId) {
-      if (gameNum === 1) { // Mímica
-        const roundTitle = mimicaRondes[selectedMimicaRoundIndex]?.title || 'Mímica';
+      if (gameNum === 1) { // Mímica (Rapidesa + Encert + Mig correcte)
+        const roundTitle = mimicaRondes[selectedMimicaRoundIndex]?.title || 'Ronda';
+        const roundTag = `R${selectedMimicaRoundIndex}`;
+
         return `
-          <button onclick="addPoints('${gameId}', '${teamId}', '${roundTitle}', 5)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+5)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', '${roundTitle}', 4)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+4)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', '${roundTitle}', 3)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+3)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', '${roundTitle}', 2)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+2)</button>
+          <div class="w-full space-y-2 pt-1">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-[10px] font-bold text-purple-600 uppercase tracking-wider w-full block">Rapidesa (${roundTag}):</span>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} Rapidesa 1r', 5)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+5)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} Rapidesa 2n', 3)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+3)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} Rapidesa 3r', 2)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+2)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} Rapidesa 4t', 1)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+1)</button>
+            </div>
+            <div class="flex items-center gap-1.5 flex-wrap pt-1 border-t border-neutral-100">
+              <span class="text-[10px] font-bold text-purple-600 uppercase tracking-wider w-full block">Encert (${roundTag}):</span>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} Correcte', 5)" class="btn-score bg-purple-50 text-purple-700 hover:bg-purple-100">Correcte (+5)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} Mig Correcte', 3)" class="btn-score bg-amber-50 text-amber-800 hover:bg-amber-100">Mig Correcte (+3)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} Incorrecte', 0)" class="btn-score bg-neutral-100 text-neutral-500 hover:bg-neutral-200">Incorrecte (+0)</button>
+            </div>
+            <div class="flex items-center gap-1.5 pt-1 border-t border-neutral-100">
+              <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block shrink-0">Ajust Manual:</span>
+              <button onclick="addManualPoints('${gameId}', '${teamId}')" class="btn-score bg-neutral-800 text-white hover:bg-neutral-900">+ / - Punts</button>
+            </div>
+          </div>
         `;
-      } else if (gameNum === 2) { // Globus: Rapidesa + Mida
+      } else if (gameNum === 2) { // Globus: Rapidesa + Mida + Manual
         return `
           <div class="w-full space-y-2 pt-1">
             <div class="flex items-center gap-1.5 flex-wrap">
@@ -682,6 +810,10 @@
               <button onclick="addPoints('${gameId}', '${teamId}', 'Mida 2n', 3)" class="btn-score bg-indigo-50 text-indigo-700 hover:bg-indigo-100">2n (+3)</button>
               <button onclick="addPoints('${gameId}', '${teamId}', 'Mida 3r', 2)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+2)</button>
               <button onclick="addPoints('${gameId}', '${teamId}', 'Mida 4t', 1)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+1)</button>
+            </div>
+            <div class="flex items-center gap-1.5 pt-1 border-t border-neutral-100">
+              <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block shrink-0">Ajust Manual:</span>
+              <button onclick="addManualPoints('${gameId}', '${teamId}')" class="btn-score bg-neutral-800 text-white hover:bg-neutral-900">+ / - Punts</button>
             </div>
           </div>
         `;
@@ -703,22 +835,113 @@
               <button onclick="addPoints('${gameId}', '${teamId}', '${songTag} Nom/Artista', 4)" class="btn-score bg-purple-50 text-purple-700 hover:bg-purple-100">Nom O Artista (+4)</button>
               <button onclick="addPoints('${gameId}', '${teamId}', '${songTag} Nom i Artista', 7)" class="btn-score bg-amber-50 text-amber-800 hover:bg-amber-100">Nom I Artista (+7)</button>
             </div>
+            <div class="flex items-center gap-1.5 pt-1 border-t border-neutral-100">
+              <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block shrink-0">Ajust Manual:</span>
+              <button onclick="addManualPoints('${gameId}', '${teamId}')" class="btn-score bg-neutral-800 text-white hover:bg-neutral-900">+ / - Punts</button>
+            </div>
           </div>
         `;
       } else if (gameNum === 4) { // Acrosport
+        const currentRound = acroRondes.find(r => r.id == selectedAcroRoundIndex) || acroRondes[1];
+        const isDifficult = currentRound.isDifficult;
+        const roundTag = `R${currentRound.id}`;
+
+        if (isDifficult) {
+          // Ronda Difícil: 1r (+5), 2n (+3), Empat (+4)
+          return `
+            <div class="w-full space-y-2 pt-1">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-[10px] font-bold text-purple-600 uppercase tracking-wider w-full block">Posició Ronda Difícil (${roundTag}):</span>
+                <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} 1r Difícil', 5)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+5)</button>
+                <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} 2n Difícil', 3)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+3)</button>
+                <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} Empat Difícil', 4)" class="btn-score bg-amber-50 text-amber-800 hover:bg-amber-100">Empat (+4)</button>
+              </div>
+              <div class="flex items-center gap-1.5 pt-1 border-t border-neutral-100">
+                <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block shrink-0">Ajust Manual:</span>
+                <button onclick="addManualPoints('${gameId}', '${teamId}')" class="btn-score bg-neutral-800 text-white hover:bg-neutral-900">+ / - Punts</button>
+              </div>
+            </div>
+          `;
+        } else {
+          // Ronda Fàcil: 1r (+3), 2n (+1), Empat (+2)
+          return `
+            <div class="w-full space-y-2 pt-1">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-[10px] font-bold text-purple-600 uppercase tracking-wider w-full block">Posició Ronda Fàcil (${roundTag}):</span>
+                <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} 1r Fàcil', 3)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+3)</button>
+                <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} 2n Fàcil', 1)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+1)</button>
+                <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} Empat Fàcil', 2)" class="btn-score bg-amber-50 text-amber-800 hover:bg-amber-100">Empat (+2)</button>
+              </div>
+              <div class="flex items-center gap-1.5 pt-1 border-t border-neutral-100">
+                <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block shrink-0">Ajust Manual:</span>
+                <button onclick="addManualPoints('${gameId}', '${teamId}')" class="btn-score bg-neutral-800 text-white hover:bg-neutral-900">+ / - Punts</button>
+              </div>
+            </div>
+          `;
+        }
+      } else if (gameNum === 5) { // Llengua fora
+        const roundTitle = llenguaRondes[selectedLlenguaRoundIndex]?.title || 'Ronda';
+        const roundTag = `R${selectedLlenguaRoundIndex}`;
+
         return `
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Acrosport Fàcil 1r', 3)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r Fàcil (+3)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Acrosport Fàcil 2n', 1)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">2n Fàcil (+1)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Acrosport Difícil 1r', 5)" class="btn-score bg-purple-50 text-purple-700 hover:bg-purple-100">1r Difícil (+5)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Acrosport Difícil 2n', 3)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n Difícil (+3)</button>
+          <div class="w-full space-y-2 pt-1">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider w-full block">⚡ Rapidesa i Encert (${roundTag}):</span>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} 1r Lloc', 5)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+5)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} 2n Lloc', 4)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+4)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} 3r Lloc', 3)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+3)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} 4t Lloc', 2)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+2)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', '${roundTag} Null', 0)" class="btn-score bg-red-50 text-red-600 hover:bg-red-100">Null (+0)</button>
+            </div>
+            <div class="flex items-center gap-1.5 pt-1 border-t border-neutral-100">
+              <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block shrink-0">Ajust Manual:</span>
+              <button onclick="addManualPoints('${gameId}', '${teamId}')" class="btn-score bg-neutral-800 text-white hover:bg-neutral-900">+ / - Punts</button>
+            </div>
+          </div>
         `;
-      } else { // Llengua fora
+      } else { // Altres jocs
         return `
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Llengua fora 1r', 5)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+5)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Llengua fora 2n', 4)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+4)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Llengua fora 3r', 3)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+3)</button>
-          <button onclick="addPoints('${gameId}', '${teamId}', 'Llengua fora 4t', 2)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+2)</button>
+          <div class="w-full space-y-2 pt-1">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <button onclick="addPoints('${gameId}', '${teamId}', '1r Lloc', 5)" class="btn-score bg-emerald-50 text-emerald-700 hover:bg-emerald-100">1r (+5)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', '2n Lloc', 3)" class="btn-score bg-blue-50 text-blue-700 hover:bg-blue-100">2n (+3)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', '3r Lloc', 2)" class="btn-score bg-amber-50 text-amber-700 hover:bg-amber-100">3r (+2)</button>
+              <button onclick="addPoints('${gameId}', '${teamId}', '4t Lloc', 1)" class="btn-score bg-neutral-100 text-neutral-700 hover:bg-neutral-200">4t (+1)</button>
+            </div>
+            <div class="flex items-center gap-1.5 pt-1 border-t border-neutral-100">
+              <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block shrink-0">Ajust Manual:</span>
+              <button onclick="addManualPoints('${gameId}', '${teamId}')" class="btn-score bg-neutral-800 text-white hover:bg-neutral-900">+ / - Punts</button>
+            </div>
+          </div>
         `;
+      }
+    }
+
+    async function addManualPoints(gameId, teamId) {
+      const pointsStr = prompt("Introdueix els punts a afegir o restar (Ex: 3 o -2):");
+      if (pointsStr === null || pointsStr.trim() === "") return;
+
+      const pts = parseInt(pointsStr, 10);
+      if (isNaN(pts)) {
+        alert("S'ha d'introduir un número vàlid!");
+        return;
+      }
+
+      const label = prompt("Motiu o nom de la puntuació:", "Ajust manual") || "Ajust manual";
+
+      try {
+        const { error } = await db.from('scores').insert({
+          game_id: gameId,
+          team_id: teamId,
+          round_name: label,
+          points: pts
+        });
+
+        if (error) throw error;
+        await loadGameScoreControls();
+
+      } catch (err) {
+        console.error('Error afegint punts manuals:', err);
       }
     }
 
@@ -750,18 +973,32 @@
     }
 
     async function toggleTimer() {
-      const isRunning = currentState.timer_running;
-      const updateData = { 
-        timer_running: !isRunning,
-        updated_at: new Date()
-      };
-      if (!isRunning && (currentState.timer_seconds === undefined || currentState.timer_seconds <= 0)) {
-        updateData.timer_seconds = 30;
-      }
+      try {
+        const isRunning = currentState.timer_running;
+        const currentSecs = currentState.timer_seconds;
 
-      await db.from('game_state').update(updateData).eq('id', 1);
-      currentState.timer_running = !isRunning;
-      updateTimerBtnUI();
+        let newSecs = currentSecs;
+        // Si estava a 0 o no definit, el reiniciem a 30s en donar Play
+        if (!isRunning && (currentSecs === undefined || currentSecs <= 0)) {
+          newSecs = 30;
+        }
+
+        const updateData = { 
+          timer_running: !isRunning,
+          timer_seconds: newSecs,
+          updated_at: new Date()
+        };
+
+        const { error } = await db.from('game_state').update(updateData).eq('id', 1);
+        if (error) throw error;
+
+        currentState.timer_running = !isRunning;
+        currentState.timer_seconds = newSecs;
+        updateTimerBtnUI();
+
+      } catch (err) {
+        console.error('Error canviant estat del temporitzador:', err);
+      }
     }
 
     function updateTimerBtnUI() {
@@ -771,33 +1008,28 @@
       const taralBtn = document.getElementById('taralTimerBtn');
 
       const isRunning = currentState.timer_running;
+      const secs = currentState.timer_seconds !== undefined ? currentState.timer_seconds : 30;
+
+      const btnText = isRunning ? 'Pausar Cronòmetre' : (secs <= 0 ? 'Reiniciar i Iniciar (30s)' : 'Iniciar Cronòmetre (30s)');
+      const badgeText = isRunning ? 'En marxa!' : (secs <= 0 ? 'Esgotat (0s)' : `Aturat (${secs}s)`);
+      const badgeClass = isRunning ? 'text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full' : (secs <= 0 ? 'text-[10px] font-bold bg-red-100 text-red-800 px-2 py-0.5 rounded-full' : 'text-[10px] font-bold bg-orange-200 text-orange-800 px-2 py-0.5 rounded-full');
 
       if (globusBadge && globusBtn) {
-        if (isRunning) {
-          globusBadge.textContent = "En marxa!";
-          globusBadge.className = "text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full";
-          globusBtn.innerHTML = `<i data-lucide="pause" class="w-4 h-4"></i><span>Pausar Cronòmetre</span>`;
-          globusBtn.className = "w-full py-3 px-4 rounded-xl bg-neutral-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-neutral-800 active:scale-95 transition-all";
-        } else {
-          globusBadge.textContent = "Aturat";
-          globusBadge.className = "text-[10px] font-bold bg-orange-200 text-orange-800 px-2 py-0.5 rounded-full";
-          globusBtn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i><span>Iniciar Compte Enrere</span>`;
-          globusBtn.className = "w-full py-3 px-4 rounded-xl bg-orange-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-orange-600 active:scale-95 transition-all";
-        }
+        globusBadge.textContent = badgeText;
+        globusBadge.className = badgeClass;
+        globusBtn.innerHTML = `<i data-lucide="${isRunning ? 'pause' : 'play'}" class="w-4 h-4"></i><span>${btnText}</span>`;
+        globusBtn.className = isRunning 
+          ? "w-full py-3 px-4 rounded-xl bg-neutral-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-neutral-800 active:scale-95 transition-all"
+          : "w-full py-3 px-4 rounded-xl bg-orange-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-orange-600 active:scale-95 transition-all";
       }
 
       if (taralBadge && taralBtn) {
-        if (isRunning) {
-          taralBadge.textContent = "En marxa!";
-          taralBadge.className = "text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full";
-          taralBtn.innerHTML = `<i data-lucide="pause" class="w-4 h-4"></i><span>Pausar Cronòmetre</span>`;
-          taralBtn.className = "w-full py-3 px-4 rounded-xl bg-neutral-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-neutral-800 active:scale-95 transition-all";
-        } else {
-          taralBadge.textContent = "Aturat";
-          taralBadge.className = "text-[10px] font-bold bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full";
-          taralBtn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i><span>Iniciar Cronòmetre (30s)</span>`;
-          taralBtn.className = "w-full py-3 px-4 rounded-xl bg-amber-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-amber-600 active:scale-95 transition-all";
-        }
+        taralBadge.textContent = badgeText;
+        taralBadge.className = badgeClass;
+        taralBtn.innerHTML = `<i data-lucide="${isRunning ? 'pause' : 'play'}" class="w-4 h-4"></i><span>${btnText}</span>`;
+        taralBtn.className = isRunning 
+          ? "w-full py-3 px-4 rounded-xl bg-neutral-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-neutral-800 active:scale-95 transition-all"
+          : "w-full py-3 px-4 rounded-xl bg-amber-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-amber-600 active:scale-95 transition-all";
       }
 
       lucide.createIcons();
