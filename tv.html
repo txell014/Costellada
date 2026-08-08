@@ -13,7 +13,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
       overflow: hidden; 
     }
-    .letter-box {
+    /* .letter-box {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -24,6 +24,19 @@
       font-weight: 900;
       text-transform: uppercase;
       margin: 0 10px;
+      transition: all 0.3s ease;
+    } */
+     .letter-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 3.8rem; /* Reduït de 6rem a 3.8rem */
+      height: 5rem;   /* Reduït de 7.5rem a 5rem */
+      border-bottom: 6px solid #f97316; /* Vora una mica més fina */
+      font-size: 3rem;  /* Font ajustada perquè hi quabi la lletra */
+      font-weight: 900;
+      text-transform: uppercase;
+      margin: 0 3px;  /* Marges horitzontals molt més petits */
       transition: all 0.3s ease;
     }
     @keyframes timerBeat {
@@ -36,7 +49,7 @@
     }
   </style>
 </head>
-<body class="h-screen w-screen flex flex-col justify-between p-4 sm:p-6 select-none text-neutral-900 text-3xl">
+<body class="h-screen w-screen flex flex-col justify-between p-6 sm:p-8 select-none text-neutral-900 text-3xl">
   <!-- SLIDE 1: BENVINGUDA -->
   <div id="slide_benvinguda" class="slide-view h-full flex flex-col items-center justify-center text-center space-y-12">
     <div class="space-y-6">
@@ -49,7 +62,7 @@
     <div id="welcomeTeamsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-8 w-full max-w-[95vw]"></div>
   </div>
 
-  <!-- SLIDE 2: RONDA ACTUAL -->ç
+  <!-- SLIDE 2: RONDA ACTUAL -->
   <div id="slide_ronda_actual" class="slide-view h-full flex flex-col justify-between hidden space-y-4">
    <div class="flex items-center justify-between border-b-4 border-neutral-200 pt-0 pb-8 px-2">
       <div class="flex items-center gap-6">
