@@ -17,13 +17,13 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 4rem;
-      height: 5rem;
-      border-bottom: 6px solid #f97316;
-      font-size: 3rem;
+      width: 6rem;
+      height: 7.5rem;
+      border-bottom: 10px solid #f97316;
+      font-size: 4.5rem;
       font-weight: 900;
       text-transform: uppercase;
-      margin: 0 6px;
+      margin: 0 10px;
       transition: all 0.3s ease;
     }
     @keyframes timerBeat {
@@ -36,46 +36,45 @@
     }
   </style>
 </head>
-<body class="h-screen w-screen flex flex-col justify-between p-10 sm:p-16 select-none text-neutral-900 text-lg">
-
+<body class="h-screen w-screen flex flex-col justify-between p-4 sm:p-6 select-none text-neutral-900 text-3xl">
   <!-- SLIDE 1: BENVINGUDA -->
-  <div id="slide_benvinguda" class="slide-view h-full flex flex-col items-center justify-center text-center space-y-16">
+  <div id="slide_benvinguda" class="slide-view h-full flex flex-col items-center justify-center text-center space-y-12">
     <div class="space-y-6">
-      <div class="flex items-center justify-center gap-6">
-        <i data-lucide="beef" class="w-24 h-24 text-orange-500 stroke-[2.5]"></i>
-        <i data-lucide="trophy" class="w-24 h-24 text-amber-500 stroke-[2.5]"></i>
+      <div class="flex items-center justify-center gap-8">
+        <i data-lucide="beef" class="w-36 h-36 text-orange-500 stroke-[2.5]"></i>
+        <i data-lucide="trophy" class="w-36 h-36 text-amber-500 stroke-[2.5]"></i>
       </div>
-      <h1 class="text-7xl sm:text-8xl font-black text-neutral-900 tracking-tight">La Costellada</h1>
+      <h1 class="text-8xl sm:text-9xl font-black text-neutral-900 tracking-tight">La Costellada</h1>
     </div>
-    <div id="welcomeTeamsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-8 w-full max-w-6xl"></div>
+    <div id="welcomeTeamsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-8 w-full max-w-[95vw]"></div>
   </div>
 
-  <!-- SLIDE 2: RONDA ACTUAL -->
-  <div id="slide_ronda_actual" class="slide-view h-full flex flex-col justify-between hidden space-y-8">
-    <div class="flex items-center justify-between border-b-2 border-neutral-200 pb-6">
+  <!-- SLIDE 2: RONDA ACTUAL -->ç
+  <div id="slide_ronda_actual" class="slide-view h-full flex flex-col justify-between hidden space-y-4">
+   <div class="flex items-center justify-between border-b-4 border-neutral-200 pt-0 pb-8 px-2">
       <div class="flex items-center gap-6">
-        <div id="gameIconBox" class="p-5 rounded-3xl bg-orange-50 text-orange-500">
-          <i data-lucide="gamepad-2" class="w-14 h-14 stroke-[2.5]"></i>
+        <div id="gameIconBox" class="p-3 rounded-3xl bg-orange-50 text-orange-500">
+          <i data-lucide="gamepad-2" class="w-16 h-16 stroke-[2.5]"></i>
         </div>
         <div>
-          <span id="gameOrderBadge" class="text-sm font-black uppercase tracking-wider text-orange-500 bg-orange-100 px-4 py-1.5 rounded-full">Joc 1</span>
-          <h2 id="gameTitle" class="text-5xl font-black text-neutral-900 mt-2">Carregant Joc...</h2>
+          <span id="gameOrderBadge" class="text-3xl font-black uppercase tracking-wider text-orange-500 bg-orange-100 px-6 py-2 rounded-full">Joc 1</span>
+          <h2 id="gameTitle" class="text-6xl sm:text-7xl font-black text-neutral-900 mt-1">Carregant Joc...</h2>
         </div>
       </div>
     </div>
 
-    <div class="grid grid-cols-12 gap-10 flex-1 items-start">
+    <div class="grid grid-cols-12 gap-6 flex-1 items-start">
       <!-- ESQUERRA: CONTINGUT DEL JOC -->
-      <div id="gameContentBox" class="col-span-8 bg-white rounded-3xl p-10 shadow-sm border-2 border-neutral-100 h-full flex flex-col justify-center space-y-8"></div>
+      <div id="gameContentBox" class="col-span-8 bg-white rounded-3xl p-6 shadow-sm border-4 border-neutral-100 h-full flex flex-col justify-center space-y-6"></div>
 
       <!-- DRETA: CLASSIFICACIÓ JOC ACTIU -->
-      <div class="col-span-4 bg-white rounded-3xl p-8 shadow-sm border-2 border-neutral-100 space-y-6">
-        <div class="flex items-center justify-between border-b-2 border-neutral-100 pb-4">
-          <h3 class="text-2xl font-extrabold text-neutral-800 flex items-center gap-3">
-            <i data-lucide="trophy" class="w-7 h-7 text-amber-500"></i>
+      <div class="col-span-4 bg-white rounded-3xl p-6 shadow-sm border-4 border-neutral-100 space-y-6">
+        <div class="flex items-center justify-between border-b-4 border-neutral-100 pb-4">
+          <h3 class="text-4xl font-black text-neutral-800 flex items-center gap-3">
+            <i data-lucide="trophy" class="w-10 h-10 text-amber-500"></i>
             Classificació
           </h3>
-          <span class="text-xs font-bold text-neutral-400 uppercase tracking-wider">Joc actual</span>
+          <span class="text-xl font-black text-neutral-400 uppercase tracking-wider">Joc actual</span>
         </div>
         <div id="liveSidebarScores" class="space-y-4"></div>
       </div>
@@ -84,21 +83,21 @@
 
   <!-- SLIDE 3: PUNTUACIÓ EQUIPS -->
   <div id="slide_puntuacio_equips" class="slide-view h-full flex flex-col items-center justify-center text-center space-y-12 hidden">
-    <div class="space-y-3">
-      <h2 class="text-6xl sm:text-7xl font-black text-neutral-900">Marcador General</h2>
-      <p class="text-2xl text-neutral-500 font-medium">Puntuació acumulada durant la nit</p>
+    <div class="space-y-4">
+      <h2 class="text-8xl sm:text-9xl font-black text-neutral-900">Marcador General</h2>
+      <p class="text-4xl text-neutral-500 font-extrabold">Puntuació acumulada durant la nit</p>
     </div>
-    <div id="fullScoreboardGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-8 w-full max-w-7xl"></div>
+    <div id="fullScoreboardGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-8 w-full max-w-[95vw]"></div>
   </div>
 
   <!-- SLIDE 4: CLASSIFICACIÓ FINAL -->
   <div id="slide_classificacio" class="slide-view h-full flex flex-col items-center justify-center text-center space-y-10 hidden">
-    <div class="space-y-3">
-      <i data-lucide="crown" class="w-24 h-24 text-amber-500 mx-auto stroke-[2.5]"></i>
-      <h2 class="text-7xl font-black text-neutral-900">Podi Final</h2>
-      <p class="text-3xl text-orange-500 font-bold">Guanyadors de La Costellada!</p>
+    <div class="space-y-4">
+      <i data-lucide="crown" class="w-36 h-36 text-amber-500 mx-auto stroke-[2.5]"></i>
+      <h2 class="text-9xl font-black text-neutral-900">Podi Final</h2>
+      <p class="text-5xl text-orange-500 font-black">Guanyadors de La Costellada!</p>
     </div>
-    <div id="podiumContainer" class="flex items-end justify-center gap-8 w-full max-w-5xl h-80 pt-10"></div>
+    <div id="podiumContainer" class="flex items-end justify-center gap-8 w-full max-w-[95vw] h-[50vh] pt-6"></div>
   </div>
 
   <script>
@@ -242,9 +241,9 @@
       grid.innerHTML = allTeams.map(team => {
         const styles = getTeamStyles(team.color);
         return `
-          <div class="bg-white rounded-3xl p-8 border-2 shadow-sm flex flex-col items-center space-y-4" style="background-color: ${styles.bannerBg}; border-color: ${styles.bannerBorder}">
-            <div class="w-16 h-16 rounded-full shadow-inner" style="background-color: ${styles.dotColor}"></div>
-            <h3 class="font-black text-2xl" style="color: ${styles.textColor}">${team.name}</h3>
+          <div class="bg-white rounded-3xl p-8 border-4 shadow-sm flex flex-col items-center space-y-4" style="background-color: ${styles.bannerBg}; border-color: ${styles.bannerBorder}">
+            <div class="w-24 h-24 rounded-full shadow-inner" style="background-color: ${styles.dotColor}"></div>
+            <h3 class="font-black text-5xl" style="color: ${styles.textColor}">${team.name}</h3>
           </div>
         `;
       }).join('');
@@ -258,13 +257,13 @@
         sidebar.innerHTML = rankedGame.map((team, index) => {
           const styles = getTeamStyles(team.color);
           return `
-            <div class="flex items-center justify-between p-5 rounded-2xl border-2 transition-all" style="background-color: ${styles.bannerBg}; border-color: ${styles.bannerBorder}">
+            <div class="flex items-center justify-between p-5 rounded-2xl border-4 transition-all" style="background-color: ${styles.bannerBg}; border-color: ${styles.bannerBorder}">
               <div class="flex items-center gap-4">
-                <span class="text-base font-black text-neutral-400 w-6">${index + 1}º</span>
-                <span class="w-5 h-5 rounded-full" style="background-color: ${styles.dotColor}"></span>
-                <span class="font-bold text-lg" style="color: ${styles.textColor}">${team.name}</span>
+                <span class="text-3xl font-black text-neutral-400 w-10">${index + 1}º</span>
+                <span class="w-8 h-8 rounded-full" style="background-color: ${styles.dotColor}"></span>
+                <span class="font-black text-3xl" style="color: ${styles.textColor}">${team.name}</span>
               </div>
-              <span class="font-black text-2xl text-neutral-800">${team.gamePoints} <span class="text-xs font-normal text-neutral-400">punts</span></span>
+              <span class="font-black text-4xl text-neutral-800">${team.gamePoints} <span class="text-xl font-bold text-neutral-400">pts</span></span>
             </div>
           `;
         }).join('');
@@ -276,10 +275,10 @@
         fullGrid.innerHTML = rankedTotal.map(team => {
           const styles = getTeamStyles(team.color);
           return `
-            <div class="bg-white rounded-3xl p-10 border-2 shadow-sm flex flex-col items-center space-y-5" style="background-color: ${styles.bannerBg}; border-color: ${styles.bannerBorder}">
-              <div class="w-20 h-20 rounded-full shadow-inner" style="background-color: ${styles.dotColor}"></div>
-              <h3 class="font-black text-3xl" style="color: ${styles.textColor}">${team.name}</h3>
-              <div class="text-6xl font-black text-neutral-800">${team.totalPoints}</div>
+            <div class="bg-white rounded-3xl p-10 border-4 shadow-sm flex flex-col items-center space-y-6" style="background-color: ${styles.bannerBg}; border-color: ${styles.bannerBorder}">
+              <div class="w-28 h-28 rounded-full shadow-inner" style="background-color: ${styles.dotColor}"></div>
+              <h3 class="font-black text-5xl" style="color: ${styles.textColor}">${team.name}</h3>
+              <div class="text-8xl font-black text-neutral-800">${team.totalPoints}</div>
             </div>
           `;
         }).join('');
@@ -303,50 +302,50 @@
           const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
           sidebarCol.classList.add('hidden');
 
-          contentBox.className = "col-span-12 bg-white rounded-3xl p-16 shadow-sm border-2 border-neutral-100 h-full flex flex-col items-center justify-center text-center relative overflow-hidden";
+          contentBox.className = "col-span-12 bg-white rounded-3xl p-8 shadow-sm border-4 border-neutral-100 h-full flex flex-col items-center justify-center text-center relative overflow-hidden";
 
           contentBox.innerHTML = `
             <div id="introStep1" class="space-y-8 transition-all duration-1000 ease-in-out opacity-100 scale-100">
               <div class="p-6 rounded-3xl bg-purple-50 text-purple-600 inline-block shadow-inner">
-                <i data-lucide="theater" class="w-24 h-24 stroke-[2]"></i>
+                <i data-lucide="theater" class="w-32 h-32 stroke-[2]"></i>
               </div>
-              <h1 class="text-7xl font-black text-neutral-900 tracking-tight">Mímica en Grup</h1>
-              <p class="text-4xl font-extrabold text-purple-600">Esteu preparats?</p>
+              <h1 class="text-9xl font-black text-neutral-900 tracking-tight">Mímica en Grup</h1>
+              <p class="text-6xl font-extrabold text-purple-600">Esteu preparats?</p>
             </div>
 
-            <div id="introStep2" class="space-y-10 w-full max-w-5xl absolute inset-0 m-auto flex flex-col justify-center px-12 transition-all duration-1000 ease-in-out opacity-0 pointer-events-none translate-y-6">
-              <div class="space-y-3">
-                <span class="text-sm font-black uppercase text-purple-600 bg-purple-100 px-5 py-2 rounded-full">Regles del Joc</span>
-                <h2 class="text-5xl font-black text-neutral-900">Com es juga a la Mímica en grup?</h2>
+            <div id="introStep2" class="space-y-8 w-full max-w-[95vw] absolute inset-0 m-auto flex flex-col justify-center px-4 transition-all duration-1000 ease-in-out opacity-0 pointer-events-none translate-y-6">
+              <div class="space-y-2">
+                <span class="text-3xl font-black uppercase text-purple-600 bg-purple-100 px-8 py-3 mb-4 rounded-full">Regles del Joc</span>
+                <h2 class="text-7xl font-black text-neutral-900">Com es juga a la Mímica en grup?</h2>
               </div>
 
               <div class="grid grid-cols-2 gap-6 text-left">
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-purple-600 font-bold text-xl">
-                    <i data-lucide="users" class="w-7 h-7"></i> <span>Tothom hi participa</span>
+                  <div class="flex items-center gap-3 text-purple-600 font-bold text-4xl">
+                    <i data-lucide="users" class="w-10 h-10"></i> <span>Tothom hi participa</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Un jugador de cada equip sortirà alhora a fer mímica, que serà conjunta.</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">Un jugador de cada equip sortirà alhora a fer mímica, que serà conjunta.</p>
                 </div>
 
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-purple-600 font-bold text-xl">
-                    <i data-lucide="volume-x" class="w-7 h-7"></i> <span>Silenci absolut</span>
+                  <div class="flex items-center gap-3 text-purple-600 font-bold text-4xl">
+                    <i data-lucide="volume-x" class="w-10 h-10"></i> <span>Silenci absolut</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Només gestos i moviments. Està totalment prohibit fer cap mena de so o soroll!</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">Només gestos i moviments. Està totalment prohibit fer cap mena de so o soroll!</p>
                 </div>
 
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-purple-600 font-bold text-xl">
-                    <i data-lucide="pencil" class="w-7 h-7"></i> <span>Apunteu al paper</span>
+                  <div class="flex items-center gap-3 text-purple-600 font-bold text-4xl">
+                    <i data-lucide="pencil" class="w-10 h-10"></i> <span>Apunteu al paper</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Escriviu al paper el que creieu que s'està representant.</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">Escriviu al paper el que creieu que s'està representant.</p>
                 </div>
 
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-purple-600 font-bold text-xl">
-                    <i data-lucide="zap" class="w-7 h-7"></i> <span>Entrega ràpida</span>
+                  <div class="flex items-center gap-3 text-purple-600 font-bold text-4xl">
+                    <i data-lucide="zap" class="w-10 h-10"></i> <span>Entrega ràpida</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Quan ho tingueu, doneu el paper. La puntuació depèn de la rapidesa i l'encert!</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">Quan ho tingueu, doneu el paper. La puntuació depèn de la rapidesa i l'encert!</p>
                 </div>
               </div>
             </div>
@@ -368,7 +367,7 @@
           const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
           sidebarCol.classList.remove('hidden');
 
-          contentBox.className = "col-span-8 bg-white rounded-3xl p-10 shadow-sm border-2 border-neutral-100 h-full flex flex-col justify-center space-y-8";
+          contentBox.className = "col-span-8 bg-white rounded-3xl p-6 shadow-sm border-4 border-neutral-100 h-full flex flex-col justify-center space-y-6";
 
           const phrase = mimicaPhrases[subIndex] || mimicaPhrases[1];
           const isRevealed = currentState.reveal_solution;
@@ -380,16 +379,16 @@
               const colorClass = isRevealed ? 'text-orange-600 border-orange-500' : 'text-neutral-300 border-neutral-300';
               return `<span class="letter-box ${colorClass}">${displayChar}</span>`;
             }).join('');
-            return `<div class="inline-flex my-4 mx-8 sm:mx-10">${letters}</div>`;
+            return `<div class="inline-flex my-4 mx-4">${letters}</div>`;
           }).join('');
 
           contentBox.innerHTML = `
-            <div class="space-y-10 text-center py-4 my-auto w-full">
+            <div class="space-y-8 text-center py-2 my-auto w-full">
               <div>
-                <span class="text-base font-black uppercase text-purple-600 bg-purple-100 px-6 py-2 rounded-full">Ronda ${subIndex} de 5</span>
+                <span class="text-3xl font-black uppercase text-purple-600 bg-purple-100 px-8 py-3 rounded-full">Ronda ${subIndex} de 5</span>
               </div>
 
-              <div class="flex flex-wrap items-center justify-center w-full px-4 py-6">
+              <div class="flex flex-wrap items-center justify-center w-full px-2 py-4">
                 ${phraseHtml}
               </div>
             </div>
@@ -403,36 +402,36 @@
           const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
           sidebarCol.classList.add('hidden');
 
-          contentBox.className = "col-span-12 bg-white rounded-3xl p-16 shadow-sm border-2 border-neutral-100 h-full flex flex-col items-center justify-center text-center relative overflow-hidden";
+          contentBox.className = "col-span-12 bg-white rounded-3xl p-8 shadow-sm border-4 border-neutral-100 h-full flex flex-col items-center justify-center text-center relative overflow-hidden";
 
           contentBox.innerHTML = `
             <div id="introGlobusStep1" class="space-y-8 transition-all duration-1000 ease-in-out opacity-100 scale-100">
               <div class="p-6 rounded-3xl bg-orange-50 text-orange-500 inline-block shadow-inner">
-                <i data-lucide="timer" class="w-24 h-24 stroke-[2]"></i>
+                <i data-lucide="timer" class="w-32 h-32 stroke-[2]"></i>
               </div>
-              <h1 class="text-7xl font-black text-neutral-900 tracking-tight">Els Globus</h1>
-              <p class="text-4xl font-extrabold text-orange-500">Com va la bufera?</p>
+              <h1 class="text-9xl font-black text-neutral-900 tracking-tight">Els Globus</h1>
+              <p class="text-6xl font-extrabold text-orange-500">Com va la bufera?</p>
             </div>
 
-            <div id="introGlobusStep2" class="space-y-10 w-full max-w-5xl absolute inset-0 m-auto flex flex-col justify-center px-12 transition-all duration-1000 ease-in-out opacity-0 pointer-events-none translate-y-6">
-              <div class="space-y-3">
-                <span class="text-sm font-black uppercase text-orange-600 bg-orange-100 px-5 py-2 rounded-full">Regles del Joc</span>
-                <h2 class="text-5xl font-black text-neutral-900">Com es juga als Globus?</h2>
+            <div id="introGlobusStep2" class="space-y-8 w-full max-w-[95vw] absolute inset-0 m-auto flex flex-col justify-center px-4 transition-all duration-1000 ease-in-out opacity-0 pointer-events-none translate-y-6">
+              <div class="space-y-2">
+                <span class="text-3xl font-black uppercase text-orange-600 bg-orange-100 px-8 py-3 mb-4 rounded-full">Regles del Joc</span>
+                <h2 class="text-7xl font-black text-neutral-900">Com es juga als Globus?</h2>
               </div>
 
               <div class="grid grid-cols-2 gap-8 text-left">
                 <div class="p-8 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-3">
-                  <div class="flex items-center gap-3 text-orange-600 font-bold text-2xl">
-                    <i data-lucide="clock" class="w-8 h-8"></i> <span>Temps límit</span>
+                  <div class="flex items-center gap-3 text-orange-600 font-bold text-4xl">
+                    <i data-lucide="clock" class="w-10 h-10"></i> <span>Temps límit</span>
                   </div>
-                  <p class="text-lg text-neutral-600 font-medium leading-relaxed">Tothom haurà d'inflar i lligar el seu propi globus en menys de trenta segons!</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">Tothom haurà d'inflar i lligar el seu propi globus en menys de trenta segons!</p>
                 </div>
 
                 <div class="p-8 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-3">
-                  <div class="flex items-center gap-3 text-orange-600 font-bold text-2xl">
-                    <i data-lucide="ruler" class="w-8 h-8"></i> <span>Criteri de puntuació</span>
+                  <div class="flex items-center gap-3 text-orange-600 font-bold text-4xl">
+                    <i data-lucide="ruler" class="w-10 h-10"></i> <span>Criteri de puntuació</span>
                   </div>
-                  <p class="text-lg text-neutral-600 font-medium leading-relaxed">Es tindrà en compte la rapidesa de l'equip i la mida final dels globus.</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">Es tindrà en compte la rapidesa de l'equip i la mida final dels globus.</p>
                 </div>
               </div>
             </div>
@@ -454,7 +453,7 @@
           const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
           sidebarCol.classList.remove('hidden');
 
-          contentBox.className = "col-span-8 bg-white rounded-3xl p-10 shadow-sm border-2 border-neutral-100 h-full flex flex-col items-center justify-center text-center space-y-8";
+          contentBox.className = "col-span-8 bg-white rounded-3xl p-6 shadow-sm border-4 border-neutral-100 h-full flex flex-col items-center justify-center text-center space-y-6";
 
           const currentSecs = currentState.timer_seconds !== undefined ? currentState.timer_seconds : 30;
           const m = Math.floor(currentSecs / 60).toString().padStart(2, '0');
@@ -462,11 +461,11 @@
 
           contentBox.innerHTML = `
             <div class="space-y-6">
-              <span class="text-sm font-black uppercase text-orange-600 bg-orange-100 px-6 py-2 rounded-full">Temps Restant</span>
-              <div id="tvTimerDisplay" class="text-9xl sm:text-[10rem] font-black text-neutral-900 tracking-tight font-mono py-6">
+              <span class="text-3xl font-black uppercase text-orange-600 bg-orange-100 px-8 py-3 rounded-full">Temps Restant</span>
+              <div id="tvTimerDisplay" class="text-[14rem] font-black text-neutral-900 tracking-tight font-mono py-2 leading-none">
                 ${m}:${s}
               </div>
-              <p id="tvTimerSubtitle" class="text-xl font-bold text-neutral-400">
+              <p id="tvTimerSubtitle" class="text-4xl font-black text-neutral-500">
                 ${currentState.timer_running ? 'Temps en marxa! Infleu els globus!' : 'A punt per començar...'}
               </p>
             </div>
@@ -482,51 +481,50 @@
           const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
           sidebarCol.classList.add('hidden');
 
-          contentBox.className = "col-span-12 bg-white rounded-3xl p-16 shadow-sm border-2 border-neutral-100 h-full flex flex-col items-center justify-center text-center relative overflow-hidden";
+          contentBox.className = "col-span-12 bg-white rounded-3xl p-8 shadow-sm border-4 border-neutral-100 h-full flex flex-col items-center justify-center text-center relative overflow-hidden";
 
           contentBox.innerHTML = `
             <div id="introTaralStep1" class="space-y-8 transition-all duration-1000 ease-in-out opacity-100 scale-100">
               <div class="p-6 rounded-3xl bg-amber-50 text-amber-500 inline-block shadow-inner">
-                <i data-lucide="music" class="w-24 h-24 stroke-[2]"></i>
+                <i data-lucide="music" class="w-32 h-32 stroke-[2]"></i>
               </div>
-              <h1 class="text-7xl font-black text-neutral-900 tracking-tight">Taral·larejar</h1>
-              <p class="text-4xl font-extrabold text-amber-500">Teniu bona oïda?</p>
+              <h1 class="text-9xl font-black text-neutral-900 tracking-tight">Taral·larejar</h1>
+              <p class="text-6xl font-extrabold text-amber-500">Teniu bona oïda?</p>
             </div>
 
-            <div id="introTaralStep2" class="space-y-10 w-full max-w-5xl absolute inset-0 m-auto flex flex-col justify-center px-12 transition-all duration-1000 ease-in-out opacity-0 pointer-events-none translate-y-6">
-              <div class="space-y-3">
-                <span class="text-sm font-black uppercase text-amber-600 bg-amber-100 px-5 py-2 rounded-full">Regles del Joc</span>
-                <h2 class="text-5xl font-black text-neutral-900">Com es juga a Taral·larejar?</h2>
+            <div id="introTaralStep2" class="space-y-8 w-full max-w-[95vw] absolute inset-0 m-auto flex flex-col justify-center px-4 transition-all duration-1000 ease-in-out opacity-0 pointer-events-none translate-y-6">
+              <div class="space-y-2">
+                <span class="text-3xl font-black uppercase text-amber-600 bg-amber-100 px-8 py-3 mb-4 rounded-full">Regles del Joc</span>
+                <h2 class="text-7xl font-black text-neutral-900">Com es juga a Taral·larejar?</h2>
               </div>
 
               <div class="grid grid-cols-2 gap-6 text-left">
-
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-amber-600 font-bold text-xl">
-                    <i data-lucide="users" class="w-7 h-7"></i> <span>Participants</span>
+                  <div class="flex items-center gap-3 text-amber-600 font-bold text-4xl">
+                    <i data-lucide="users" class="w-10 h-10"></i> <span>Participants</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Esculliu un jugador de cada equip perquè taral·laregi una cançó. Cada equip en taral·larejarà només una.</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">Esculliu un jugador de cada equip perquè taral·laregi una cançó. Cada equip en taral·larejarà només una.</p>
                 </div>
 
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-amber-600 font-bold text-xl">
-                    <i data-lucide="mic-off" class="w-7 h-7"></i> <span>Sense paraules ni lletra</span>
+                  <div class="flex items-center gap-3 text-amber-600 font-bold text-4xl">
+                    <i data-lucide="mic-off" class="w-10 h-10"></i> <span>Sense paraules ni lletra</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Només es pot fer "tara", "mhm" o sons bàsics. Prohibit dir qualsevol paraula de la lletra!</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">Només es pot fer "tara", "mhm" o sons bàsics. Prohibit dir qualsevol paraula de la lletra!</p>
                 </div>
 
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-amber-600 font-bold text-xl">
-                    <i data-lucide="pencil" class="w-7 h-7"></i> <span>Apunteu al paper</span>
+                  <div class="flex items-center gap-3 text-amber-600 font-bold text-4xl">
+                    <i data-lucide="pencil" class="w-10 h-10"></i> <span>Apunteu al paper</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">TOTS ELS EQUIPS: \nEscriviu el nom de la cançó i l'artista al paper.</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">TOTS ELS EQUIPS:<br>Escriviu el nom de la cançó i l'artista al paper.</p>
                 </div>
 
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-amber-600 font-bold text-xl">
-                    <i data-lucide="timer" class="w-7 h-7"></i> <span>30 segons per cançó</span>
+                  <div class="flex items-center gap-3 text-amber-600 font-bold text-4xl">
+                    <i data-lucide="timer" class="w-10 h-10"></i> <span>30 segons per cançó</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Escolteu atentament i doneu el paper al més ràpid possible, la rapidesa també conta!</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">Escolteu atentament i doneu el paper al més ràpid possible, la rapidesa també conta!</p>
                 </div>
               </div>
             </div>
@@ -548,7 +546,7 @@
           const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
           sidebarCol.classList.remove('hidden');
 
-          contentBox.className = "col-span-8 bg-white rounded-3xl p-10 shadow-sm border-2 border-neutral-100 h-full flex flex-col justify-between space-y-8";
+          contentBox.className = "col-span-8 bg-white rounded-3xl p-6 shadow-sm border-4 border-neutral-100 h-full flex flex-col justify-between space-y-6";
 
           const currentSecs = currentState.timer_seconds !== undefined ? currentState.timer_seconds : 30;
           const m = Math.floor(currentSecs / 60).toString().padStart(2, '0');
@@ -566,12 +564,12 @@
           contentBox.innerHTML = `
             <div class="flex items-center justify-between bg-amber-50 p-6 rounded-3xl border-2 border-amber-100">
               <div class="flex items-center gap-4">
-                <i data-lucide="music" class="w-8 h-8 text-amber-600"></i>
-                <span class="font-extrabold text-xl text-amber-900">Les Cançons</span>
+                <i data-lucide="music" class="w-12 h-12 text-amber-600"></i>
+                <span class="font-black text-3xl text-amber-900">Les Cançons</span>
               </div>
               <div class="flex items-center gap-3">
-                <span class="text-sm font-bold text-amber-700">Temps:</span>
-                <span id="tvTimerDisplay" class="text-4xl font-black text-amber-900 font-mono">${m}:${s}</span>
+                <span class="text-2xl font-bold text-amber-700">Temps:</span>
+                <span id="tvTimerDisplay" class="text-6xl font-black text-amber-900 font-mono">${m}:${s}</span>
               </div>
             </div>
 
@@ -579,22 +577,22 @@
               ${songs.map(song => {
                 const isRevealed = revealed.includes(song.id);
                 return `
-                  <div class="p-5 rounded-2xl border-2 transition-all flex items-center justify-between ${isRevealed ? 'bg-amber-500 text-white border-amber-600 shadow-md' : 'bg-neutral-50 text-neutral-800 border-neutral-100'}">
-                    <div class="flex items-center gap-4">
-                      <span class="text-sm font-extrabold px-4 py-1.5 rounded-full ${isRevealed ? 'bg-white text-amber-900' : 'bg-amber-100 text-amber-800'}">
+                  <div class="p-6 rounded-2xl border-4 transition-all flex items-center justify-between ${isRevealed ? 'bg-amber-500 text-white border-amber-600 shadow-md' : 'bg-neutral-50 text-neutral-800 border-neutral-100'}">
+                    <div class="flex items-center gap-5">
+                      <span class="text-2xl font-black px-6 py-2 rounded-full ${isRevealed ? 'bg-white text-amber-900' : 'bg-amber-100 text-amber-800'}">
                         Cançó ${song.id}
                       </span>
-                      <span class="font-black text-2xl tracking-wide">
-                        ${isRevealed ? `${song.title} <span class="text-base font-normal opacity-90">(${song.artist})</span>` : '_______________'}
+                      <span class="font-black text-4xl tracking-wide">
+                        ${isRevealed ? `${song.title} <span class="text-2xl font-bold opacity-90">(${song.artist})</span>` : '_______________'}
                       </span>
                     </div>
-                    <i data-lucide="${isRevealed ? 'check-circle-2' : 'lock'}" class="w-7 h-7 opacity-80"></i>
+                    <i data-lucide="${isRevealed ? 'check-circle-2' : 'lock'}" class="w-10 h-10 opacity-80"></i>
                   </div>
                 `;
               }).join('')}
             </div>
 
-            <p id="tvTimerSubtitle" class="text-base text-center font-bold text-neutral-400">
+            <p id="tvTimerSubtitle" class="text-3xl text-center font-bold text-neutral-400">
               Escriviu al paper el nom i l'artista de la cançó abans que s'acabi el temps!
             </p>
           `;
@@ -605,55 +603,54 @@
         const subIndex = currentState.active_subround || 0;
 
         if (subIndex === 0) {
-          // --- SUB-RONDA 0: INTRODUCCIÓ I REGLES ---
           document.getElementById('gameOrderBadge').parentElement.parentElement.parentElement.classList.add('hidden');
           const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
           sidebarCol.classList.add('hidden');
 
-          contentBox.className = "col-span-12 bg-white rounded-3xl p-16 shadow-sm border-2 border-neutral-100 h-full flex flex-col items-center justify-center text-center relative overflow-hidden";
+          contentBox.className = "col-span-12 bg-white rounded-3xl p-8 shadow-sm border-4 border-neutral-100 h-full flex flex-col items-center justify-center text-center relative overflow-hidden";
 
           contentBox.innerHTML = `
             <div id="introAcroStep1" class="space-y-8 transition-all duration-1000 ease-in-out opacity-100 scale-100">
               <div class="p-6 rounded-3xl bg-purple-50 text-purple-600 inline-block shadow-inner">
-                <i data-lucide="person-standing" class="w-24 h-24 stroke-[2]"></i>
+                <i data-lucide="person-standing" class="w-32 h-32 stroke-[2]"></i>
               </div>
-              <h1 class="text-7xl font-black text-neutral-900 tracking-tight">Acrosport</h1>
-              <p class="text-4xl font-extrabold text-purple-600">Qui sap fer la vertical?</p>
+              <h1 class="text-9xl font-black text-neutral-900 tracking-tight">Acrosport</h1>
+              <p class="text-6xl font-extrabold text-purple-600">Qui sap fer la vertical?</p>
             </div>
 
-            <div id="introAcroStep2" class="space-y-10 w-full max-w-5xl absolute inset-0 m-auto flex flex-col justify-center px-12 transition-all duration-1000 ease-in-out opacity-0 pointer-events-none translate-y-6">
-              <div class="space-y-3">
-                <span class="text-sm font-black uppercase text-purple-600 bg-purple-100 px-5 py-2 rounded-full">Regles del Joc</span>
-                <h2 class="text-5xl font-black text-neutral-900">Com es juga a l'Acrosport?</h2>
+            <div id="introAcroStep2" class="space-y-8 w-full max-w-[95vw] absolute inset-0 m-auto flex flex-col justify-center px-4 transition-all duration-1000 ease-in-out opacity-0 pointer-events-none translate-y-6">
+              <div class="space-y-2">
+                <span class="text-3xl font-black uppercase text-purple-600 bg-purple-100 px-8 py-3 mb-4 rounded-full">Regles del Joc</span>
+                <h2 class="text-7xl font-black text-neutral-900">Com es juga a l'Acrosport?</h2>
               </div>
 
               <div class="grid grid-cols-2 gap-6 text-left">
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-purple-600 font-bold text-xl">
-                    <i data-lucide="clock" class="w-7 h-7"></i> <span>30s d'estratègia</span>
+                  <div class="flex items-center gap-3 text-purple-600 font-bold text-4xl">
+                    <i data-lucide="clock" class="w-10 h-10"></i> <span>30s d'estratègia</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Tindreu 30 segons per mirar la imatge i organitzar-vos. PROHIBIT començar a muntar la figura!</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">Tindreu 30 segons per mirar la imatge i organitzar-vos. PROHIBIT començar a muntar la figura!</p>
                 </div>
 
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-purple-600 font-bold text-xl">
-                    <i data-lucide="zap" class="w-7 h-7"></i> <span>Muntatge ràpid</span>
+                  <div class="flex items-center gap-3 text-purple-600 font-bold text-4xl">
+                    <i data-lucide="zap" class="w-10 h-10"></i> <span>Muntatge ràpid</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Quan s'acabi el temps d'organizació, podeu començar a muntar la figura.</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">Quan s'acabi el temps d'organizació, podeu començar a muntar la figura.</p>
                 </div>
 
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-purple-600 font-bold text-xl">
-                    <i data-lucide="heart-handshake" class="w-7 h-7"></i> <span>Col·laboració total</span>
+                  <div class="flex items-center gap-3 text-purple-600 font-bold text-4xl">
+                    <i data-lucide="heart-handshake" class="w-10 h-10"></i> <span>Col·laboració total</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Tots els membres de l'equip han de participar directament en la construcció de la figura.</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">Tots els membres de l'equip han de participar directament en la construcció de la figura.</p>
                 </div>
 
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-purple-600 font-bold text-xl">
-                    <i data-lucide="trophy" class="w-7 h-7"></i> <span>Competició directa</span>
+                  <div class="flex items-center gap-3 text-purple-600 font-bold text-4xl">
+                    <i data-lucide="trophy" class="w-10 h-10"></i> <span>Competició directa</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">La competició serà només entre els equips amb el mateix nombre de participants.</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">La competició serà només entre els equips amb el mateix nombre de participants.</p>
                 </div>
               </div>
             </div>
@@ -671,12 +668,11 @@
           }, 5000);
 
         } else {
-          // --- SUB-RONDES 1 A 4: IMATGE I COMPTE ENRERE AUTOMÀTIC D'ORGANITZACIÓ ---
           document.getElementById('gameOrderBadge').parentElement.parentElement.parentElement.classList.remove('hidden');
           const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
           sidebarCol.classList.remove('hidden');
 
-          contentBox.className = "col-span-8 bg-white rounded-3xl p-8 shadow-sm border-2 border-neutral-100 h-full flex flex-col justify-between items-center text-center space-y-4";
+          contentBox.className = "col-span-8 bg-white rounded-3xl p-4 shadow-sm border-4 border-neutral-100 h-full flex flex-col justify-between items-center text-center space-y-2";
 
           const roundsData = {
             1: { title: "Fàcil - Equips de 4", img: "images/acro_4_facil.jpg" },
@@ -691,30 +687,27 @@
           const s = (currentSecs % 60).toString().padStart(2, '0');
 
           contentBox.innerHTML = `
-            <!-- CAPÇALERA AMB TITOL I CRONÒMETRE -->
             <div class="w-full flex items-center justify-between bg-purple-50 p-4 rounded-2xl border-2 border-purple-100">
-              <div class="flex items-center gap-3">
-                <span class="text-xs font-black uppercase text-purple-700 bg-purple-200 px-3 py-1 rounded-full">Ronda ${subIndex} de 4</span>
-                <span class="text-xl font-black text-purple-900">${currentRound.title}</span>
+              <div class="flex items-center gap-4">
+                <span class="text-xl font-black uppercase text-purple-700 bg-purple-200 px-4 py-2 rounded-full">Ronda ${subIndex} de 4</span>
+                <span class="text-4xl font-black text-purple-900">${currentRound.title}</span>
               </div>
-              <div class="flex items-center gap-2 bg-white px-4 py-1.5 rounded-xl border border-purple-200 shadow-sm">
-                <span class="text-xs font-extrabold text-purple-700">Organització:</span>
-                <span id="tvTimerDisplay" class="text-3xl font-black text-purple-950 font-mono">${m}:${s}</span>
+              <div class="flex items-center gap-3 bg-white px-6 py-2 rounded-xl border border-purple-200 shadow-sm">
+                <span class="text-2xl font-extrabold text-purple-700">Organització:</span>
+                <span id="tvTimerDisplay" class="text-5xl font-black text-purple-950 font-mono">${m}:${s}</span>
               </div>
             </div>
 
-            <!-- IMATGE DE LA FIGURA -->
             <div class="flex-1 flex items-center justify-center w-full py-1">
               <img 
                 src="${currentRound.img}" 
                 alt="${currentRound.title}" 
-                class="max-h-[50vh] w-auto max-w-full rounded-2xl shadow-lg border-2 border-neutral-200 object-contain"
-                onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'p-8 text-neutral-400 font-bold border-2 border-dashed rounded-2xl\'>Imatge no trobada<br><span class=\'text-xs font-normal\'>Asegura\\'t de desar la imatge a: ${currentRound.img}</span></div>';"
+                class="max-h-[52vh] w-auto max-w-full rounded-2xl shadow-lg border-2 border-neutral-200 object-contain"
+                onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'p-8 text-neutral-400 font-bold border-2 border-dashed rounded-2xl text-3xl\'>Imatge no trobada<br><span class=\'text-xl font-normal\'>Asegura\\'t de desar la imatge a: ${currentRound.img}</span></div>';"
               />
             </div>
 
-            <!-- MISSATGE DE STATUS DE TEMPS -->
-            <p id="tvTimerSubtitle" class="text-lg font-bold text-neutral-500">
+            <p id="tvTimerSubtitle" class="text-3xl font-black text-neutral-700">
               ${currentState.timer_running ? 'Temps d\'estratègia! Organitzeu-vos, NO es pot començar a muntar!' : (currentSecs <= 0 ? 'PODEU COMENÇAR A MUNTAR LA FIGURA!' : 'A punt per iniciar els 30s d\'organització...')}
             </p>
           `;
@@ -725,55 +718,54 @@
         const subIndex = currentState.active_subround || 0;
 
         if (subIndex === 0) {
-          // --- SUB-RONDA 0: INTRODUCCIÓ I REGLES ---
           document.getElementById('gameOrderBadge').parentElement.parentElement.parentElement.classList.add('hidden');
           const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
           sidebarCol.classList.add('hidden');
 
-          contentBox.className = "col-span-12 bg-white rounded-3xl p-16 shadow-sm border-2 border-neutral-100 h-full flex flex-col items-center justify-center text-center relative overflow-hidden";
+          contentBox.className = "col-span-12 bg-white rounded-3xl p-8 shadow-sm border-4 border-neutral-100 h-full flex flex-col items-center justify-center text-center relative overflow-hidden";
 
           contentBox.innerHTML = `
             <div id="introLlenguaStep1" class="space-y-8 transition-all duration-1000 ease-in-out opacity-100 scale-100">
               <div class="p-6 rounded-3xl bg-emerald-50 text-emerald-600 inline-block shadow-inner">
-                <i data-lucide="book-a" class="w-24 h-24 stroke-[2]"></i>
+                <i data-lucide="book-a" class="w-32 h-32 stroke-[2]"></i>
               </div>
-              <h1 class="text-7xl font-black text-neutral-900 tracking-tight">Llengua fora</h1>
-              <p class="text-4xl font-extrabold text-emerald-600">Com més serem, més riurem!</p>
+              <h1 class="text-9xl font-black text-neutral-900 tracking-tight">Llengua fora</h1>
+              <p class="text-6xl font-extrabold text-emerald-600">Com més serem, més riurem!</p>
             </div>
 
-            <div id="introLlenguaStep2" class="space-y-10 w-full max-w-5xl absolute inset-0 m-auto flex flex-col justify-center px-12 transition-all duration-1000 ease-in-out opacity-0 pointer-events-none translate-y-6">
-              <div class="space-y-3">
-                <span class="text-sm font-black uppercase text-emerald-600 bg-emerald-100 px-5 py-2 rounded-full">Regles del Joc</span>
-                <h2 class="text-5xl font-black text-neutral-900">Com es juga a Llengua fora?</h2>
+            <div id="introLlenguaStep2" class="space-y-8 w-full max-w-[95vw] absolute inset-0 m-auto flex flex-col justify-center px-4 transition-all duration-1000 ease-in-out opacity-0 pointer-events-none translate-y-6">
+              <div class="space-y-2">
+                <span class="text-3xl font-black uppercase text-emerald-600 bg-emerald-100 px-8 py-3 mb-4 rounded-full">Regles del Joc</span>
+                <h2 class="text-7xl font-black text-neutral-900">Com es juga a Llengua fora?</h2>
               </div>
 
               <div class="grid grid-cols-2 gap-6 text-left">
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-emerald-600 font-bold text-xl">
-                    <i data-lucide="user-check" class="w-7 h-7"></i> <span>Un representant per ronda</span>
+                  <div class="flex items-center gap-3 text-emerald-600 font-bold text-4xl">
+                    <i data-lucide="user-check" class="w-10 h-10"></i> <span>Un representant per ronda</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Esculliu un jugador de cada equip perquè digui el refrany. Cada equip en dirà només un.</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">Esculliu un jugador de cada equip perquè digui el refrany. Cada equip en dirà només un.</p>
                 </div>
 
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-emerald-600 font-bold text-xl">
-                    <i data-lucide="face-grinning" class="w-7 h-7"></i> <span>Parla amb la llengua fora</span>
+                  <div class="flex items-center gap-3 text-emerald-600 font-bold text-4xl">
+                    <i data-lucide="smile" class="w-10 h-10"></i> <span>Parla amb la llengua fora</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">El jugador escollit haurà de dir el refrany en veu alta ensenyant la llengua!</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">El jugador escollit haurà de dir el refrany en veu alta ensenyant la llengua!</p>
                 </div>
 
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-emerald-600 font-bold text-xl">
-                    <i data-lucide="pencil" class="w-7 h-7"></i> <span>Apunteu al paper</span>
+                  <div class="flex items-center gap-3 text-emerald-600 font-bold text-4xl">
+                    <i data-lucide="pencil" class="w-10 h-10"></i> <span>Apunteu al paper</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">Escriviu al paper el refrany que creieu que està dient.</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">Escriviu al paper el refrany que creieu que està dient.</p>
                 </div>
 
                 <div class="p-6 bg-neutral-50 rounded-2xl border-2 border-neutral-100 space-y-2">
-                  <div class="flex items-center gap-3 text-emerald-600 font-bold text-xl">
-                    <i data-lucide="trophy" class="w-7 h-7"></i> <span>Valoració i rapidesa</span>
+                  <div class="flex items-center gap-3 text-emerald-600 font-bold text-4xl">
+                    <i data-lucide="trophy" class="w-10 h-10"></i> <span>Valoració i rapidesa</span>
                   </div>
-                  <p class="text-base text-neutral-600 font-medium leading-relaxed">La puntuació depèn de la rapidesa i d'escriure correctament la frase.</p>
+                  <p class="text-3xl text-neutral-700 font-extrabold leading-relaxed">La puntuació depèn de la rapidesa i d'escriure correctament la frase.</p>
                 </div>
               </div>
             </div>
@@ -791,12 +783,11 @@
           }, 5000);
 
         } else {
-          // --- SUB-RONDES 1 A 4: FRASE AMB GUIONS BAIXOS ---
           document.getElementById('gameOrderBadge').parentElement.parentElement.parentElement.classList.remove('hidden');
           const sidebarCol = document.getElementById('liveSidebarScores').parentElement;
           sidebarCol.classList.remove('hidden');
 
-          contentBox.className = "col-span-8 bg-white rounded-3xl p-10 shadow-sm border-2 border-neutral-100 h-full flex flex-col justify-center space-y-8";
+          contentBox.className = "col-span-8 bg-white rounded-3xl p-6 shadow-sm border-4 border-neutral-100 h-full flex flex-col justify-center space-y-6";
 
           const phrase = llenguaPhrases[subIndex] || llenguaPhrases[1];
           const isRevealed = currentState.reveal_solution;
@@ -808,16 +799,16 @@
               const colorClass = isRevealed ? 'text-emerald-600 border-emerald-500' : 'text-neutral-300 border-neutral-300';
               return `<span class="letter-box ${colorClass}">${displayChar}</span>`;
             }).join('');
-            return `<div class="inline-flex my-4 mx-6 sm:mx-8">${letters}</div>`;
+            return `<div class="inline-flex my-4 mx-4">${letters}</div>`;
           }).join('');
 
           contentBox.innerHTML = `
-            <div class="space-y-10 text-center py-4 my-auto w-full">
+            <div class="space-y-8 text-center py-2 my-auto w-full">
               <div>
-                <span class="text-base font-black uppercase text-emerald-600 bg-emerald-100 px-6 py-2 rounded-full">Frase ${subIndex} de 4</span>
+                <span class="text-3xl font-black uppercase text-emerald-600 bg-emerald-100 px-8 py-3 rounded-full">Frase ${subIndex} de 4</span>
               </div>
 
-              <div class="flex flex-wrap items-center justify-center w-full px-4 py-6">
+              <div class="flex flex-wrap items-center justify-center w-full px-2 py-4">
                 ${phraseHtml}
               </div>
             </div>
@@ -846,58 +837,54 @@
 
       let html = '';
 
-      // 4t LLOC (EXTREM ESQUERRA - MÉS ESTRET I BAIX)
       if (fourth) {
         html += `
           <div class="w-1/5 flex flex-col items-center justify-end h-full shrink-0">
-            <div class="h-24 flex flex-col items-center justify-end mb-2">
-              <i data-lucide="candy" class="w-8 h-8 text-amber-900 mb-1 stroke-[2.5]"></i>
-              <span class="font-black text-neutral-700 text-base leading-tight">${fourth.name}</span>
-              <span class="font-extrabold text-xs text-neutral-400 mt-0.5">${fourth.totalPoints} punts</span>
+            <div class="h-28 flex flex-col items-center justify-end mb-2">
+              <i data-lucide="candy" class="w-12 h-12 text-amber-900 mb-1 stroke-[2.5]"></i>
+              <span class="font-black text-neutral-700 text-3xl leading-tight">${fourth.name}</span>
+              <span class="font-black text-xl text-neutral-400 mt-0.5">${fourth.totalPoints} punts</span>
             </div>
-            <div class="w-full h-16 rounded-t-3xl flex items-center justify-center font-black text-3xl text-white shadow-sm" style="background-color: ${s4.dotColor}">4</div>
+            <div class="w-full h-24 rounded-t-3xl flex items-center justify-center font-black text-5xl text-white shadow-sm" style="background-color: ${s4.dotColor}">4</div>
           </div>
         `;
       }
 
-      // 2n LLOC (ESQUERRA DEL MEDI - ARGENT)
       if (second) {
         html += `
           <div class="w-1/4 flex flex-col items-center justify-end h-full shrink-0">
-            <div class="h-24 flex flex-col items-center justify-end mb-2">
-              <i data-lucide="medal" class="w-10 h-10 text-slate-400 mb-1 stroke-[2.5]"></i>
-              <span class="font-black text-neutral-800 text-xl leading-tight">${second.name}</span>
-              <span class="font-extrabold text-xs text-neutral-400 mt-0.5">${second.totalPoints} punts</span>
+            <div class="h-28 flex flex-col items-center justify-end mb-2">
+              <i data-lucide="medal" class="w-14 h-14 text-slate-400 mb-1 stroke-[2.5]"></i>
+              <span class="font-black text-neutral-800 text-4xl leading-tight">${second.name}</span>
+              <span class="font-black text-xl text-neutral-400 mt-0.5">${second.totalPoints} punts</span>
             </div>
-            <div class="w-full h-40 rounded-t-3xl flex items-center justify-center font-black text-5xl text-white shadow-md" style="background-color: ${s2.dotColor}">2</div>
+            <div class="w-full h-48 rounded-t-3xl flex items-center justify-center font-black text-7xl text-white shadow-md" style="background-color: ${s2.dotColor}">2</div>
           </div>
         `;
       }
 
-      // 1r LLOC (CENTRE EXACTE - OR - MÉS ALT I AMPLI)
       if (first) {
         html += `
           <div class="w-1/3 flex flex-col items-center justify-end h-full shrink-0 z-10">
-            <div class="h-24 flex flex-col items-center justify-end mb-2">
-              <i data-lucide="crown" class="w-14 h-14 text-amber-500 mb-1 stroke-[2.5]"></i>
-              <span class="font-black text-neutral-900 text-3xl leading-tight">${first.name}</span>
-              <span class="font-extrabold text-sm text-amber-600 mt-0.5">${first.totalPoints} punts</span>
+            <div class="h-28 flex flex-col items-center justify-end mb-2">
+              <i data-lucide="crown" class="w-20 h-20 text-amber-500 mb-1 stroke-[2.5]"></i>
+              <span class="font-black text-neutral-900 text-5xl leading-tight">${first.name}</span>
+              <span class="font-black text-2xl text-amber-600 mt-0.5">${first.totalPoints} punts</span>
             </div>
-            <div class="w-full h-64 rounded-t-3xl flex items-center justify-center font-black text-7xl text-white shadow-xl" style="background-color: ${s1.dotColor}">1</div>
+            <div class="w-full h-80 rounded-t-3xl flex items-center justify-center font-black text-9xl text-white shadow-xl" style="background-color: ${s1.dotColor}">1</div>
           </div>
         `;
       }
 
-      // 3r LLOC (DRETA DEL MEDI - BRONZE)
       if (third) {
         html += `
           <div class="w-1/4 flex flex-col items-center justify-end h-full shrink-0">
-            <div class="h-24 flex flex-col items-center justify-end mb-2">
-              <i data-lucide="award" class="w-10 h-10 text-amber-700 mb-1 stroke-[2.5]"></i>
-              <span class="font-black text-neutral-800 text-xl leading-tight">${third.name}</span>
-              <span class="font-extrabold text-xs text-neutral-400 mt-0.5">${third.totalPoints} punts</span>
+            <div class="h-28 flex flex-col items-center justify-end mb-2">
+              <i data-lucide="award" class="w-14 h-14 text-amber-700 mb-1 stroke-[2.5]"></i>
+              <span class="font-black text-neutral-800 text-4xl leading-tight">${third.name}</span>
+              <span class="font-black text-xl text-neutral-400 mt-0.5">${third.totalPoints} punts</span>
             </div>
-            <div class="w-full h-28 rounded-t-3xl flex items-center justify-center font-black text-4xl text-white shadow-sm" style="background-color: ${s3.dotColor}">3</div>
+            <div class="w-full h-36 rounded-t-3xl flex items-center justify-center font-black text-6xl text-white shadow-sm" style="background-color: ${s3.dotColor}">3</div>
           </div>
         `;
       }
@@ -932,13 +919,12 @@
               currentState.timer_seconds--;
               updateTimerDisplay(currentState.timer_seconds);
             } else {
-              // TEMPS ESGOTAT: Tocar bocina final
               clearInterval(timerInterval);
               timerInterval = null;
               currentState.timer_running = false;
               currentState.timer_seconds = 0;
 
-              playBuzzer(); // SO DE BOCINA FINAL!
+              playBuzzer();
 
               await db.from('game_state').update({
                 timer_running: false,
@@ -953,7 +939,7 @@
               }
               if (subtitle) {
                 subtitle.textContent = "TEMPS ESGOTAT!";
-                subtitle.className = "text-2xl font-black text-red-500 animate-pulse text-center";
+                subtitle.className = "text-5xl font-black text-red-500 animate-pulse text-center";
               }
             }
           }, 1000);
@@ -970,7 +956,7 @@
           display.textContent = "00:00";
           if (subtitle) {
             subtitle.textContent = "TEMPS ESGOTAT!";
-            subtitle.className = "text-2xl font-black text-red-500 animate-pulse text-center";
+            subtitle.className = "text-5xl font-black text-red-500 animate-pulse text-center";
           }
         } else {
           display.classList.remove('text-red-500', 'text-orange-500', 'scale-110', 'animate-timer-beat');
@@ -978,7 +964,7 @@
           updateTimerDisplay(secs);
           if (subtitle) {
             subtitle.textContent = "A punt per començar...";
-            subtitle.className = "text-xl font-bold text-neutral-400 text-center";
+            subtitle.className = "text-4xl font-black text-neutral-400 text-center";
           }
         }
       }
@@ -993,9 +979,7 @@
       const s = (secs % 60).toString().padStart(2, '0');
       display.textContent = `${m}:${s}`;
 
-      // LÒGICA DE SO I ANIMACIÓ PER SEGON
       if (secs <= 10 && secs > 0) {
-        // Ultim 10 segons: Beep agut i intens + batec
         playBeep(880, 'square', 0.15);
 
         display.classList.remove('text-neutral-900', 'text-amber-900');
@@ -1007,10 +991,9 @@
 
         if (subtitle) {
           subtitle.textContent = "Últims segons!";
-          subtitle.className = "text-xl font-black text-orange-500 text-center";
+          subtitle.className = "text-4xl font-black text-orange-500 text-center";
         }
       } else if (secs > 10) {
-        // Segons normals (30s a 11s): Beep suau
         playBeep(440, 'sine', 0.08);
 
         display.classList.remove('text-orange-500', 'text-red-500', 'animate-timer-beat');
@@ -1018,7 +1001,6 @@
       }
     }
 
-    // Sistema de So Natiu (Sintetitzador Web Audio)
     let audioCtx = null;
 
     function initAudio() {
@@ -1027,7 +1009,6 @@
       }
     }
 
-    // Activar l'àudio al primer clic o interacció a la TV (requisit dels navegadors)
     window.addEventListener('click', () => initAudio(), { once: true });
 
     function playBeep(freq = 440, type = 'sine', duration = 0.1) {
@@ -1062,7 +1043,7 @@
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
-        osc.type = 'sawtooth'; // So tipus bocina/banya de basquetbol
+        osc.type = 'sawtooth';
         osc.frequency.setValueAtTime(150, audioCtx.currentTime);
         osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 1.2);
 
@@ -1078,7 +1059,6 @@
         console.log("Àudio no permès encara");
       }
     }
-
-    </script>
+  </script>
 </body>
 </html>
